@@ -83,6 +83,10 @@ namespace GameConstants {
     // Held item chance
     export const ROUTE_HELD_ITEM_CHANCE = 512;
     export const DUNGEON_HELD_ITEM_CHANCE = 128;
+    
+    // WTB the following:
+    // export const DUNGEON_BOSS_HELD_ITEM_CHANCE = 10;
+    // pretty pls
 
     //Shards from battle
     export const DUNGEON_SHARDS = 3;
@@ -430,6 +434,8 @@ namespace GameConstants {
         'Razor_claw',
         'Razor_fang',
         'Prism_scale',
+        'Black_DNA',
+        'White_DNA',
         'Sachet',
         'Whipped_dream',
     }
