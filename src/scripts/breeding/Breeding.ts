@@ -221,7 +221,7 @@ class Breeding implements Feature {
     public addToQueue(pokemon: PartyPokemon): boolean {
         const queueSize = this.queueList().length;
         if (queueSize < this.queueSlots()) {
-            pokemon.breeding = true;
+            pokemon.location = PartyLocation.Hatchery;
             this.queueList.push(pokemon.name);
             return true;
         }
@@ -233,7 +233,7 @@ class Breeding implements Feature {
         const queueSize = this.queueList().length;
         if (queueSize > index) {
             const pokemonName = this.queueList.splice(index, 1)[0];
-            App.game.party._caughtPokemon().find(p => p.name == pokemonName).breeding = false;
+            App.game.party._caughtPokemon().find(p => p.name == pokemonName).location = PartyLocation.Battle;
             return true;
         }
         return false;
@@ -248,7 +248,7 @@ class Breeding implements Feature {
             return false;
         }
         const egg = this.createEgg(pokemon.name);
-        pokemon.breeding = true;
+        pokemon.location = PartyLocation.Hatchery;
         return this.gainEgg(egg);
     }
 

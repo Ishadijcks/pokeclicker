@@ -1,6 +1,6 @@
-///<reference path="../party/CaughtStatus.ts"/>
+///<reference path="../party/PartyListController.ts"/>
 
-class BreedingController {
+class BreedingController extends PartyListController {
     public static spotTypes = [
         `<g class="egg-spot">
           <path d="M33.5 104.3c4.4 4.9 9.3 7.3 6.7 9.6-2.6 2.4-8.3.4-12.7-4.4-4.5-4.9-6-10.8-3.4-13.2 2.6-2.3 5 3.2 9.4 8zm59.7 0c-4.5 4.9-9.4 7.3-6.8 9.6 2.6 2.4 8.4.4 12.8-4.4 4.4-4.9 6-10.8 3.3-13.2-2.6-2.3-4.9 3.2-9.3 8zm-1.6-14.8c-6.2 13.5-19 21-28.6 16.6-9.5-4.4-5-12.4 1.2-26 6.3-13.5 12-27.6 21.5-23.2 9.5 4.4 12.2 19 6 32.6zM74.29 37.558C66.497 46.286 70.6 55.4 62.4 55.4c-8.2 0-14.6-6.6-14.6-14.7S54.3 26 62.4 26c5.593.02 15.797 6.422 11.89 11.558z"/>
@@ -133,82 +133,24 @@ class BreedingController {
         return SeededRand.fromArray(this.spotTypes);
     }
 
-    public static filter = {
-        search: ko.observable(new RegExp('', 'i')),
-        category: ko.observable(-1).extend({ numeric: 0 }),
-        shinyStatus: ko.observable(-1).extend({ numeric: 0 }),
-        // All = -2
-        type1: ko.observable(-2).extend({ numeric: 0 }),
-        type2: ko.observable(-2).extend({ numeric: 0 }),
-        region: ko.observable(-2).extend({ numeric: 0 }),
-    }
-
     public static visible(partyPokemon: PartyPokemon) {
         return ko.pureComputed(() => {
             // Only breedable Pokemon
-            if (partyPokemon.breeding || partyPokemon.level < 100) {
+            if (partyPokemon.location !== PartyLocation.Battle || partyPokemon.level < 100) {
                 return false;
             }
 
-            if (!BreedingController.filter.search().test(partyPokemon.name)) {
-                return false;
-            }
-
-            // Check based on category
-            if (BreedingController.filter.category() >= 0) {
-                if (partyPokemon.category !== BreedingController.filter.category()) {
-                    return false;
-                }
-            }
-
-            // Check based on shiny status
-            if (BreedingController.filter.shinyStatus() >= 0) {
-                if (+partyPokemon.shiny !== BreedingController.filter.shinyStatus()) {
-                    return false;
-                }
-            }
-
-            // Check based on native region
-            if (BreedingController.filter.region() > -2) {
-                if (PokemonHelper.calcNativeRegion(partyPokemon.name) !== BreedingController.filter.region()) {
-                    return false;
-                }
-            }
-
-            // Check if either of the types match
-            const type1: (PokemonType | null) = BreedingController.filter.type1() > -2 ? BreedingController.filter.type1() : null;
-            const type2: (PokemonType | null) = BreedingController.filter.type2() > -2 ? BreedingController.filter.type2() : null;
-            if (type1 !== null || type2 !== null) {
-                const { type: types } = pokemonMap[partyPokemon.name];
-                if ([type1, type2].includes(PokemonType.None)) {
-                    const type = (type1 == PokemonType.None) ? type2 : type1;
-                    if (!BreedingController.isPureType(partyPokemon, type)) {
-                        return false;
-                    }
-                } else if ((type1 !== null && !types.includes(type1)) || (type2 !== null && !types.includes(type2))) {
-                    return false;
-                }
-            }
-            return true;
+            return this.applyFilters(partyPokemon);
         });
     }
 
-    private static isPureType(pokemon: PartyPokemon, type: (PokemonType | null)): boolean {
-        const pokemonData = pokemonMap[pokemon.name];
-        return ((type == null || pokemonData.type[0] === type) && (pokemonData.type[1] == undefined || pokemonData.type[1] == PokemonType.None));
+    public static disabled(partyPokemon: PartyPokemon) {
+        return !App.game.breeding.hasFreeEggSlot() && !App.game.breeding.hasFreeQueueSlot();
     }
 
-    // Value displayed at bottom of image
-    public static displayValue = ko.observable('attack');
-
-    private static getDisplayValue(pokemon: PartyPokemon): string {
-        const pokemonData = pokemonMap[pokemon.name];
-        switch (this.displayValue()) {
-            case 'attack': return `Attack: ${pokemon.attack.toLocaleString('en-US')}`;
-            case 'attackBonus': return `Attack Bonus: ${Math.floor(pokemon.baseAttack * (GameConstants.BREEDING_ATTACK_BONUS / 100) + pokemon.proteinsUsed()).toLocaleString('en-US')}`;
-            case 'baseAttack': return `Base Attack: ${pokemon.baseAttack.toLocaleString('en-US')}`;
-            case 'eggSteps': return `Egg Steps: ${App.game.breeding.getSteps(pokemonData.eggCycles).toLocaleString('en-US')}`;
-            case 'timesHatched': return `Hatches: ${App.game.statistics.pokemonHatched[pokemonData.id]() || 0}`;
-        }
+    public static handleClick(partyPokemon: PartyPokemon) {
+        App.game.breeding.addPokemonToHatchery(partyPokemon);
+        App.game.breeding.checkCloseModal();
     }
+
 }

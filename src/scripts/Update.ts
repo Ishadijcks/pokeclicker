@@ -235,7 +235,7 @@ class Update implements Saveable {
             if (maxBattleFrontierStage >= 386) {
                 Update.addPokemonToSaveData(saveData, 386.3); // Deoxys (speed)
             }
-          
+
             // Update the attack bonus percentages
             saveData.party.caughtPokemon = saveData.party.caughtPokemon.map(p => {
                 p.attackBonusPercent = p.attackBonus;
@@ -262,6 +262,16 @@ class Update implements Saveable {
 
             // Reset all plots
             delete saveData.farming.plotList;
+
+            // TODO: HLXII - Move this to the version it'll be released in
+            for (const pokemon of saveData.party.caughtPokemon) {
+                if (pokemon.breeding) {
+                    pokemon.location = PartyLocation.Hatchery;
+                } else {
+                    pokemon.location = PartyLocation.Battle;
+                }
+                delete pokemon.breeding;
+            }
         },
     };
 

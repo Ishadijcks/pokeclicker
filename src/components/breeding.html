@@ -34,117 +34,14 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
 
             <div class="tab-content p-3">
                 <div class="tab-pane active" id="breeding-pokemon">
-                    <div class="text-left">
-                        <div class="form-row collapse" id="breeding-filter">
-                            <div class="form-group col-md-6 col-6">
-                                <label>Search</label>
-                                <input autocomplete="off" class="form-control" oninput="BreedingController.filter.search(new RegExp(`(${this.value})`, 'i'))" placeholder="search here"/>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Display Value</label>
-                                <select autocomplete="off" class="custom-select" onchange="BreedingController.displayValue(this.value)">
-                                    <option value="attack" selected>Attack</option>
-                                    <option value="attackBonus">Attack Bonus</option>
-                                    <option value="baseAttack">Base Attack</option>
-                                    <option value="eggSteps">Egg Steps</option>
-                                    <option value="timesHatched">Times Hatched</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Category</label>
-                                <select autocomplete="off" class="custom-select" onchange="BreedingController.filter.category(this.value)">
-                                    <option value="-1">All</option>
-                                    <!-- ko foreach: PokemonCategories.categories -->
-                                    <option style="color: whitesmoke" data-bind="attr: { value: $index }, text: $data.name, style: { background: $data.color }">Category</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Region</label>
-                                <select autocomplete="off" class="custom-select" onchange="BreedingController.filter.region(+this.value)">
-                                    <option value="-2">All</option>
-                                    <!-- ko foreach: GameHelper.enumStrings(GameConstants.Region).filter(r => r != 'none' && GameConstants.Region[r] <= player.highestRegion()) -->
-                                    <option data-bind="attr: { value: GameConstants.Region[$data] }, text: GameConstants.camelCaseToString($data)">Region</option>
-                                    <!-- /ko -->
-                                    <option value="-1">None</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Shiny Status</label>
-                                <select autocomplete="off" class="custom-select" onchange="BreedingController.filter.shinyStatus(+this.value)">
-                                    <option value="-1">All</option>
-                                    <option value="0">Not Shiny</option>
-                                    <option value="1">Shiny</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Type</label>
-                                <select autocomplete="off" class="custom-select" onchange="BreedingController.filter.type1(+this.value)">
-                                    <option value="-2">All</option>
-                                    <!-- ko foreach: GameHelper.enumStrings(PokemonType).filter(t => t != 'None') -->
-                                    <option data-bind="attr: { value: PokemonType[$data] }, text: $data">Type</option>
-                                    <!-- /ko -->
-                                    <option value="-1">None</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Type</label>
-                                <select autocomplete="off" class="custom-select" onchange="BreedingController.filter.type2(+this.value)">
-                                    <option value="-2">All</option>
-                                    <!-- ko foreach: GameHelper.enumStrings(PokemonType).filter(t => t != 'None') -->
-                                    <option data-bind="attr: { value: PokemonType[$data] }, text: $data">Type</option>
-                                    <!-- /ko -->
-                                    <option value="-1">None</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row collapse" id="breeding-sort">
-                            <div class="form-group col" data-bind="with: Settings.getSetting('partySort')">
-                                <label>Sort</label>
-                                <div class="input-group">
-                                    <select autocomplete="off" class="custom-select" onchange="Settings.setSettingByName(this.name, SortOptions[SortOptions[this.value]])"
-                                        data-bind="foreach: $data.options, attr: {name}, selectedOptions: [$data.observableValue()]">
-                                        <option data-bind="text: $data.text, value: $data.value"></option>
-                                    </select>
-                                    <div class="input-group-append bg-primary text-light">
-                                        <label for="hatcheryPartySortDirection" class="clickable m-0 pl-2 pr-2" style="font-size: 22px;" data-bind="text: Settings.getSetting('partySortDirection').observableValue() ? '⥄' : '⥂'">⥂</label>
-                                        <input id="hatcheryPartySortDirection" style="vertical-align: middle" class="hidden" type='checkbox'
-                                            data-bind="checked: Settings.getSetting('partySortDirection').observableValue()"
-                                            onchange="Settings.setSettingByName('partySortDirection', this.checked)"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div data-bind="template: { name: 'partyListFilterTemplate', data: {'name': 'breeding'} }"></div>
                     <div>
                         <!-- Check if the player has any level 100 Pokémon or if they have any eggs -->
                         <p class="bg-danger my-0" data-bind="visible: !App.game.party.hasMaxLevelPokemon()">
                             Unfortunately, you don't have any pokémon of level 100 to breed.
                         </p>
                         <!-- ko if: App.game.party.hasMaxLevelPokemon() -->
-                        <ul class="row justify-content-center p-0" data-bind="foreach: App.game.party.caughtPokemon">
-                            <li class="eggSlot col-sm-4 col-md-3 col-lg-2 pokedexEntry text-nowrap" data-bind="visible: BreedingController.visible($data), style:{background: PokedexHelper.getBackgroundColors($data.name)}, class: App.game.breeding.hasFreeEggSlot() || App.game.breeding.hasFreeQueueSlot() ? '' : 'disabled'">
-                                <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data.name">name</span>
-                                <div data-bind="visible: App.game.party.alreadyCaughtPokemon($data.id, true)" style="position: absolute;right: 0px;top: 0px;">✨</div>
-                                <img src="" width="80px" data-bind="attr:{ src: PokedexHelper.getImage($data.id)}">
-                                <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: BreedingController.getDisplayValue($data)">value</span>
-                                <a class="overlay" href="#breed" data-bind="click: function() { App.game.breeding.addPokemonToHatchery($data); App.game.breeding.checkCloseModal();}"></a>
-                                <div class="pokemonCategory dropdown">
-                                    <button data-toggle="dropdown" data-bind="class: `category-${$data.category + 1}`"></button>
-                                    <div class="dropdown-menu p-0">
-                                        <!-- ko foreach: PokemonCategories.categories -->
-                                        <a class="dropdown-item category" href="#" data-bind="text: $data.name, click: () => { $parent.category = $index() }">Category</a>
-                                        <!-- /ko -->
-                                        <a class="dropdown-item bg-dark py-1" href="#categoryModal" data-toggle="modal"><i>Edit</i></a>
-                                    </div>
-                                </div>
-                                <div class="sidebar">
-                                    <a class="useProtein" href="#useProtein" data-bind="class: ItemHandler.hasItem('Protein') && $data.canUseProtein() ? '' : 'disabled', click: function() { $data.useProtein(); }">
-                                        <img class="p-0" src="assets/images/items/Protein.png" width="100%" height="100%"/>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
+                        <div data-bind="template: { name: 'partyListTemplate', data: {'controller': BreedingController, 'showProtein': true } }"></div>
                         <!-- /ko -->
                     </div>
                 </div>

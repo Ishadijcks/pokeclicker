@@ -107,13 +107,13 @@ class Egg implements Saveable {
             partyPokemon.attack = partyPokemon.calculateAttack();
 
             // If breeding (not store egg), reset level, reset evolution check
-            if (partyPokemon.breeding) {
+            if (partyPokemon.location === PartyLocation.Hatchery) {
                 if (partyPokemon.evolutions !== undefined) {
                     partyPokemon.evolutions.forEach(evo => evo instanceof LevelEvolution ? evo.triggered = false : undefined);
                 }
                 partyPokemon.exp = 0;
                 partyPokemon.level = 1;
-                partyPokemon.breeding = false;
+                partyPokemon.location = PartyLocation.Battle;
                 partyPokemon.level = partyPokemon.calculateLevelFromExp();
                 partyPokemon.checkForLevelEvolution();
             }
