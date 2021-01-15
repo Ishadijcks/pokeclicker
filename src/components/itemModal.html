@@ -70,7 +70,13 @@
                     <div id="itemBag" class="tab-pane p-3">
                         <div class="row justify-content-sm-center">
                             <div class="row col-10">
-                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'Protein'}, click: () => $('#pokemonSelectorModal').modal('show')"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'RareCandy'}, click: () => {App.game.statistics.selectedVitaminId(1); $('#pokemonSelectorModal').modal('show')}"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'HpUp'}, click: () => {App.game.statistics.selectedVitaminId(2); $('#pokemonSelectorModal').modal('show')}"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'Protein'}, click: () => {App.game.statistics.selectedVitaminId(0); $('#pokemonSelectorModal').modal('show')}"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'Iron'}, click: () => {App.game.statistics.selectedVitaminId(3); $('#pokemonSelectorModal').modal('show')}"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'Calcium'}, click: () => {App.game.statistics.selectedVitaminId(4); $('#pokemonSelectorModal').modal('show')}"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'Zinc'}, click: () => {App.game.statistics.selectedVitaminId(5); $('#pokemonSelectorModal').modal('show')}"></div>
+                                <div class="btn btn-primary col-2" data-bind="template: { name: 'otherItemTemplate', data: 'Carbos'}, click: () => {App.game.statistics.selectedVitaminId(6); $('#pokemonSelectorModal').modal('show')}"></div>
                             </div>
                         </div>
                     </div>

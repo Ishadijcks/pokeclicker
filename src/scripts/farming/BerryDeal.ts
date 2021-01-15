@@ -228,7 +228,7 @@ class BerryDeal {
                 SeededRand.intBetween(50, 100),
                 SeededRand.intBetween(10, 50),
             ],
-            ItemList['Protein'],
+            ItemList['RareCandy'],
             1
         ));
 

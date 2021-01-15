@@ -9,6 +9,14 @@ class DataPokemon implements PokemonInterface {
         public type1: PokemonType,
         public type2: PokemonType,
         public attack: number,
+        public base: {
+          hitpoints: number;
+          attack: number;
+          specialAttack: number;
+          defense: number;
+          specialDefense: number;
+          speed: number;
+        },
         public levelType: LevelType,
         public exp: number,
         public eggCycles: number,

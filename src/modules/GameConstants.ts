@@ -602,6 +602,11 @@ export enum PokeBlockColor {
 export enum VitaminType {
     Protein,
     RareCandy,
+    HpUp,
+    Iron,
+    Calcium,
+    Zinc,
+    Carbos,
 }
 
 export enum EnergyRestoreSize {

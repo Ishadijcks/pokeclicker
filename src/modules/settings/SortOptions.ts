@@ -1,5 +1,3 @@
-import { BREEDING_ATTACK_BONUS } from '../GameConstants';
-
 export enum SortOptions {
     id = 0,
     name = 1,
@@ -63,24 +61,18 @@ export const SortOptionConfigs: Record<SortOptions, SortOptionConfig> = {
 
     [SortOptions.breedingEfficiency]: {
         text: 'Breeding Efficiency',
-        // @ts-ignore
-        // eslint-disable-next-line no-undef
-        getValue: (p) => ((p.baseAttack * (BREEDING_ATTACK_BONUS / 100) + p.proteinsUsed()) / pokemonMap[p.name].eggCycles),
+        getValue: (p) => p.calculateBreedingEfficiency(),
         invert: true,
     },
 
     [SortOptions.eggCycles]: {
         text: 'Egg Steps',
-        // @ts-ignore
-        // eslint-disable-next-line no-undef
-        getValue: (p) => pokemonMap[p.name].eggCycles,
+        getValue: (p) => p.eggCycles,
     },
 
     [SortOptions.timesHatched]: {
         text: 'Times Hatched',
-        // @ts-ignore
-        // eslint-disable-next-line no-undef
-        getValue: (p) => App.game.statistics.pokemonHatched[p.id]() || 0,
+        getValue: (p) => p.timesHatched() || 0,
     },
 
     [SortOptions.category]: {

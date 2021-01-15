@@ -8,10 +8,10 @@
                 </button>
             </div>
             <div class="modal-body p-0">
-                <img src="assets/images/items/Protein.png" width="40%"/>
+                <img src="" data-bind="attr: { src: `assets/images/items/${getVitaminNameByType(App.game.statistics.selectedVitaminId())}.png` }" width="40%"/>
                 <br/>
                 <div class="sticky-top">
-                  <span class="btn btn-block btn-secondary btn-static" data-bind="text: 'Proteins: ' + player.itemList.Protein().toLocaleString('en-US')"></span>
+                  <span class="btn btn-block btn-primary" data-bind="text: `${getVitaminNameByType(App.game.statistics.selectedVitaminId())}: ${player.itemList[getVitaminNameByType(App.game.statistics.selectedVitaminId())]().toLocaleString('en-US')}`"></span>
                   <button type="button" class="btn btn-sm btn-primary"
                     style="position: absolute; right: 0px; top: 0px; width: 42px; height: 41px;"
                     data-bind="text: VitaminController.multiplier[VitaminController.multiplierIndex()]"
@@ -41,15 +41,15 @@
                   <thead>
                     <tr class="text-light">
                       <th class="text-left bg-dark align-middle">Pokemon</th>
-                      <th class="text-center bg-dark align-middle">Proteins Used</th>
+                      <th class="text-center bg-dark align-middle" data-bind="text: `${getVitaminNameByType(App.game.statistics.selectedVitaminId())} Used`" ></th>
                       <th class="text-center bg-dark align-middle">Attack Bonus</th>
                     </tr>
                   </thead>
                   <tbody data-bind="foreach: App.game.party.caughtPokemon">
-                    <tr class="clickable" data-bind="click: () => $data.useProtein(VitaminController.getMultiplier()), hidden: $data.breeding">
+                    <tr class="clickable" data-bind="click: () => $data.useVitamin(App.game.statistics.selectedVitaminId(), VitaminController.getMultiplier()), hidden: $data.breeding">
                       <td class="text-left"><knockout data-bind="text: $data.name"></knockout><sup data-bind="visible: $data.shiny">✨</sup></td>
-                      <td class="text-center tight" data-bind="text: $data.proteinsUsed().toLocaleString('en-US')">-</td>
-                      <td class="text-center tight" data-bind="text: Math.floor($data.baseAttack * (GameConstants.BREEDING_ATTACK_BONUS / 100) + $data.proteinsUsed()).toLocaleString('en-US')">-</td>
+                      <td class="text-center tight" data-bind="text: $data.vitaminsUsed(App.game.statistics.selectedVitaminId()).toLocaleString('en-US')">-</td>
+                      <td class="text-center tight" data-bind="text: $data.calculateBonusAttack().toLocaleString('en-US', { maximumSignificantDigits: 2 })">-</td>
                     </tr>
                   </tbody>
                 </table>

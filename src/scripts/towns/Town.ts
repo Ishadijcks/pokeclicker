@@ -94,6 +94,12 @@ const CeladonCityShop = new Shop([
     ItemList['Jynx'],
     ItemList['Mr. Mime'],
     ItemList['Lickitung'],
+    ItemList['HpUp'],
+    ItemList['Protein'],
+    ItemList['Iron'],
+    ItemList['Calcium'],
+    ItemList['Zinc'],
+    ItemList['Carbos'],
 ]);
 const SaffronCityShop = new Shop([
     ItemList['Moon_stone'],

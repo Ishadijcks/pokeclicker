@@ -103,8 +103,7 @@ class Egg implements Saveable {
         // If the party pokemon exist, increase it's damage output
         if (partyPokemon) {
             // Increase attack
-            partyPokemon.attackBonusPercent += GameConstants.BREEDING_ATTACK_BONUS;
-            partyPokemon.attackBonusAmount += partyPokemon.proteinsUsed();
+            GameHelper.incrementObservable(partyPokemon.timesHatched);
 
             // If breeding (not store egg), reset level, reset evolution check
             if (partyPokemon.breeding) {

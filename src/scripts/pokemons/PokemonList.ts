@@ -19020,13 +19020,18 @@ type PokemonNameType = typeof pokemonList[number]['name'];
 const pokemonNameIndex = {};
 const maxEggCycles = Math.max(...pokemonList.map(p => p.eggCycles));
 
+function calculateBaseAttack(hitpoints: number, attack: number, defense: number, specialAttack: number, specialDefense: number, speed: number): number {
+    const baseOffense = 2 * Math.round(Math.sqrt(attack * specialAttack) + Math.sqrt(speed));
+    const baseDefense = 2 * Math.round(Math.sqrt(defense * specialDefense) + Math.sqrt(speed));
+    const baseStamina = 2 * hitpoints;
+
+    return Math.floor(Math.sqrt(baseDefense * baseStamina) * baseOffense / 250);
+}
+
 // TODO move to its own initialize method that gets called on game start.
 pokemonList.forEach(p => {
-    const baseOffense = 2 * Math.round(Math.sqrt(p.base.attack * p.base.specialAttack) + Math.sqrt(p.base.speed));
-    const baseDefense = 2 * Math.round(Math.sqrt(p.base.defense * p.base.specialDefense) + Math.sqrt(p.base.speed));
-    const baseStamina = 2 * p.base.hitpoints;
-
-    (p as PokemonListData).attack = Math.max(10, Math.floor(Math.sqrt(baseDefense * baseStamina) * baseOffense / 250));
+    const rawAttack: number = calculateBaseAttack(p.base.hitpoints, p.base.attack, p.base.defense, p.base.specialAttack, p.base.specialDefense, p.base.speed);
+    (p as PokemonListData).attack = Math.max(10, rawAttack);
     if ((p as PokemonListData).baby) {
         (p as PokemonListData).evolutions?.forEach(evo => {
             pokemonBabyPrevolutionMap[evo.getEvolvedPokemon()] = evo.basePokemon as PokemonNameType;

@@ -89,8 +89,22 @@ class PokemonFactory {
     }
 
     public static generatePartyPokemon(id: number, shiny = false): PartyPokemon {
-        const dataPokemon = PokemonHelper.getPokemonById(id);
-        return new PartyPokemon(dataPokemon.id, dataPokemon.name, dataPokemon.evolutions, dataPokemon.attack, 0, 0, 0, 0, false, shiny);
+        const dataPokemon: DataPokemon = PokemonHelper.getPokemonById(id);
+        return new PartyPokemon(
+            dataPokemon.id,
+            dataPokemon.name,
+            dataPokemon.evolutions,
+            dataPokemon.attack,
+            dataPokemon.base.hitpoints,
+            dataPokemon.base.attack,
+            dataPokemon.base.defense,
+            dataPokemon.base.specialAttack,
+            dataPokemon.base.specialDefense,
+            dataPokemon.base.speed,
+            false,
+            shiny,
+            dataPokemon.eggCycles
+        );
     }
 
     /**
