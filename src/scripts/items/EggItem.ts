@@ -9,9 +9,9 @@ class EggItem extends CaughtIndicatingItem {
         this.type = type;
     }
 
-    use() {
+    use(): boolean {
         if (player.itemList[this.name()]() <= 0) {
-            return;
+            return false;
         }
 
         let success: boolean;
@@ -27,6 +27,8 @@ class EggItem extends CaughtIndicatingItem {
         if (success) {
             player.loseItem(this.name(), 1);
         }
+
+        return success;
     }
 
     getCaughtStatus(): CaughtStatus {

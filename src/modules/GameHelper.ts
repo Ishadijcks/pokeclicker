@@ -100,8 +100,11 @@ export default class GameHelper {
         return array;
     }
 
-    public static anOrA(name: string): string {
-        return ['a', 'e', 'i', 'o', 'u'].includes(name[0].toLowerCase()) ? 'an' : 'a';
+    public static anOrA(name: string, capitalize = false): string {
+        if (['a', 'e', 'i', 'o', 'u'].includes(name[0].toLowerCase())) {
+            return capitalize ? 'An' : 'an';
+        }
+        return capitalize ? 'A' : 'a';
     }
 
     public static shallowEqual(object1, object2) {
@@ -123,6 +126,13 @@ export default class GameHelper {
         const [newMin, newMax] = testTooHigh(mid) ? [min, mid] : [mid, max];
 
         return this.binarySearch(testTooHigh, newMin, newMax);
+    }
+
+    public static arrayEquals(a, b) {
+        return Array.isArray(a)
+            && Array.isArray(b)
+            && a.length === b.length
+            && a.every((val, index) => val === b[index]);
     }
 
     private static getTomorrow() {

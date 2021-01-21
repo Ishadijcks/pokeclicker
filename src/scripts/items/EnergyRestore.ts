@@ -8,19 +8,20 @@ class EnergyRestore extends Item {
         this.type = type;
     }
 
-    use() {
+    use(): boolean {
         if (player.itemList[this.name()]() <= 0) {
-            return;
+            return false;
         }
         if (App.game.underground.energy === App.game.underground.getMaxEnergy()) {
             Notifier.notify({
                 message: 'Your mining energy is already full!',
                 type: NotificationConstants.NotificationOption.danger,
             });
-            return;
+            return false;
         }
         App.game.underground.gainEnergyThroughItem(this.type);
         player.loseItem(this.name(), 1);
+        return true;
     }
 }
 

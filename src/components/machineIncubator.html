@@ -1,0 +1,122 @@
+<div class="modal fade" id="IncubatorModal" tabindex="-1" role="dialog"
+aria-labelledby="IncubatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof IncubatorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5 data-bind="text: LabController.openedMachine().machine.name"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineIncubator">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineIncubatorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body tab-content">
+
+                <div id="machineIncubator" class="tab-pane fade in active show">
+                    <!-- ko if: App.game.lab.isResearched(Lab.Research.incubator_fuel) -->
+                    <div class="row no-gutters justify-content-center">
+                        <h4>
+                            <span data-bind="text: 'Fuel: ' + state.fuel.toFixed(1) + '/' + Incubator.fuelCapacity()">Fuel</span>
+                        </h4>
+                    </div>
+                    <div class="row justify-content-center" data-bind="foreach: Incubator.getAvailableFuels()">
+                        <div class="col-6 col-sm-4 col-lg-3">
+                        <button class="shopItem clickable btn btn-block btn-secondary"
+                                data-bind="click: function() {Incubator.selectedFuel($data.id);},
+                                css: { active: Incubator.selectedFuel() == $data.id },
+                                attr: { disabled: BagHandler.amount($data.item)() <= 0 }">
+                                <img src="" height="36px" data-bind="attr:{ src: BagHandler.image($data.item) }">
+                                <p data-bind="text: BagHandler.displayName($data.item)">Fuel Name</p>
+                                <div>
+                                    <small>
+                                        <span class="" data-bind="text: 'Amount: ' + BagHandler.amount($data.item)()">
+                                            Amount:
+                                        </span>
+                                    </small>
+                                </div>
+                                <div>
+                                    <small>
+                                        <span class="" data-bind="text: 'Fuel: ' + Incubator.getFuelTotalAmount($data).toFixed(1)">
+                                            Fuel:
+                                        </span>
+                                    </small>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="justify-content-center">
+                        <div class="input-group m-0" style="margin-bottom: 6px; margin-top: 6px">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-warning btn-outline-dark smallButton smallFont" onclick="Incubator.resetAmount()">
+                                    Reset
+                                </button>
+                            </div>
+                            <input id="amountOfFuel" type="number" class="outline-dark form-control form-control-number"
+                                    value="1" min="1" required name="amountOfFuel"
+                                    oninput="Incubator.amount(parseInt($(this).val().toString(), 10) || 0);"
+                                    onchange="Incubator.amount(parseInt($(this).val().toString(), 10) || 0);" title=""/>
+                            <div class="input-group-append">
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'original' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(10)">
+                                        +10
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(100)">
+                                        +100
+                                    </button>
+                                <!-- /ko -->
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'multiplication' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.multiplyAmount(10)">
+                                        &times;10
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.multiplyAmount(0.1)">
+                                        &div;10
+                                    </button>
+                                <!-- /ko -->
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'bigplus' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(100)">
+                                        +100
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(1000)">
+                                        +1000
+                                    </button>
+                                <!-- /ko -->
+                                <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { Incubator.maxAmount(state); }">
+                                    Max
+                                </button>
+                                <button class="btn-outline-dark btn btn-success smallButton smallFont" data-bind="click: function() {state.addFuel();}">
+                                    Fuel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+
+                <div id="machineIncubatorHelp" class="tab-pane fade">
+                    <p>The Incubator will increase the number of Hatchery queue slots when active.</p>
+
+                    <p>Once the Fuel Research is completed, you can fuel the Incubator with various items to decrease hatching time.
+                        <br>Some items require additional Research before they can be used as fuel.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+

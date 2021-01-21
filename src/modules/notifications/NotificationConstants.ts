@@ -35,6 +35,13 @@ const NotificationConstants = {
         dropped_item: new BooleanSetting('notification.dropped_item', 'Enemy Pokémon dropped an item', true),
         ready_to_harvest: new BooleanSetting('notification.ready_to_harvest', 'Berry ready to harvest', true),
         gym_won: new BooleanSetting('notification.gym_won', 'Gym leader defeated', true),
+        fabricator: new BooleanSetting('notification.fabricator', 'Fabricator completion', true),
+        plate_deconstructor: new BooleanSetting('notification.plate_deconstructor', 'Plate Deconstructor completion', true),
+        plate_reconstructor: new BooleanSetting('notification.plate_reconstructor', 'Plate Reconstructor completion', true),
+        incubator: new BooleanSetting('notification.incubator', 'Incubator depletion', true),
+        generator: new BooleanSetting('notification.generator', 'Generator depletion', true),
+        fossil_reviver: new BooleanSetting('notification.fossil_reviver', 'Fossil Reviver completion', true),
+        pokeball_factory: new BooleanSetting('notification.pokeball_factory', 'Pokéball Factory completion', true),
     },
 };
 

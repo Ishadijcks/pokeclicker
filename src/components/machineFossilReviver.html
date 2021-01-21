@@ -1,0 +1,93 @@
+<div class="modal  fade" id="FossilReviverModal" tabindex="-1" role="dialog"
+aria-labelledby="FossilReviverModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof FossilReviverState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Fossil Reviver</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineFossilReviver">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineFossilReviverHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machineFossilReviver" class="tab-pane fade in active show">
+                    <div class="row no-gutters justify-content-center">
+                        <!-- ko foreach: state._fossils -->
+                        <div class="col-3 eggSlot">
+                            <div class="content">
+                                <div style="margin-top: 20px;">
+                                    <!-- ko if: $data.fossil -->
+                                    <img data-bind="attr: { src: FossilReviver.getImage($data.data.name) }"/>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                            data-bind="attr: { style: 'width:' + $data.progressPercent + '%' }"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                            <span data-bind="text: $data.progressString"></span>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: state.queue.length > 0 -->
+                        <div class="col-12">
+                            <div id="hatcheryQueue" class="card-footer p-1" data-bind="foreach: state.queue">
+                                <div class="queuePokemon clickable bg-primary" style="width: 8%" data-bind="click: function(){ state.removeFromQueue($index()) }">
+                                <img src="" data-bind="attr: { src: FossilReviver.getImage($data) }">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                    <p class="bg-warning my-0" data-bind="visible: !FossilReviver.getAvailableFossils().length">
+                        You don't have any fossils to revive.
+                    </p>
+
+                    <!-- ko if: FossilReviver.getAvailableFossils().length -->
+                    <ul class="row justify-content-center p-0" data-bind="foreach: FossilReviver.getAvailableFossils()">
+                        <li class="eggSlot col-3 col-md-3 pokedexEntry text-nowrap"
+                            data-bind="css: { 'disabled': FossilReviver.isDisabled(state, $data) }">
+                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data">fossil</span>
+                            <img src="" width="80px" data-bind="attr:{ src: FossilReviver.getImage($data) }">
+                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px"
+                            data-bind="text: 'Amount: ' + BagHandler.amount({type: ItemType.underground, id: $data })()">Amount</span>
+                            <a class="overlay" href="#revive" data-bind="click: function() { state.addToMachine($data); }"></a>
+                        </li>
+                    </ul>
+                    <!-- /ko -->
+                </div>
+
+                <div id="machineFossilReviverHelp" class="tab-pane fade">
+                    <p>The Fossil Reviver is used to revive Fossil Pokémon.</p>
+
+                    <p>Specific Fossil types must be researched before they can be revived.</p>
+
+                    <p>Click on the available Fossils to add them to the machine, and activate the machine so start the revival process.
+                        <br>Once the Queue Research is completed, additional Fossils can be added to a queue to be automatically revived.
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+

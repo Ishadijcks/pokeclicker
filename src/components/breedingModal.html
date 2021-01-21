@@ -22,7 +22,6 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
            <ul class="nav nav-tabs nav-fill">
                 <li class="nav-item"><a class="nav-link active" href="#breeding-pokemon" data-toggle="tab">Pokémon</a></li>
                 <li class="nav-item"><a class="nav-link" href="#breeding-eggs" data-toggle="tab">Eggs</a></li>
-                <li class="nav-item"><a class="nav-link" href="#breeding-fossils" data-toggle="tab">Fossils</a></li>
             </ul>
 
             <p class="bg-danger my-0" data-bind="visible: !App.game.breeding.hasFreeEggSlot()">
@@ -34,80 +33,8 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
 
             <div class="tab-content p-3">
                 <div class="tab-pane active" id="breeding-pokemon">
-                    <div class="text-left">
-                        <div class="form-row collapse" id="breeding-filter">
-                            <div class="form-group col-md-6 col-6">
-                                <label>Search</label>
-                                <input autocomplete="off" class="form-control" oninput="BreedingController.filter.search(new RegExp(`(${this.value})`, 'i'))" placeholder="search here"/>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Display Value</label>
-                                <select name="breedingDisplayFilter" autocomplete="off" class="custom-select" onchange="BreedingController.displayValue(this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingDisplayFilter').options -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingDisplayFilter').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Category</label>
-                                <select name="breedingCategoryFilter" autocomplete="off" class="custom-select" onchange="BreedingController.filter.category(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <option value="-1">All</option>
-                                    <!-- ko foreach: PokemonCategories.categories -->
-                                    <option style="color: whitesmoke" data-bind="attr: { value: $index, selected: Settings.getSetting('breedingCategoryFilter').value == $index() }, text: $data.name, style: { background: $data.color }">Category</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Region</label>
-                                <select name="breedingRegionFilter" autocomplete="off" class="custom-select" onchange="BreedingController.filter.region(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingRegionFilter').options.filter(r => r.value <= player.highestRegion()) -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingRegionFilter').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Shiny Status</label>
-                                <select name="breedingShinyFilter" autocomplete="off" class="custom-select" onchange="BreedingController.filter.shinyStatus(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <option value="-1" data-bind="attr: { selected: Settings.getSetting('breedingShinyFilter').value === '-1' }">All</option>
-                                    <option value="0" data-bind="attr: { selected: Settings.getSetting('breedingShinyFilter').value === '0' }">Not Shiny</option>
-                                    <option value="1" data-bind="attr: { selected: Settings.getSetting('breedingShinyFilter').value === '1' }">Shiny</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Type</label>
-                                <select name="breedingTypeFilter1" autocomplete="off" class="custom-select" onchange="BreedingController.filter.type1(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingTypeFilter1').options -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingTypeFilter1').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Type</label>
-                                <select name="breedingTypeFilter2" autocomplete="off" class="custom-select" onchange="BreedingController.filter.type2(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingTypeFilter2').options -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingTypeFilter2').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row collapse" id="breeding-sort">
-                            <div class="form-group col" data-bind="with: Settings.getSetting('partySort')">
-                                <label>Sort</label>
-                                <div class="input-group">
-                                    <select autocomplete="off" class="custom-select" onchange="Settings.setSettingByName(this.name, SortOptions[SortOptions[this.value]])"
-                                        data-bind="foreach: $data.options, attr: {name}, selectedOptions: [$data.observableValue()]">
-                                        <option data-bind="text: $data.text, value: $data.value"></option>
-                                    </select>
-                                    <div class="input-group-append bg-primary text-light">
-                                        <label for="hatcheryPartySortDirection" class="clickable m-0 pl-2 pr-2" style="font-size: 22px;" data-bind="text: Settings.getSetting('partySortDirection').observableValue() ? '⥄' : '⥂'">⥂</label>
-                                        <input id="hatcheryPartySortDirection" style="vertical-align: middle" class="hidden" type='checkbox'
-                                            data-bind="checked: Settings.getSetting('partySortDirection').observableValue()"
-                                            onchange="Settings.setSettingByName('partySortDirection', this.checked)"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <div data-bind="template: { name: 'partyFilterTemplate', data: {'name': 'breeding'} }"></div>
                     <div>
                         <!-- Check if the player has any level 100 Pokémon or if they have any eggs -->
                         <p class="bg-danger my-0" data-bind="visible: !App.game.party.hasMaxLevelPokemon()">
@@ -149,23 +76,6 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
                             <a class="overlay" href="#breed" data-bind="click: function() { ItemList[$data].use(); App.game.breeding.checkCloseModal(); }"></a>
                             <knockout style="position: absolute; right: 2px; top: -14px;"
                                 data-bind="template: { name: 'caughtStatusTemplate', data: { status: ItemList[$data].getCaughtStatus() }, if: (ItemList[$data] instanceof CaughtIndicatingItem) }"/>
-                        </li>
-                    </ul>
-                    <!-- /ko -->
-                </div>
-
-                <div class="tab-pane" id="breeding-fossils">
-                    <p class="bg-warning my-0" data-bind="visible: !Object.keys(GameConstants.FossilToPokemon).filter(f => player.mineInventory().find(i => i.name == f && i.amount())).length">
-                        you don't have any fossils to breed.
-                    </p>
-
-                    <!-- ko if: Object.keys(GameConstants.FossilToPokemon).filter(f => player.mineInventory().find(i => i.name == f && i.amount())).length -->
-                    <ul class="row justify-content-center p-0" data-bind="foreach: Object.keys(GameConstants.FossilToPokemon).map(f => player.mineInventory().find(i => i.name == f)).filter(f => f ? f.amount() : false)">
-                        <li class="eggSlot col-sm-4 col-md-3 col-lg-2 pokedexEntry text-nowrap" data-bind="class: App.game.breeding.hasFreeEggSlot() ? '' : 'disabled'">
-                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: GameConstants.humanifyString($data.name)">fossil</span>
-                            <img src="" width="80px" data-bind="attr:{ src: `assets/images/breeding/${$data.name}.png` }">
-                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + $data.amount()">amount</span>
-                            <a class="overlay" href="#breed" data-bind="click: function() { Underground.sellMineItem($data.id); App.game.breeding.checkCloseModal(); }"></a>
                         </li>
                     </ul>
                     <!-- /ko -->

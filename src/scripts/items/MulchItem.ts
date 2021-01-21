@@ -12,9 +12,6 @@ class MulchItem extends Item {
     gain(amt: number) {
         GameHelper.incrementObservable(App.game.farming.mulchList[this.type], amt);
     }
-
-    use() {
-    }
 }
 
 ItemList['Boost_Mulch']   = new MulchItem(MulchType.Boost_Mulch, 50, 'Boost Mulch', 'Increases Berry growth rate.');

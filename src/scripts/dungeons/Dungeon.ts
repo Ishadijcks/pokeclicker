@@ -28,7 +28,7 @@ class Dungeon {
         // Player requires the Dungeon Ticket to access the dungeons
         if (!App.game.keyItems.hasKeyItem(KeyItems.KeyItem.Dungeon_ticket)) {
             Notifier.notify({
-                message: 'You need the Dungeon ticket to access dungeons',
+                message: 'You need the Dungeon Ticket to access dungeons',
                 type: NotificationConstants.NotificationOption.danger,
             });
             return false;

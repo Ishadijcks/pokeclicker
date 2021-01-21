@@ -232,13 +232,13 @@
             <!-- /ko -->
             <td class='vertical-middle'>
                 <div class="btn-group btn-block" data-bind="let: { sellAmount: ko.observable(1) }">
+                    <!-- ko if: valueType !== 'Mine Egg' -->
                     <button class='btn btn-success btn-block'
                             data-bind="attr: { 'data-itemid': id },
                             css: { disabled: amount() <= 0 || (valueType === 'Mine Egg' && !App.game.breeding.hasFreeEggSlot()) },
                                     text: valueType === 'Mine Egg' ? 'Breed' : 'Sell',
                                     click: function(){Underground.sellMineItem($element.dataset.itemid, sellAmount() || 1)}">
                     </button>
-                    <!-- ko if: valueType !== 'Mine Egg' -->
                     <button type="button" data-bind="text: sellAmount() + '&nbsp;'" class="btn btn-success dropdown-toggle dropdown-toggle-split active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     </button>
                     <div class="dropdown-menu" data-bind="foreach: [1, 10, 100, 1000, Infinity]">

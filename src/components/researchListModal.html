@@ -1,0 +1,122 @@
+<div class="modal  fade" id="researchListModal" tabindex="-1" role="dialog"
+aria-labelledby="ResearchListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Research List</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body table-responsive p-0">
+                <div class="tab-content p-3">
+                    <div class="tab-pane active">
+                        <div class="text-left">
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-6">
+                                    <label>Status</label>
+                                    <select class="custom-select" onchange="ResearchHandler.filter.status(this.value)">
+                                        <option value="all" selected>All</option>
+                                        <option value="locked">Locked</option>
+                                        <option value="incomplete">Incomplete</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 col-6">
+                                    <label>Type</label>
+                                    <select class="custom-select" onchange="ResearchHandler.filter.type(this.value)">
+                                        <option value="all" selected>All</option>
+                                        <!-- ko foreach: GameHelper.enumStrings(ResearchType) -->
+                                        <option data-bind="value: $data, text: $data.replace('_', ' ')">Type</option>
+                                        <!-- /ko -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover table-striped table-sm m-0">
+                    <tbody data-bind="template: { name: 'researchListTemplate', foreach: ResearchHandler.getResearchListWithIndex()}">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateIndex(0)"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(true),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(true) }
+                  "
+                >
+                  <img src="assets/images/arrow-double.svg" style="transform: scaleX(-1);" height="20">
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateLeft()"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(true),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(true) }
+                  "
+                >
+                  <img src="assets/images/arrow.svg" style="transform: scaleX(-1);" height="20">
+                </button>
+                <div data-bind="text: ResearchHandler.navigateIndex()+1 + '/' + ResearchHandler.numberOfTabs()"></div>
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateRight()"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(false),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(false) }
+                  "
+                >
+                  <img src="assets/images/arrow.svg" height="20">
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateIndex(ResearchHandler.numberOfTabs() - 1)"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(false),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(false) }
+                  "
+                >
+                  <img src="assets/images/arrow-double.svg" height="20">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/html" id="researchListTemplate">
+        <tr
+            class="achievement-row"
+            data-bind="class: ResearchHandler.getTableClass($data)">
+            <td style="text-align:left;vertical-align:middle;">
+                <b><span data-bind="text: name">Name</span></b>
+                <br>
+                <small><span data-bind="text: description">Description</span></small>
+                <!-- ko if: workerFilter-->
+                <br>
+                <small><span data-bind="text: workerFilter.description">Worker Filter</span></small>
+                <!-- /ko -->
+            </td>
+
+            <td class="vertical-middle">
+                <button class="btn btn-block" data-bind="
+                    text: ResearchHandler.getButtonText($data),
+                    class: ResearchHandler.getButtonClass($data),
+                    css: { disabled: !ResearchHandler.getButtonStatus($data) },
+                    click: function() { ResearchHandler.handleClick($data); },
+                    tooltip: {
+                        title: ResearchHandler.getButtonTooltip($data),
+                        trigger: 'hover',
+                        placement:'left',
+                        html: true,
+                    }">
+                    Button
+                </button>
+            </td>
+        </tr>
+    </script>
+</div>

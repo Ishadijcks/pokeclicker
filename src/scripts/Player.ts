@@ -161,6 +161,10 @@ class Player {
         this._itemList[itemName](this._itemList[itemName]() - amount);
     }
 
+    public hasItem(itemName: string): number {
+        return this._itemList[itemName]();
+    }
+
     public lowerItemMultipliers(multiplierDecreaser: MultiplierDecreaser, amount = 1) {
         for (const obj in ItemList) {
             const item = ItemList[obj];

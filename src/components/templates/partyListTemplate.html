@@ -1,0 +1,27 @@
+<!-- To be used in conjunction with the partyListTemplate -->
+<!-- Example usage -->
+<!-- <div data-bind="template: { name: 'partyListTemplate', data: {'name': 'breeding', 'controller': BreedingController }}"></div> -->
+
+<script type="text/html" id="partyListTemplate">
+    <ul class="row justify-content-center p-0" data-bind="foreach: App.game.party.caughtPokemon">
+        <li class="eggSlot col-sm-4 col-md-3 col-lg-2 pokedexEntry text-nowrap"
+        data-bind="visible: $parent.controller.visible($data),
+        style:{background: PokedexHelper.getBackgroundColors($data.name)},
+        css: { disabled: $parent.controller.disabled($data) }">
+            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data.name">name</span>
+            <div data-bind="visible: App.game.party.alreadyCaughtPokemon($data.id, true)" style="position: absolute;right: 0px;top: 0px;">✨</div>
+            <img src="" width="80px" data-bind="attr:{ src: PokedexHelper.getImage($data.id)}">
+            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: $parent.controller.getDisplayValue($data)">value</span>
+            <a class="overlay" data-bind="click: function() { $parent.controller.handleClick($data); }"></a>
+            <div class="pokemonCategory dropdown">
+                <button data-toggle="dropdown" data-bind="class: `category-${$data.category + 1}`"></button>
+                <div class="dropdown-menu p-0">
+                    <!-- ko foreach: PokemonCategories.categories -->
+                    <a class="dropdown-item category" href="#" data-bind="text: $data.name, click: () => { $parent.category = $index() }">Category</a>
+                    <!-- /ko -->
+                    <a class="dropdown-item bg-dark py-1" href="#categoryModal" data-toggle="modal"><i>Edit</i></a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</script>

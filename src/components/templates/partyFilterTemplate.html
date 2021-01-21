@@ -1,0 +1,88 @@
+<!-- To be used in conjunction with the partyListTemplate -->
+<!-- Example usage -->
+<!-- <div data-bind="template: { name: 'partyFilterTemplate', data: {'name': 'breeding'}}"></div> -->
+
+<script type="text/html" id="partyFilterTemplate">
+    <div class="text-left">
+        <div class="form-row collapse" data-bind="attr: { id: $data.name + '-filter' }">
+            <div class="form-group col-md-6 col-6">
+                <label>Search</label>
+                <input autocomplete="off" class="form-control" oninput="PartyListController.filter.search(new RegExp(`(${this.value})`, 'i'))" placeholder="search here"/>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Display Value</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.displayValue(this.value)">
+                    <option value="attack" selected>Attack</option>
+                    <option value="attackBonus">Attack Bonus</option>
+                    <option value="baseAttack">Base Attack</option>
+                    <option value="eggSteps">Egg Steps</option>
+                    <option value="timesHatched">Times Hatched</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Category</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.category(this.value)">
+                    <option value="-1">All</option>
+                    <!-- ko foreach: PokemonCategories.categories -->
+                    <option style="color: whitesmoke" data-bind="attr: { value: $index }, text: $data.name, style: { background: $data.color }">Category</option>
+                    <!-- /ko -->
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Region</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.region(+this.value)">
+                    <option value="-2">All</option>
+                    <!-- ko foreach: GameHelper.enumStrings(GameConstants.Region).filter(r => r != 'none' && GameConstants.Region[r] <= player.highestRegion()) -->
+                    <option data-bind="attr: { value: GameConstants.Region[$data] }, text: GameConstants.camelCaseToString($data)">Region</option>
+                    <!-- /ko -->
+                    <option value="-1">None</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Shiny Status</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.shinyStatus(+this.value)">
+                    <option value="-1">All</option>
+                    <option value="0">Not Shiny</option>
+                    <option value="1">Shiny</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Type</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.type1(+this.value)">
+                    <option value="-2">All</option>
+                    <!-- ko foreach: GameHelper.enumStrings(PokemonType).filter(t => t != 'None') -->
+                    <option data-bind="attr: { value: PokemonType[$data] }, text: $data">Type</option>
+                    <!-- /ko -->
+                    <option value="-1">None</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Type</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.type2(+this.value)">
+                    <option value="-2">All</option>
+                    <!-- ko foreach: GameHelper.enumStrings(PokemonType).filter(t => t != 'None') -->
+                    <option data-bind="attr: { value: PokemonType[$data] }, text: $data">Type</option>
+                    <!-- /ko -->
+                    <option value="-1">None</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row collapse" data-bind="attr: { id: $data.name + '-sort' }">
+            <div class="form-group col" data-bind="with: Settings.getSetting('partySort')">
+                <label>Sort</label>
+                <div class="input-group">
+                    <select autocomplete="off" class="custom-select" onchange="Settings.setSettingByName(this.name, SortOptions[SortOptions[this.value]])"
+                        data-bind="foreach: $data.options, attr: {name}, selectedOptions: [$data.observableValue()]">
+                        <option data-bind="text: $data.text, value: $data.value"></option>
+                    </select>
+                    <div class="input-group-append bg-primary text-light">
+                        <label for="partySortDirection" class="clickable m-0 pl-2 pr-2" style="font-size: 22px;" data-bind="text: Settings.getSetting('partySortDirection').observableValue() ? '⥄' : '⥂'">⥂</label>
+                        <input id="partySortDirection" style="vertical-align: middle" class="hidden" type='checkbox'
+                            data-bind="checked: Settings.getSetting('partySortDirection').observableValue()"
+                            onchange="Settings.setSettingByName('partySortDirection', this.checked)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

@@ -35,11 +35,13 @@ class Game {
         public specialEvents: SpecialEvents,
         public discord: Discord,
         public achievementTracker: AchievementTracker,
+        public lab: Lab,
         public multiplier: Multiplier
     ) {
         this._gameState = ko.observable(GameConstants.GameState.paused);
 
         AchievementHandler.initialize(multiplier);
+        ResearchHandler.initialize();
         FarmController.initialize();
         EffectEngineRunner.initialize(multiplier);
     }
@@ -68,11 +70,13 @@ class Game {
         this.underground.initialize();
         this.farming.initialize();
         this.specialEvents.initialize();
+        this.lab.initialize();
         this.load();
 
         // TODO refactor to proper initialization methods
         Battle.generateNewEnemy();
         this.farming.resetAuras();
+        this.lab.resetEffects();
         //Safari.load();
         Underground.energyTick(this.underground.getEnergyRegenTime());
         DailyDeal.generateDeals(this.underground.getDailyDealsMax(), new Date());
@@ -184,6 +188,9 @@ class Game {
 
         // Farm
         this.farming.update(GameConstants.TICK_TIME / GameConstants.SECOND);
+
+        // Lab
+        this.lab.update(GameConstants.TICK_TIME / GameConstants.SECOND);
 
         // Effect Engine (battle items)
         EffectEngineRunner.counter += GameConstants.TICK_TIME;

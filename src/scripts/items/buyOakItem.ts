@@ -22,9 +22,6 @@ class BuyOakItem extends Item {
         }
     }
 
-    use() {
-    }
-
     isAvailable(): boolean {
         const oakItem = App.game.oakItems.itemList[this.item];
         const purchased = (oakItem instanceof BoughtOakItem) ? oakItem.purchased : true;

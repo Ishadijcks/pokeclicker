@@ -21,9 +21,6 @@ class PokemonItem extends CaughtIndicatingItem {
         App.game.party.gainPokemonById(PokemonHelper.getPokemonByName(pokemonName).id, shiny, true);
     }
 
-    use() {
-    }
-
     getCaughtStatus(): CaughtStatus {
         return PartyController.getCaughtStatusByName(this.name() as PokemonNameType);
     }

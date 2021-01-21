@@ -3,6 +3,7 @@ enum ItemType {
     underground,
     berry,
     shard,
+    machine,
 }
 
 export default ItemType;

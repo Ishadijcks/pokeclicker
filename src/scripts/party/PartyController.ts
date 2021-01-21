@@ -32,12 +32,6 @@ class PartyController {
         return status;
     }
 
-    public static getMaxLevelPokemonList(): Array<PartyPokemon> {
-        return App.game.party.caughtPokemon.filter((partyPokemon: PartyPokemon) => {
-            return !partyPokemon.breeding && partyPokemon.level >= 100;
-        });
-    }
-
     static getSortedList = ko.pureComputed(() => {
         return App.game.party._caughtPokemon.sort(PartyController.compareBy(Settings.getSetting('partySort').observableValue(), Settings.getSetting('partySortDirection').observableValue()));
     }).extend({ rateLimit: 500 });

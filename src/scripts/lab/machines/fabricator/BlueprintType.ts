@@ -1,0 +1,33 @@
+enum BlueprintType {
+    none = -1,
+    // Components
+    //eject_button,
+    //lucky_punch,
+    //macho_brace,
+    //metronome,
+    //ring_target,
+    // Items
+    fire_stone,
+    water_stone,
+    thunder_stone,
+    leaf_stone,
+    moon_stone,
+    sun_stone,
+    dragon_scale,
+    metal_coat,
+    upgrade,
+    dubious_disc,
+    electirizer,
+    magmarizer,
+    protector,
+    reaper_cloth,
+    ice_stone,
+    // Machines
+    fabricator,
+    plate_deconstructor,
+    plate_reconstructor,
+    incubator,
+    generator,
+    fossil_reviver,
+    pokeball_factory,
+}

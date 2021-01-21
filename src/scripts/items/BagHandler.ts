@@ -20,6 +20,8 @@ class BagHandler {
                 return `${BerryType[this.getBerry(item.id)]} Berry`;
             case ItemType.shard:
                 return `${PokemonType[this.getShard(item.id)]} Shard`;
+            case ItemType.machine:
+                return this.getMachine(item.id).name;
         }
     }
 
@@ -40,6 +42,8 @@ class BagHandler {
                 return FarmController.getBerryImage(this.getBerry(item.id));
             case ItemType.shard:
                 return Shards.image(this.getShard(item.id));
+            case ItemType.machine:
+                return this.getMachine(item.id).image;
         }
     }
 
@@ -56,11 +60,14 @@ class BagHandler {
             case ItemType.item:
                 return player.itemList[this.getItem(item.id).name()];
             case ItemType.underground:
-                return player.mineInventory()[player.mineInventoryIndex(this.getUndergroundItem(item.id).id)].amount;
+                const mineItem = player.mineInventory()[player.mineInventoryIndex(this.getUndergroundItem(item.id).id)];
+                return mineItem ? mineItem.amount : ( () => 0 );
             case ItemType.berry:
                 return App.game.farming.berryList[this.getBerry(item.id)];
             case ItemType.shard:
                 return App.game.shards.shardWallet[this.getShard(item.id)];
+            case ItemType.machine:
+                return this.getMachine(item.id)._amount;
         }
     }
 
@@ -86,6 +93,9 @@ class BagHandler {
                 return;
             case ItemType.shard:
                 App.game.shards.gainShards(amount, this.getShard(item.id));
+                return;
+            case ItemType.machine:
+                this.getMachine(item.id).amount += amount;
                 return;
         }
     }
@@ -116,6 +126,13 @@ class BagHandler {
             id = <number>PokemonType[id];
         }
         return id;
+    }
+
+    private static getMachine(id: string | number): Machine {
+        if (typeof id === 'string') {
+            id = <number>Lab.Machine[id];
+        }
+        return App.game.lab.machines[id];
     }
 
     //#endregion

@@ -1,0 +1,37 @@
+<div class="modal  fade" id="machineListModal" tabindex="-1" role="dialog"
+aria-labelledby="MachineListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Machines</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-0">
+
+                <p class="bg-danger my-0" data-bind="visible: !MachineHandler.machineListFiltered().length">
+                    You don't have any more machines to place.
+                </p>
+
+                <ul class="row justify-content-center p-0" data-bind="foreach: MachineHandler.machineListFiltered()"
+                style="max-width: 100%; padding:0; margin:0;">
+                    <li class="col-sm-4 col-md-3 col-lg-2 pokedexEntry" style="background: #e8e8f0"
+                    data-bind="tooltip: { title: $data.description, trigger: 'hover', placement: 'left' },
+                        click: function() { MachineHandler.handleClick($data); }">
+                        <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data.name">Name</span>
+                            <div style="width: 100%; height: 120px;">
+                                <img src="" style="image-rendering: pixelated; padding: 20px 0px; width:100%;height:100%;object-fit:contain;" data-bind="attr:{ src: $data.image }">
+                            </div>
+                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: $data.amount">Amount</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
