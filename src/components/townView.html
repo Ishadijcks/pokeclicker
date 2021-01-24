@@ -100,6 +100,20 @@
             <img class="lock" src="assets/images/breeding/lock.svg" data-bind="hidden: player.town().dungeon && player.town().dungeon.allAvailablePokemonNames.includes($data)">
           </li>
         </ul>
+        <hr>
+        <!--Display all available Boss Pokémon in this dungeon-->
+        <ul class="list-inline" data-bind="foreach: player.town().dungeon().allBossPokemonNames">
+            <li class="list-inline-item">
+              <img class="dungeon-pokemon-preview" src="" data-bind="attr:{
+                  src: 'assets/images/' + (App.game.party.alreadyCaughtPokemonByName($data, true) ? 'shiny' : '') + 'pokemon/' + pokemonMap[$data].id + '.png'
+              },
+              css: {
+                  'dungeon-pokemon-locked': !App.game.party.alreadyCaughtPokemonByName($data)
+              }"/>
+              <sup class="shiny" data-bind="visible: App.game.party.alreadyCaughtPokemonByName($data, true)">✨</sup>
+              <img class="lock" src="assets/images/breeding/lock.svg" data-bind="hidden: player.town().dungeon() && player.town().dungeon().allAvailablePokemonNames.includes($data)">
+            </li>
+          </ul>
       </div>
     </knockout>
 </div>

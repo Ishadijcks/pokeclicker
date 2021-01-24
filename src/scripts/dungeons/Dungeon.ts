@@ -9,6 +9,7 @@
  */
 class Dungeon {
     allPokemonNames: PokemonNameType[];
+    allBossPokemonNames: PokemonNameType[];
     allAvailablePokemonNames: PokemonNameType[];
 
     constructor(
@@ -38,7 +39,8 @@ class Dungeon {
 
     public calculateAllPokemonNames(): void {
         // Put the names into a Set to filter out any duplicate values
-        this.allPokemonNames = [...new Set([...this.pokemonList, ...this.bossList.map(b => b.name)])] as PokemonNameType[];
+        this.allPokemonNames = [...new Set([...this.pokemonList])] as PokemonNameType[];
+        this.allBossPokemonNames = [...new Set([...this.bossList.map(b => b.name)])] as PokemonNameType[];
         this.allAvailablePokemonNames = [...new Set([...this.pokemonList, ...this.availableBosses().map(b => b.name)])] as PokemonNameType[];
     }
 
