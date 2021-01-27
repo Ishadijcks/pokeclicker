@@ -1,6 +1,6 @@
 <div id="battleItemContainer" class="card sortable border-secondary mb-3">
     <div class="card-header p-0" data-toggle="collapse" href="#battleItemContainerBody">
-      <span>Battle Items</span>
+        <span>Battle Items</span>
     </div>
     <button type="button" class="btn btn-sm btn-primary"
             style="position: absolute; right: 0px; top: 0px; width: auto; height: 41px;"
@@ -15,45 +15,55 @@
             data-trigger="hover">1
     </button>
     <div id="battleItemContainerBody" class="card-body p-0 show">
-      <p data-bind="visible: App.game.challenges.list.disableBattleItems.active()" class="bg-danger my-0">
-          Battle Items are disabled.
-      </p>
-      <table class="table table-bordered m-0">
-        <tbody>
-          <tr data-bind="foreach: Object.keys(ItemList).filter(i=>ItemList[i].constructor.name == 'BattleItem')">
-            <td class="amount p-0" data-bind="text: GameHelper.formatAmount(player.itemList[$data]()),tooltip:{title:player.itemList[$data](),trigger:'hover',placement:'top',animation:false}"></td>
-          </tr>
-          <tr data-bind="foreach: Object.keys(ItemList).filter(i=>ItemList[i].constructor.name == 'BattleItem')">
-            <td class="p-0" data-bind="attr: {
-                                disabled: !player.itemList[$data]()
-                            },
-                            css: {
-                                'bg-primary': EffectEngineRunner.getEffect($data) > 5,
-                                'bg-warning': EffectEngineRunner.getEffect($data) <= 5 && EffectEngineRunner.getEffect($data) > 0,
-                                'bg-secondary': !EffectEngineRunner.isActive($data)()
-                            },
-                            event: {
-                                click: function(){ItemHandler.useItem($data, EffectEngineRunner.amountToUse())}
-                            },
-                            tooltip: {
-                              title: ItemList[$data].displayName + '<br/>' + ItemList[$data].description,
-                              trigger: 'hover',
-                              placement:'bottom',
-                              html: true
-                            }">
-                <img src="" class="clickable" data-bind="attr: { src: ItemList[$data].image }" width="26px">
-
-            </td>
-          </tr>
-          <tr data-bind="foreach: Object.keys(ItemList).filter(i=>ItemList[i].constructor.name == 'BattleItem')">
-            <td class="text-light p-0">
-              <!-- ko if: EffectEngineRunner.getEffect($data) > 0 -->
-                <code data-bind="text: player.effectTimer[$data](),tooltip: {title:GameConstants.formatSecondsToTime(player.effectList[$data]()),trigger:'hover',placement:'bottom',html:true}"></code>
-              <!-- /ko -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <p data-bind="visible: App.game.challenges.list.disableBattleItems.active()" class="bg-danger my-0">
+            Battle Items are disabled.
+        </p>
+        <table class="table table-bordered m-0">
+            <tbody>
+                <tr data-bind="foreach: GameHelper.enumStrings(GameConstants.BattleItemType)">
+                    <td class="amount p-0" data-bind="text: GameHelper.formatAmount(ItemList[$data].amount()),
+                        tooltip:{
+                        title: ItemList[$data].amount(),
+                        trigger:'hover',
+                        placement:'top',
+                         animation:false}">
+                    </td>
+                </tr>
+                <tr data-bind="foreach: GameHelper.enumStrings(GameConstants.BattleItemType)">
+                    <td class="p-0" data-bind="attr: {
+                        disabled: !ItemList[$data].amount()
+                        },
+                        css: {
+                            'bg-primary': EffectEngineRunner.getEffect($data) > 5,
+                            'bg-warning': EffectEngineRunner.getEffect($data) <= 5 && EffectEngineRunner.getEffect($data) > 0,
+                            'bg-secondary': !EffectEngineRunner.isActive($data)()
+                        },
+                        event: {
+                            click: function(){ItemHandler.useItem($data, EffectEngineRunner.amountToUse())}
+                        },
+                        tooltip: {
+                            title: ItemList[$data].displayName + '<br/>' + ItemList[$data].description,
+                            trigger: 'hover',
+                            placement:'bottom',
+                            html: true
+                        }">
+                        <img src="" class="clickable" data-bind="attr: { src: ItemList[$data].image }" width="26px">
+                    </td>
+                </tr>
+                <tr data-bind="foreach: GameHelper.enumStrings(GameConstants.BattleItemType)">
+                    <td class="text-light p-0">
+                        <!-- ko if: EffectEngineRunner.getEffect($data) > 0 -->
+                        <code data-bind="text: player.effectTimer[$data](),
+                        tooltip: {
+                            title: GameConstants.formatSecondsToTime(player.effectList[$data]()),
+                            trigger: 'hover',
+                            placement: 'bottom',
+                            html:true}">
+                        </code>
+                        <!-- /ko -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
 </div>

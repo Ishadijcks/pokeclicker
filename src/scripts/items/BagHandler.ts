@@ -13,13 +13,13 @@ class BagHandler {
         }
         switch (item.type) {
             case ItemType.item:
-                return this.getItem(item.id).displayName;
+                return ItemList[item.id].displayName;
             case ItemType.underground:
                 return this.getUndergroundItem(item.id).displayName;
             case ItemType.berry:
-                return `${BerryType[this.getBerry(item.id)]} Berry`;
+                return ItemList[this.getBerryName(item.id)].displayName;
             case ItemType.shard:
-                return `${PokemonType[this.getShard(item.id)]} Shard`;
+                return ItemList[this.getShard(item.id)].displayName;
         }
     }
 
@@ -33,13 +33,13 @@ class BagHandler {
         }
         switch (item.type) {
             case ItemType.item:
-                return this.getItem(item.id).image;
+                return ItemList[item.id].image;
             case ItemType.underground:
                 return this.getUndergroundItem(item.id).image;
             case ItemType.berry:
-                return FarmController.getBerryImage(this.getBerry(item.id));
+                return ItemList[this.getBerryName(item.id)].image;
             case ItemType.shard:
-                return Shards.image(this.getShard(item.id));
+                return ItemList[this.getShard(item.id)].image;
         }
     }
 
@@ -54,13 +54,13 @@ class BagHandler {
         }
         switch (item.type) {
             case ItemType.item:
-                return player.itemList[this.getItem(item.id).name];
+                return ItemList[item.id].amount;
             case ItemType.underground:
                 return player.mineInventory()[player.mineInventoryIndex(this.getUndergroundItem(item.id).id)].amount;
             case ItemType.berry:
-                return App.game.farming.berryList[this.getBerry(item.id)];
+                return ItemList[this.getBerryName(item.id)].amount;
             case ItemType.shard:
-                return App.game.shards.shardWallet[this.getShard(item.id)];
+                return ItemList[this.getShard(item.id)].amount;
         }
     }
 
@@ -76,25 +76,21 @@ class BagHandler {
         }
         switch (item.type) {
             case ItemType.item:
-                this.getItem(item.id).gain(amount);
+                ItemList[item.id].gain(amount);
                 return;
             case ItemType.underground:
                 Underground.gainMineItem(this.getUndergroundItem(item.id).id, amount);
                 return;
             case ItemType.berry:
-                App.game.farming.gainBerry(this.getBerry(item.id), amount);
+                ItemList[this.getBerryName(item.id)].gain(amount);
                 return;
             case ItemType.shard:
-                App.game.shards.gainShards(amount, this.getShard(item.id));
+                ItemList[this.getShard(item.id)].gain(amount);
                 return;
         }
     }
 
     //#region Item getters
-
-    private static getItem(id: string | number): Item {
-        return ItemList[id];
-    }
 
     private static getUndergroundItem(id: string | number): UndergroundItem {
         if (typeof id === 'string') {
@@ -104,18 +100,18 @@ class BagHandler {
         }
     }
 
-    private static getBerry(id: string | number): BerryType {
+    private static getBerryName(id: string | number): string {
         if (typeof id === 'string') {
-            id = App.game.farming.berryData.findIndex((_, idx) => BerryType[idx] === id);
+            return id;
         }
-        return id;
+        return BerryType[id];
     }
 
-    private static getShard(id: string | number): PokemonType {
+    private static getShard(id: string | number): string {
         if (typeof id === 'string') {
-            id = <number>PokemonType[id];
+            return id;
         }
-        return id;
+        return `${PokemonType[id]} Shard`;
     }
 
     //#endregion

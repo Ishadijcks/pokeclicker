@@ -64,12 +64,12 @@
 
 
 <script type="text/html" id="shopBodyTemplate">
-    <div class="row justify-content-center" data-bind="foreach: [...new Set(ShopHandler.shopObservable().items.map(i => i.currency))]">
+    <div class="row justify-content-center" data-bind="foreach: [...new Set(ShopHandler.shopObservable().shopItems.map(i => i.currency))]">
         <h4 class="col-6 col-sm-4 col-lg-2">
             <span data-bind="template: { name: 'currencyTemplate', data: { amount: App.game.wallet.currencies[$data](), currency: $data, reduced: true }}"></span>
         </h4>
     </div>
-    <div class="row justify-content-center" data-bind="foreach: ShopHandler.shopObservable().items">
+    <div class="row justify-content-center" data-bind="foreach: ShopHandler.shopObservable().shopItems">
         <div class="col-6 col-sm-4 col-lg-3">
            <button class="shopItem clickable btn btn-block btn-secondary"
                data-bind="click: function() {ShopHandler.setSelected($index())},
@@ -81,9 +81,9 @@
                   placement:'bottom',
                   html: true
                 }">
-               <knockout data-bind="if: ($data instanceof CaughtIndicatingItem)">
+               <knockout data-bind="if: ($data instanceof ShopItem && $data.item instanceof CaughtIndicatingItem)">
                    <span style="position: absolute; top: 15px; right: 20px;"
-                         data-bind="template: { name: 'caughtStatusTemplate', data: {'status': $data.getCaughtStatus()}}">
+                         data-bind="template: { name: 'caughtStatusTemplate', data: {'status': $data.item.getCaughtStatus()}}">
                    </span>
                </knockout>
                <img src="" height="36px" data-bind="attr:{ src: $data.image }">

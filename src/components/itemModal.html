@@ -26,7 +26,7 @@
                                         data-bind="css:{'item-selected': ItemHandler.stoneSelected() === $data},
                                             click: function(){ ItemHandler.stoneSelected($data); ItemHandler.pokemonSelected('')}">
                                     <img data-bind="attr: {src: ItemList[$data].image }" style="max-width: 32px;">
-                                    <div data-bind="text: player._itemList[$data]()"></div>
+                                    <div data-bind="text: ItemList[$data].amount()"></div>
                                 </div>
                             </div>
                         </div>
@@ -131,6 +131,6 @@
         boundary: document.getElementById('showItemsModal'),
     }">
         <img data-bind="attr: {src: ItemList[$data].image }" style="max-width: 32px;">
-        <div data-bind="text: player._itemList[$data]()"></div>
+        <div data-bind="text: ItemList[$data].amount()"></div>
     </div>
 </script>

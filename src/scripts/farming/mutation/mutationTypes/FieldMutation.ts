@@ -44,7 +44,7 @@ class FieldMutation extends GrowMutation {
      */
     get unlocked(): boolean {
         // Check for Berry requirements
-        if (!App.game.farming.unlockedBerries[this.fieldBerry]()) {
+        if (!App.game.farming.berries[this.fieldBerry].unlocked()) {
             return false;
         }
         return super.unlocked;

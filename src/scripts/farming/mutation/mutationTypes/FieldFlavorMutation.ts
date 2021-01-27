@@ -31,7 +31,7 @@ class FieldFlavorMutation extends GrowMutation {
             if (plot.stage() < PlotStage.Taller) {
                 return;
             }
-            const berryFlavors = App.game.farming.berryData[plot.berry].flavors.map(x => x.value * this.flavorRatio[plot.stage() - 2]);
+            const berryFlavors = App.game.farming.berries[plot.berry].flavors.map(x => x.value * this.flavorRatio[plot.stage() - 2]);
             for (let j = 0; j < 5; j++) {
                 nearFlavors[j] += berryFlavors[j];
             }

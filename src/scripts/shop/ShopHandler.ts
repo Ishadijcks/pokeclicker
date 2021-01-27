@@ -1,4 +1,5 @@
 ///<reference path="Shop.ts"/>
+
 class ShopHandler {
     static shopObservable: KnockoutObservable<Shop> = ko.observable(new Shop([]));
     static selected: KnockoutObservable<number> = ko.observable(0);
@@ -8,10 +9,6 @@ class ShopHandler {
         this.setSelected(0);
         this.resetAmount();
         this.shopObservable(shop);
-
-        shop.items.forEach(item => {
-            item.price(Math.round(item.basePrice * (player.itemMultipliers[item.saveName] || 1)));
-        });
     }
 
     //#region Controls
@@ -20,9 +17,16 @@ class ShopHandler {
         this.selected(i);
     }
 
+    public static getShopEntry() {
+        return ShopEntriesList[this.shopObservable().shopEntries[ShopHandler.selected()]];
+    }
+
     public static buyItem() {
-        const item: Item = this.shopObservable().items[ShopHandler.selected()];
-        item.buy(this.amount());
+        const shopEntry = this.getShopEntry();
+        if (!shopEntry) {
+            return;
+        }
+        shopEntry.buy(this.amount());
         ShopHandler.resetAmount();
     }
 
@@ -44,14 +48,14 @@ class ShopHandler {
     }
 
     public static maxAmount(n: number) {
-        const item: Item = this.shopObservable().items[ShopHandler.selected()];
+        const shopEntry = this.getShopEntry();
         const input = $('input[name="amountOfItems"]');
 
-        if (!item || !item.isAvailable()) {
+        if (!shopEntry || !shopEntry.isAvailable()) {
             return input.val(0).change();
         }
 
-        const tooMany = (amt: number) => amt > item.maxAmount || !App.game.wallet.hasAmount(new Amount(item.totalPrice(amt), item.currency));
+        const tooMany = (amt: number) => amt > shopEntry.maxAmount || !App.game.wallet.hasAmount(new Amount(shopEntry.totalPrice(amt), shopEntry.currency));
         const amt = GameHelper.binarySearch(tooMany, 0, Number.MAX_SAFE_INTEGER);
 
         input.val(amt).change();
@@ -80,9 +84,9 @@ class ShopHandler {
     }
 
     public static calculateButtonCss(): string {
-        const item: Item = this.shopObservable().items[ShopHandler.selected()];
+        const shopEntry = this.getShopEntry();
 
-        if (item && !(item.isAvailable() && App.game.wallet.hasAmount(new Amount(item.totalPrice(this.amount()), item.currency)))
+        if (shopEntry && !(shopEntry.isAvailable() && App.game.wallet.hasAmount(new Amount(shopEntry.totalPrice(this.amount()), shopEntry.currency)))
                 || this.amount() < 1) {
             return 'btn btn-danger smallButton smallFont';
         } else {

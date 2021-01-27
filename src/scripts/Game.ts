@@ -35,8 +35,10 @@ class Game {
         public specialEvents: SpecialEvents,
         public discord: Discord,
         public achievementTracker: AchievementTracker,
+        public multiplier: Multiplier,
         public challenges: Challenges,
-        public multiplier: Multiplier
+        public items: Items,
+        public shops: Shops
     ) {
         this._gameState = ko.observable(GameConstants.GameState.paused);
 
@@ -69,6 +71,7 @@ class Game {
         this.underground.initialize();
         this.farming.initialize();
         this.specialEvents.initialize();
+        this.shards.initialize();
         this.load();
 
         // TODO refactor to proper initialization methods

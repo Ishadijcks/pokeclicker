@@ -33,9 +33,10 @@
                             <tbody data-bind='foreach: BerryDeal.getDeals(player.region)'>
                                 <!-- ko foreach: berries -->
                                 <tr>
-                                    <td data-bind="text: App.game.farming.berryList[$data.berryType]()"></td>
-                                    <td><img height="28px" data-bind="attr: {src: FarmController.getBerryImage($data.berryType) }, css: {'berryLocked': !App.game.farming.unlockedBerries[$data.berryType]() }"></img></td>
-                                    <td data-bind="text: amount + ' x ' + (App.game.farming.unlockedBerries[$data.berryType]() ? BerryType[$data.berryType] : '???')"></td>
+                                    <!-- ko let: { berry: App.game.farming.berries[$data.berryType] } -->
+                                    <td data-bind="text: berry.amount()"></td>
+                                    <td><img height="28px" data-bind="attr: {src: berry.image }, css: {'berryLocked': !berry.unlocked() }"></img></td>
+                                    <td data-bind="text: amount + ' x ' + (berry.unlocked() ? BerryType[$data.berryType] : '???')"></td>
                                     <!-- ko if: $index() === 0 -->
                                     <td class='vertical-middle' data-bind="attr: { rowspan: $parent.berries.length }">→</td>
                                     <td class='vertical-middle' data-bind="attr: { rowspan: $parent.berries.length }">
@@ -54,6 +55,7 @@
                                             </div>
                                         </div>
                                     </td>
+                                    <!-- /ko -->
                                     <!-- /ko -->
                                 </tr>
                                 <!-- /ko -->

@@ -17,7 +17,7 @@
                   </span>
                   <!-- /ko -->
                   <div class="btn-group btn-block m-0" role="group" aria-label="Basic example">
-                    <button class="btn btn-block btn-secondary btn-static" data-bind="text: 'Proteins: ' + player.itemList.Protein().toLocaleString('en-US')"></button>
+                    <button class="btn btn-block btn-secondary btn-static" data-bind="text: 'Proteins: ' + ItemList['Protein'].amount().toLocaleString('en-US')"></button>
                     <button type="button" class="btn btn-sm btn-primary"
                       data-bind="text: VitaminController.multiplier[VitaminController.multiplierIndex()]"
                       onclick="VitaminController.incrementMultiplier()"

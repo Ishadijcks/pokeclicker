@@ -28,8 +28,8 @@
                     <div class="row no-gutters" data-bind="foreach: ['SmallRestore','MediumRestore','LargeRestore']">
                         <button class="col-4 btn btn-secondary" data-bind="
                                 click: function(){ ItemList[$data].use();},
-                                css: { disabled: player._itemList[$data]() <= 0}">
-                            <span data-bind="text: '(' + player._itemList[$data]() + ')'">(?)</span>
+                                css: { disabled: ItemList[$data].amount() <= 0}">
+                            <span data-bind="text: '(' + ItemList[$data].amount() + ')'">(?)</span>
                             <img class="restore-item" data-bind="attr: { src: ItemList[$data].image }">
                             <span data-bind="text: ' +' + App.game.underground.calculateItemEffect(GameConstants.EnergyRestoreSize[$data])">&nbsp;+? energy</span>
                         </button>

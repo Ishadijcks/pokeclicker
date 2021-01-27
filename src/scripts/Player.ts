@@ -65,17 +65,6 @@ class Player {
         this._town = ko.observable(TownList['Pallet Town']);
         this.starter = ko.observable(savedPlayer.starter != undefined ? savedPlayer.starter : GameConstants.Starter.None);
 
-        this._itemList = Save.initializeItemlist();
-        if (savedPlayer._itemList) {
-            for (const key in savedPlayer._itemList) {
-                if (this._itemList[key]) {
-                    this._itemList[key](savedPlayer._itemList[key]);
-                }
-            }
-        }
-
-        this._itemMultipliers = savedPlayer._itemMultipliers || Save.initializeMultipliers();
-
         // TODO(@Isha) move to underground classes.
         const mineInventory = (savedPlayer.mineInventory || [])
             // TODO: Convert this to object spread after we're on TS modules
@@ -95,8 +84,6 @@ class Player {
 
     }
 
-    private _itemList: { [name: string]: KnockoutObservable<number> };
-
     // TODO(@Isha) move to underground classes.
     public mineInventory: KnockoutObservableArray<any>;
 
@@ -106,20 +93,6 @@ class Player {
     public effectTimer: { [name: string]: KnockoutObservable<string> } = {};
 
     private highestRegion: KnockoutObservable<GameConstants.Region>;
-
-    set itemList(value: { [p: string]: KnockoutObservable<number> }) {
-        this._itemList = value;
-    }
-
-    get itemList(): { [p: string]: KnockoutObservable<number> } {
-        return this._itemList;
-    }
-
-    private _itemMultipliers: { [name: string]: number };
-
-    get itemMultipliers(): { [p: string]: number } {
-        return this._itemMultipliers;
-    }
 
     get route(): KnockoutObservable<number> {
         return this._route;
@@ -143,21 +116,6 @@ class Player {
 
     set town(value: KnockoutObservable<Town>) {
         this._town = value;
-    }
-
-    public gainItem(itemName: string, amount: number) {
-        this._itemList[itemName](this._itemList[itemName]() + amount);
-    }
-
-    public loseItem(itemName: string, amount: number) {
-        this._itemList[itemName](this._itemList[itemName]() - amount);
-    }
-
-    public lowerItemMultipliers(multiplierDecreaser: MultiplierDecreaser, amount = 1) {
-        for (const obj in ItemList) {
-            const item = ItemList[obj];
-            item.decreasePriceMultiplier(amount, multiplierDecreaser);
-        }
     }
 
     // TODO(@Isha) move to underground classes.
@@ -184,8 +142,6 @@ class Player {
         const keep = [
             '_route',
             '_region',
-            '_itemList',
-            '_itemMultipliers',
             'starter',
             // TODO(@Isha) remove.
             'mineInventory',

@@ -1,3 +1,5 @@
+///<reference path="../keyItems/KeyItems.ts"/>
+
 class KeyItemController {
     private static _inspectedItem: KnockoutObservable<KeyItems.KeyItem> = ko.observable(KeyItems.KeyItem.Teachy_tv);
     private static _selectedItem: KnockoutObservable<KeyItems.KeyItem> = ko.observable(KeyItems.KeyItem.Teachy_tv);

@@ -91,46 +91,6 @@ class Save {
         return filtered;
     }
 
-    public static initializeMultipliers(): { [name: string]: number } {
-        const res = {};
-        for (const obj in ItemList) {
-            res[obj] = 1;
-        }
-        return res;
-    }
-
-    public static initializeItemlist(): { [name: string]: KnockoutObservable<number> } {
-        const res = {};
-        for (const obj in ItemList) {
-            res[obj] = ko.observable(0).extend({ numeric: 0 });
-        }
-        return res;
-    }
-
-    public static initializeShards(saved?: Array<Array<number>>): Array<Array<KnockoutObservable<number>>> {
-        let res;
-        if (saved) {
-            res = saved.map((type) => {
-                return type.map((effectiveness) => {
-                    return ko.observable(effectiveness);
-                });
-            });
-        } else {
-            res = [];
-            for (const item in PokemonType) {
-                if (!isNaN(Number(item))) {
-                    res[item] = [];
-                    res[item][GameConstants.TypeEffectiveness.Immune] = ko.observable(0);
-                    res[item][GameConstants.TypeEffectiveness.NotVery] = ko.observable(0);
-                    res[item][GameConstants.TypeEffectiveness.Normal] = ko.observable(0);
-                    res[item][GameConstants.TypeEffectiveness.Very] = ko.observable(0);
-                }
-            }
-        }
-
-        return res;
-    }
-
     public static initializeEffects(saved?: Array<string>): { [name: string]: KnockoutObservable<number> } {
         const res = {};
         for (const obj in GameConstants.BattleItemType) {

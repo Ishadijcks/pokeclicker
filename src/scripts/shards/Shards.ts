@@ -10,17 +10,15 @@ class Shards implements Feature {
     public static readonly nEffects: number =
         GameHelper.enumLength(GameConstants.TypeEffectiveness);
     defaults = {
-        'shardWallet': Array<number>(Shards.nTypes).fill(0),
         'shardUpgrades': Array<number>(Shards.nTypes * Shards.nEffects).fill(0),
     };
 
-    public shardWallet: Array<KnockoutObservable<number>>;
+    public shards: Shard[] = [];
     public shardUpgrades: Array<KnockoutObservable<number>>;
 
     public validUpgrades = {};
 
     constructor() {
-        this.shardWallet = this.defaults.shardWallet.map((v) => ko.observable(v));
         this.shardUpgrades = this.defaults.shardUpgrades.map((v) => ko.observable(v));
         GameHelper.enumNumbers(PokemonType).map(type => {
             this.validUpgrades[type] = {};
@@ -31,7 +29,7 @@ class Shards implements Feature {
         });
     }
 
-    public gainShards(amt: number, typeNum: PokemonType) {
+    public gainShards(amount: number, typeNum: PokemonType) {
         if (!this.canAccess()) {
             return;
         }
@@ -40,12 +38,7 @@ class Shards implements Feature {
             return;
         }
 
-        GameHelper.incrementObservable(this.shardWallet[typeNum], amt);
-
-        if (amt > 0) {
-            GameHelper.incrementObservable(App.game.statistics.totalShardsGained, amt);
-            GameHelper.incrementObservable(App.game.statistics.shardsGained[typeNum], amt);
-        }
+        this.shards[typeNum].gain(amount);
     }
 
     public getShardUpgradeCost(
@@ -71,7 +64,7 @@ class Shards implements Feature {
             return false;
         }
         const lessThanMax = !this.hasMaxUpgrade(typeNum, effectNum);
-        const hasEnoughShards = this.shardWallet[typeNum]() >= this.getShardUpgradeCost(typeNum, effectNum);
+        const hasEnoughShards = this.shards[typeNum].amount() >= this.getShardUpgradeCost(typeNum, effectNum);
         return lessThanMax && hasEnoughShards;
     }
 
@@ -100,6 +93,10 @@ class Shards implements Feature {
     }
 
     initialize() {
+        // Storing Shards for easy access
+        Object.values(ItemList).filter(Shard.isShard).forEach(shard => {
+            this.shards[shard.type] = shard;
+        });
     }
 
     canAccess(): boolean {
@@ -111,24 +108,16 @@ class Shards implements Feature {
 
     toJSON(): Record<string, any> {
         return {
-            'shardWallet': this.shardWallet.map(ko.unwrap),
             'shardUpgrades': this.shardUpgrades.map(ko.unwrap),
         };
     }
 
     fromJSON(json: Record<string, any>) {
         if (json != null) {
-            json['shardWallet'].forEach((v, i) => {
-                this.shardWallet[i](v);
-            });
             json['shardUpgrades'].forEach((v, i) => {
                 this.shardUpgrades[i](v);
             });
         }
-    }
-
-    public static image(type: number): string {
-        return `assets/images/shards/${PokemonType[type]} Shard.png`;
     }
 
     public openShardModal() {

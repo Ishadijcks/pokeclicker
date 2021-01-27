@@ -1,14 +1,15 @@
 class Vitamin extends Item {
     type: GameConstants.VitaminType;
 
-    constructor(type: GameConstants.VitaminType, basePrice: number, currency: GameConstants.Currency = GameConstants.Currency.money, options?: ShopOptions, displayName?: string) {
-        super(GameConstants.VitaminType[type], basePrice, currency, options, displayName);
+    constructor(type: GameConstants.VitaminType, displayName?: string, description?: string) {
+        super(GameConstants.VitaminType[type], { displayName: displayName, description: description });
         this.type = type;
     }
 
 }
 
-ItemList.RareCandy = new Vitamin(GameConstants.VitaminType.RareCandy, Infinity, undefined, undefined, 'Rare Candy');
-ItemList.RareCandy.description = 'A rare to find candy that currently has no use.';
-ItemList.Protein   = new Vitamin(GameConstants.VitaminType.Protein, 1e4, GameConstants.Currency.money, { multiplier: 1.1, multiplierDecrease: false, saveName: `${GameConstants.VitaminType[GameConstants.VitaminType.Protein]}|${GameConstants.Currency[GameConstants.Currency.money]}` });
-ItemList.Protein.description = 'Increases Pokemon attack bonus<br/><i>(attack gained per breeding cycle)</i>';
+ItemList.RareCandy = new Vitamin(GameConstants.VitaminType.RareCandy, 'Rare Candy', 'A rare to find candy that currently has no use.');
+ItemList.Protein   = new Vitamin(GameConstants.VitaminType.Protein, undefined, 'Increases Pokemon attack bonus<br/><i>(attack gained per breeding cycle)</i>');
+
+ShopEntriesList['Rare Candy'] = new ShopItem('Rare Candy', ItemList['RareCandy'], Infinity, Currency.money);
+ShopEntriesList['Protein'] = new ShopItem('Protein', ItemList['Protein'], 10000, Currency.money, { multiplier: 1.1, multiplierDecrease: false });

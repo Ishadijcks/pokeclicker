@@ -64,7 +64,7 @@ class EvolveNearBerryMutation extends EvolveNearMutation {
      */
     get unlocked(): boolean {
         // Check for Berry requirements
-        if (!this.berryReqs.every(req => App.game.farming.unlockedBerries[req]())) {
+        if (!this.berryReqs.every(req => App.game.farming.berries[req].unlocked())) {
             return false;
         }
         return super.unlocked;

@@ -178,8 +178,8 @@ class PokemonHelper {
     public static getPokemonShops(pokemonName: PokemonNameType): Array<string> {
         const shops = [];
         Object.entries(TownList).forEach(([townName, town]) => {
-            if (town.shop && town.shop.items) {
-                const hasPokemon = town.shop.items.find(item => item.name == pokemonName);
+            if (town.shop && town.shop.shopItems) {
+                const hasPokemon = town.shop.shopItems.find(item => (item instanceof ShopItem) && (item.item.name == pokemonName));
                 if (hasPokemon) {
                     shops.push(townName);
                 }
@@ -264,7 +264,7 @@ class PokemonHelper {
         if (Berry.baseWander.includes(pokemonName)) {
             return ['Always'];
         }
-        App.game.farming.berryData.forEach((berry) => {
+        App.game.farming.berries.forEach((berry) => {
             if (berry.wander.includes(pokemonName)) {
                 berries.push(BerryType[berry.type]);
             }

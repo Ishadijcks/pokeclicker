@@ -237,19 +237,19 @@ class BerryDeal {
 
     public static canUse(region: GameConstants.Region, i: number): boolean {
         const deal = BerryDeal.list[region].peek()[i];
-        return deal.berries.every((value) => App.game.farming.berryList[value.berryType]() >= value.amount );
+        return deal.berries.every((value) => App.game.farming.berries[value.berryType].amount() >= value.amount );
     }
 
     public static use(region: GameConstants.Region, i: number, tradeTimes = 1) {
         const deal = BerryDeal.list[region].peek()[i];
         if (BerryDeal.canUse(region, i)) {
             const trades = deal.berries.map(berry => {
-                const amt = App.game.farming.berryList[berry.berryType]();
+                const amt = App.game.farming.berries[berry.berryType].amount();
                 const maxTrades = Math.floor(amt / berry.amount);
                 return maxTrades;
             });
             const maxTrades = trades.reduce((a,b) => Math.min(a,b), tradeTimes);
-            deal.berries.forEach((value) => GameHelper.incrementObservable(App.game.farming.berryList[value.berryType], -value.amount * maxTrades));
+            deal.berries.forEach((value) => App.game.farming.gainBerry(value.berryType, -value.amount * maxTrades));
             if (deal.item.itemType instanceof UndergroundItem) {
                 Underground.gainMineItem(deal.item.itemType.id, deal.item.amount * maxTrades);
             } else {

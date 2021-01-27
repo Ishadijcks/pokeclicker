@@ -1,8 +1,12 @@
 class Shop {
 
     constructor(
-        public items: Item[],
+        public shopEntries: string[],
         public name?: string
     ) { }
+
+    get shopItems(): ShopEntry[] {
+        return this.shopEntries.map(entry => ShopEntriesList[entry]).filter(shopItem => !!shopItem);
+    }
 }
 

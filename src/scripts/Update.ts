@@ -343,7 +343,7 @@ class Update implements Saveable {
                 Notifier.notify({
                     title: 'Active Challenge Mode?',
                     message: `Do you want to activate No Click Attack challenge mode?
-                    
+
                     <button class="btn btn-block btn-danger" onclick="App.game.challenges.list.disableClickAttack.activate();" data-dismiss="toast">Activate</button>`,
                     timeout: GameConstants.HOUR,
                 });
@@ -352,7 +352,7 @@ class Update implements Saveable {
             Notifier.notify({
                 title: 'Active Challenge Mode?',
                 message: `Do you want to activate No Battle Item challenge mode?
-                
+
                 <button class="btn btn-block btn-danger" onclick="App.game.challenges.list.disableBattleItems.activate(); Object.values(player.effectList).forEach(e => e(0));" data-dismiss="toast">Activate</button>`,
                 timeout: GameConstants.HOUR,
             });
@@ -361,7 +361,7 @@ class Update implements Saveable {
                 Notifier.notify({
                     title: 'Active Challenge Mode?',
                     message: `Do you want to activate No Masterball challenge mode?
-                    
+
                     <button class="btn btn-block btn-danger" onclick="App.game.challenges.list.disableMasterballs.activate();" data-dismiss="toast">Activate</button>`,
                     timeout: GameConstants.HOUR,
                 });
@@ -371,7 +371,7 @@ class Update implements Saveable {
                 Notifier.notify({
                     title: 'Active Challenge Mode?',
                     message: `Do you want to activate No Oak Item challenge mode?
-                    
+
                     <button class="btn btn-block btn-danger" onclick="App.game.challenges.list.disableOakItems.activate();" data-dismiss="toast">Activate</button>`,
                     timeout: GameConstants.HOUR,
                 });
@@ -381,7 +381,7 @@ class Update implements Saveable {
                 Notifier.notify({
                     title: 'Active Challenge Mode?',
                     message: `Do you want to activate No Shard challenge mode?
-                    
+
                     <button class="btn btn-block btn-danger" onclick="App.game.challenges.list.disableShards.activate();" data-dismiss="toast">Activate</button>`,
                     timeout: GameConstants.HOUR,
                 });
@@ -391,11 +391,139 @@ class Update implements Saveable {
                 Notifier.notify({
                     title: 'Active Challenge Mode?',
                     message: `Do you want to activate No Protein challenge mode?
-                    
+
                     <button class="btn btn-block btn-danger" onclick="App.game.challenges.list.disableProteins.activate();" data-dismiss="toast">Activate</button>`,
                     timeout: GameConstants.HOUR,
                 });
             }
+
+            //#region Shops
+
+            // Move itemMultipliers to new Shops system
+            // Only moving non-decreasing multipliers, as the rest don't matter that much
+            if (!saveData.hasOwnProperty('shops')) {
+                saveData.shops = {};
+            }
+            if (!saveData.shops.hasOwnProperty('shopEntries')) {
+                saveData.shops.shopEntries = {};
+            }
+            saveData.shops.shopEntries['Masterball D'] = { currentMultiplier: playerData._itemMultipliers['Masterball|diamond'] };
+            saveData.shops.shopEntries['Masterball BP'] = { currentMultiplier: playerData._itemMultipliers['Masterball|battlePoint'] };
+            saveData.shops.shopEntries['Masterball DT'] = { currentMultiplier: playerData._itemMultipliers['Masterball|dungeonToken'] };
+            saveData.shops.shopEntries['Masterball FP'] = { currentMultiplier: playerData._itemMultipliers['Masterball|farmPoint'] };
+            saveData.shops.shopEntries['Masterball'] = { currentMultiplier: playerData._itemMultipliers['Masterball|money'] };
+            saveData.shops.shopEntries['Masterball QP'] = { currentMultiplier: playerData._itemMultipliers['Masterball|questPoint'] };
+            saveData.shops.shopEntries['Protein'] = { currentMultiplier: playerData._itemMultipliers['Protein|money'] };
+            // Handling maxAmount entries
+            if (saveData.keyItems['Dungeon_ticket']) {
+                saveData.shops.shopEntries['Dungeon Ticket'] = { amountPurchased: 1 };
+            }
+            if (saveData.keyItems['Explorer_kit']) {
+                saveData.shops.shopEntries['Explorer Kit'] = { amountPurchased: 1 };
+            }
+            if (saveData.oakItems['Squirtbottle'] && saveData.oakItems['Squirtbottle'].purchased) {
+                saveData.shops.shopEntries['Squirtbottle'] = { amountPurchased: 1 };
+            }
+            if (saveData.oakItems['Sprinklotad'] && saveData.oakItems['Sprinklotad'].purchased) {
+                saveData.shops.shopEntries['Sprinklotad'] = { amountPurchased: 1 };
+            }
+            if (saveData.oakItems['Treasure_Scanner'] && saveData.oakItems['Treasure_Scanner'].purchased) {
+                saveData.shops.shopEntries['Treasure Scanner'] = { amountPurchased: 1 };
+            }
+            if (saveData.oakItems['Explosive_Charge'] && saveData.oakItems['Explosive_Charge'].purchased) {
+                saveData.shops.shopEntries['Explosive Charge'] = { amountPurchased: 1 };
+            }
+
+            //#endregion
+
+            //#region Items
+
+            if (!saveData.hasOwnProperty('items')) {
+                saveData.items = {};
+            }
+            if (!saveData.items.hasOwnProperty('itemList')) {
+                saveData.items.itemList = {};
+            }
+            // Handling original items
+            for (const item in playerData._itemList) {
+                saveData.items.itemList[item] = {};
+                saveData.items.itemList[item].amount = playerData._itemList[item];
+                if (playerData._itemList[item]) {
+                    saveData.items.itemList[item].unlocked = true;
+                }
+            }
+
+            //#region Moving Farm Items
+
+            // Mulches
+            if (saveData.hasOwnProperty('farming') && saveData.farming.hasOwnProperty('mulchList')) {
+                saveData.items.itemList['Boost_Mulch'] = {};
+                saveData.items.itemList['Boost_Mulch'].amount = saveData.farming.mulchList[0];
+                if (saveData.farming.mulchList[0]) {
+                    saveData.items.itemList['Boost_Mulch'].unlocked = true;
+                }
+                saveData.items.itemList['Rich_Mulch'] = {};
+                saveData.items.itemList['Rich_Mulch'].amount = saveData.farming.mulchList[1];
+                if (saveData.farming.mulchList[1]) {
+                    saveData.items.itemList['Rich_Mulch'].unlocked = true;
+                }
+                saveData.items.itemList['Surprise_Mulch'] = {};
+                saveData.items.itemList['Surprise_Mulch'].amount = saveData.farming.mulchList[2];
+                if (saveData.farming.mulchList[2]) {
+                    saveData.items.itemList['Surprise_Mulch'].unlocked = true;
+                }
+                saveData.items.itemList['Amaze_Mulch'] = {};
+                saveData.items.itemList['Amaze_Mulch'].amount = saveData.farming.mulchList[3];
+                if (saveData.farming.mulchList[3]) {
+                    saveData.items.itemList['Amaze_Mulch'].unlocked = true;
+                }
+            }
+
+            // Shovel
+            if (saveData.hasOwnProperty('farming') && saveData.farming.hasOwnProperty('shovelAmt')) {
+                saveData.items.itemList['Berry_Shovel'] = {};
+                saveData.items.itemList['Berry_Shovel'].amount = saveData.farming.shovelAmt;
+                if (saveData.farming.shovelAmt) {
+                    saveData.items.itemList['Berry_Shovel'].unlocked = true;
+                }
+            }
+
+            // Berries
+            if (saveData.hasOwnProperty('farming') && saveData.farming.hasOwnProperty('berryList')) {
+                Object.keys(BerryType).forEach(berry => {
+                    if (BerryType[berry] >= 0) {
+                        saveData.items.itemList[berry] = {};
+                        saveData.items.itemList[berry].amount = saveData.farming.berryList[BerryType[berry]];
+                        saveData.items.itemList[berry].unlocked = saveData.farming.unlockedBerries[BerryType[berry]];
+                    }
+                });
+            }
+
+            //#endregion
+
+            // Handling Pokeballs
+            for (const pokeball in saveData.pokeballs.pokeballs) {
+                if (!isNaN(Number(pokeball))) {
+                    saveData.items.itemList[GameConstants.Pokeball[pokeball]] = {};
+                    saveData.items.itemList[GameConstants.Pokeball[pokeball]].amount = saveData.pokeballs.pokeballs[pokeball];
+                    if (saveData.items.itemList[GameConstants.Pokeball[pokeball]].amount) {
+                        saveData.items.itemList[GameConstants.Pokeball[pokeball]].unlocked = true;
+                    }
+                }
+            }
+
+            // Handling Shards
+            for (const shard in saveData.shards.shardWallet) {
+                if (!isNaN(Number(shard))) {
+                    saveData.items.itemList[`${PokemonType[shard]} Shard`] = {};
+                    saveData.items.itemList[`${PokemonType[shard]} Shard`].amount = saveData.shards.shardWallet[shard];
+                    if (saveData.items.itemList[`${PokemonType[shard]} Shard`].amount) {
+                        saveData.items.itemList[`${PokemonType[shard]} Shard`].unlocked = true;
+                    }
+                }
+            }
+
+            //#endregion
         },
     };
 

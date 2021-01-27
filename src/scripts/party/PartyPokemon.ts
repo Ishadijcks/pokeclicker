@@ -114,7 +114,7 @@ class PartyPokemon implements Saveable {
         }
 
         // The lowest number of amount they want to use, total in inventory, uses remaining for this Pokemon
-        amount = Math.min(amount, player.itemList.Protein(), usesRemaining);
+        amount = Math.min(amount, ItemList['Protein'].amount(), usesRemaining);
 
         // Apply the proteins
         if (ItemHandler.useItem('Protein', amount)) {

@@ -75,7 +75,7 @@ class DungeonRunner {
 
         DungeonRunner.chestsOpened++;
         const random: number = GameConstants.randomIntBetween(0, DungeonRunner.dungeon.itemList.length - 1);
-        const input = GameConstants.BattleItemType[DungeonRunner.dungeon.itemList[random]];
+        const input: string = GameConstants.BattleItemType[DungeonRunner.dungeon.itemList[random]];
         let amount = 1;
         if (EffectEngineRunner.isActive(GameConstants.BattleItemType.Item_magnet)()) {
             if (Math.random() < 0.5) {
@@ -87,7 +87,7 @@ class DungeonRunner {
             type: NotificationConstants.NotificationOption.success,
             setting: NotificationConstants.NotificationSetting.dungeon_item_found,
         });
-        player.gainItem(input, amount);
+        ItemList[input].gain(amount);
         DungeonRunner.map.currentTile().type(GameConstants.DungeonTile.empty);
         DungeonRunner.map.currentTile().calculateCssClass();
         if (DungeonRunner.chestsOpened == GameConstants.DUNGEON_CHEST_SHOW) {

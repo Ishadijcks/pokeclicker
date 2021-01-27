@@ -22,39 +22,6 @@ class Pokeballs implements Feature {
     public selectedTitle: KnockoutObservable<string>;
 
     constructor() {
-        this.pokeballs = [
-            new Pokeball(GameConstants.Pokeball.Pokeball, () => 0, 1250, 'A standard Pokéball', undefined, 25),
-            new Pokeball(GameConstants.Pokeball.Greatball, () => 5, 1000, '+5% chance to catch'),
-            new Pokeball(GameConstants.Pokeball.Ultraball, () => 10, 750, '+10% chance to catch'),
-            new Pokeball(GameConstants.Pokeball.Masterball, () => 100, 500, '100% chance to catch'),
-            new Pokeball(GameConstants.Pokeball.Fastball, () => 0, 500, 'Reduced catch time', new RouteKillRequirement(10, GameConstants.Region.johto, 34)),
-            new Pokeball(GameConstants.Pokeball.Quickball, () => {
-                if (App.game.gameState == GameConstants.GameState.fighting && player.route()) {
-                    const kills = App.game.statistics.routeKills[GameConstants.Region[player.region]]?.[player.route()]?.() || 0;
-                    // between 15 (0 kills) → 0 (4012 kills)
-                    return Math.min(15, Math.max(0, Math.pow(16, 1 - Math.pow(Math.max(0, kills - 10), 0.6) / 145) - 1));
-                }
-                return 0;
-            }, 1000, 'Increased catch rate on routes with less Pokémon defeated', new RouteKillRequirement(10, GameConstants.Region.johto, 34)),
-            new Pokeball(GameConstants.Pokeball.Timerball, () => {
-                if (App.game.gameState == GameConstants.GameState.fighting && player.route()) {
-                    const kills = App.game.statistics.routeKills[GameConstants.Region[player.region]]?.[player.route()]?.() || 0;
-                    // between 0 (0 kills) → 15 (9920 kills)
-                    return Math.min(15, Math.max(0, Math.pow(16, Math.pow(kills, 0.6) / 250) - 1));
-                }
-                return 0;
-            }, 1000, 'Increased catch rate on routes with more Pokémon defeated', new RouteKillRequirement(10, GameConstants.Region.johto, 34)),
-            new Pokeball(GameConstants.Pokeball.Duskball, () => {
-                const now = new Date();
-                // If player in a dungeon or it's night time
-                if (App.game.gameState == GameConstants.GameState.dungeon || now.getHours() >= 18 || now.getHours() < 6) {
-                    return 15;
-                }
-                return 0;
-            }, 1000, 'Increased catch rate at night time or in dungeons', new RouteKillRequirement(10, GameConstants.Region.johto, 34)),
-            // TODO: this needs some sort of bonus, possibly extra dungeon tokens
-            new Pokeball(GameConstants.Pokeball.Luxuryball, () => 0, 1250, 'A Luxury Pokéball', new RouteKillRequirement(10, GameConstants.Region.johto, 34)),
-        ];
         this._alreadyCaughtSelection = ko.observable(this.defaults.alreadyCaughtSelection);
         this._alreadyCaughtShinySelection = ko.observable(this.defaults.alreadyCaughtShinySelection);
         this._notCaughtSelection = ko.observable(this.defaults.notCaughtSelection);
@@ -64,6 +31,12 @@ class Pokeballs implements Feature {
     }
 
     initialize(): void {
+        // Storing Pokeballs for easy access
+        this.pokeballs = [];
+        Object.values(ItemList).filter(Pokeball.isPokeball).forEach(ball => {
+            this.pokeballs[ball.type] = ball;
+        });
+
         ([
             this._alreadyCaughtSelection,
             this._alreadyCaughtShinySelection,
@@ -116,12 +89,12 @@ class Pokeballs implements Feature {
 
         let use: GameConstants.Pokeball = GameConstants.Pokeball.None;
 
-        if (this.pokeballs[pref]?.quantity()) {
+        if (this.pokeballs[pref]?.amount()) {
             return pref;
         } else if (pref <= GameConstants.Pokeball.Masterball) {
             // Check which Pokeballs we have in stock that are of equal or lesser than selection (upto Masterball)
             for (let i: number = pref; i >= 0; i--) {
-                if (this.pokeballs[i].quantity() > 0) {
+                if (this.pokeballs[i].amount() > 0) {
                     use = i;
                     break;
                 }
@@ -129,7 +102,7 @@ class Pokeballs implements Feature {
             return use;
         } else {
             // Use a normal Pokeball or None if we don't have Pokeballs in stock
-            return this.pokeballs[GameConstants.Pokeball.Pokeball].quantity() ? GameConstants.Pokeball.Pokeball : GameConstants.Pokeball.None;
+            return this.pokeballs[GameConstants.Pokeball.Pokeball].amount() ? GameConstants.Pokeball.Pokeball : GameConstants.Pokeball.None;
         }
     }
 
@@ -137,12 +110,8 @@ class Pokeballs implements Feature {
         return this.pokeballs[ball].catchTime;
     }
 
-    gainPokeballs(ball: GameConstants.Pokeball, amount: number): void {
-        GameHelper.incrementObservable(this.pokeballs[ball].quantity, amount);
-    }
-
     usePokeball(ball: GameConstants.Pokeball): void {
-        GameHelper.incrementObservable(this.pokeballs[ball].quantity, -1);
+        this.pokeballs[ball].gain(-1);
         GameHelper.incrementObservable(App.game.statistics.pokeballsUsed[ball]);
     }
 
@@ -152,7 +121,7 @@ class Pokeballs implements Feature {
 
     getBallQuantity(ball: GameConstants.Pokeball): number {
         const pokeball = this.pokeballs[ball];
-        return pokeball ? pokeball.quantity() : 0;
+        return pokeball ? pokeball.amount() : 0;
     }
 
     canAccess(): boolean {
@@ -164,9 +133,6 @@ class Pokeballs implements Feature {
             return;
         }
 
-        if (json['pokeballs'] != null) {
-            json['pokeballs'].map((amt: number, type: number) => this.pokeballs[type].quantity(amt));
-        }
         this.notCaughtSelection = json['notCaughtSelection'] ?? this.defaults.notCaughtSelection;
         this.notCaughtShinySelection = json['notCaughtShinySelection'] ?? this.defaults.notCaughtShinySelection;
         this.alreadyCaughtSelection = json['alreadyCaughtSelection'] ?? this.defaults.alreadyCaughtSelection;
@@ -175,7 +141,6 @@ class Pokeballs implements Feature {
 
     toJSON(): Record<string, any> {
         return {
-            'pokeballs': this.pokeballs.map(p => p.quantity()),
             'notCaughtSelection': this.notCaughtSelection,
             'notCaughtShinySelection': this.notCaughtShinySelection,
             'alreadyCaughtSelection': this.alreadyCaughtSelection,

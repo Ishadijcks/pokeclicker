@@ -47,7 +47,7 @@ class PetayaMutation extends GrowMutation {
     get unlocked(): boolean {
         // Check for Berry requirements
         const requiredBerries = Farming.getGeneration(3);
-        if (!requiredBerries.every(berry => App.game.farming.unlockedBerries[berry]())) {
+        if (!requiredBerries.every(berry => App.game.farming.berries[berry].unlocked())) {
             return false;
         }
         return super.unlocked;

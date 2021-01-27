@@ -7,7 +7,7 @@ class ItemHandler {
     public static amountToUse = 1;
 
     public static useItem(name: string, amount = 1): boolean {
-        if (!player.itemList[name]()) {
+        if (!ItemList[name].amount()) {
             Notifier.notify({
                 message: `You don't have any ${ItemList[name].displayName}s left...`,
                 type: NotificationConstants.NotificationOption.danger,
@@ -25,9 +25,8 @@ class ItemHandler {
         }
 
         // Only allow the player to use the amount they have maximum
-        this.amountToUse = Math.min(player.itemList[name](), amount);
-
-        player.itemList[name](player.itemList[name]() - this.amountToUse);
+        this.amountToUse = Math.min(ItemList[name].amount(), amount);
+        ItemList[name].gain(-this.amountToUse);
 
         // run the function
         const result = ItemList[name].use();
@@ -36,7 +35,7 @@ class ItemHandler {
     }
 
     public static hasItem(name: string): boolean {
-        return player.itemList[name] ? !!player.itemList[name]() : false;
+        return ItemList[name] ? !!ItemList[name].amount() : false;
     }
 
     public static resetAmount() {
@@ -57,7 +56,7 @@ class ItemHandler {
                 type: NotificationConstants.NotificationOption.danger,
             });
         }
-        const amountTotal = Math.min(this.amountSelected(), player.itemList[this.stoneSelected()]());
+        const amountTotal = Math.min(this.amountSelected(), ItemList[this.stoneSelected()].amount());
 
         if (!amountTotal) {
             return Notifier.notify({
@@ -69,7 +68,7 @@ class ItemHandler {
 
         let amountUsed = 0;
         for (let i = 0; i < amountTotal; i++) {
-            player.itemList[this.stoneSelected()](player.itemList[this.stoneSelected()]() - 1);
+            ItemList[this.stoneSelected()].gain(-1);
             amountUsed++;
             if ((ItemList[this.stoneSelected()] as EvolutionStone).use(this.pokemonSelected() as PokemonNameType)) {
                 // Stop when a shiny is encountered

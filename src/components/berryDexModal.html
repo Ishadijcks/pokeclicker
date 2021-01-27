@@ -8,8 +8,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <!-- ko let: { berry: App.game.farming.berries[$data] } -->
             <div class="modal-body p-0">
-                <img data-bind="attr:{ src: FarmController.getBerryImage($data) }" src=""/>
+                <img data-bind="attr:{ src: berry.image }" src=""/>
                 <table class="table table-striped table-hover table-bordered table-sm m-0">
                   <thead>
                     <tr class="text-light">
@@ -17,7 +18,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                      <td colspan="2"><span data-bind="html: App.game.farming.berryData[$data].descriptionHTML"></span></td>
+                      <td colspan="2"><span data-bind="html: berry.description"></span></td>
                   </tbody>
                   <thead>
                     <tr class="text-light">
@@ -28,19 +29,19 @@
                   <tbody>
                     <tr>
                       <td class="text-left">Total Growth Time</td>
-                      <td class="text-left tight"><code data-bind="html: GameConstants.formatSecondsToTime(App.game.farming.berryData[$data].growthTime[3])">-</code></td>
+                      <td class="text-left tight"><code data-bind="html: GameConstants.formatSecondsToTime(berry.growthTime[3])">-</code></td>
                     </tr>
                     <tr>
                       <td class="text-left">Harvest Amount</td>
-                      <td class="text-left tight"><code data-bind="text: App.game.farming.berryData[$data].harvestAmount.toLocaleString('en-US')">-</code></td>
+                      <td class="text-left tight"><code data-bind="text: berry.harvestAmount.toLocaleString('en-US')">-</code></td>
                     </tr>
                     <tr>
                       <td class="text-left">Replant Rate</td>
-                      <td class="text-left tight"><code data-bind="text: App.game.farming.berryData[$data].replantRate.toLocaleString('en-US', { style: 'percent' })">-</code></td>
+                      <td class="text-left tight"><code data-bind="text: berry.replantRate.toLocaleString('en-US', { style: 'percent' })">-</code></td>
                     </tr>
                     <tr>
                       <td class="text-left">Farm Points per Harvest</td>
-                      <td class="text-left tight"><code data-bind="text: App.game.farming.berryData[$data].farmValue.toLocaleString('en-US')">-</code></td>
+                      <td class="text-left tight"><code data-bind="text: berry.farmValue.toLocaleString('en-US')">-</code></td>
                     </tr>
                     <tr>
                       <td class="p-0" colspan="2">
@@ -61,10 +62,10 @@
                             <td><img src="" data-bind="attr: { src: `assets/images/farm/${BerryType[$data]}Tree${PlotStage[PlotStage.Berry]}.png` }"/></td>
                           </tr>
                           <tr>
-                            <td><code data-bind="html: GameConstants.formatSecondsToTime(App.game.farming.berryData[$data].growthTime[0])">-</code></td>
-                            <td><code data-bind="html: GameConstants.formatSecondsToTime(App.game.farming.berryData[$data].growthTime[1])">-</code></td>
-                            <td><code data-bind="html: GameConstants.formatSecondsToTime(App.game.farming.berryData[$data].growthTime[2])">-</code></td>
-                            <td><code data-bind="html: GameConstants.formatSecondsToTime(App.game.farming.berryData[$data].growthTime[3])">-</code></td>
+                            <td><code data-bind="html: GameConstants.formatSecondsToTime(berry.growthTime[0])">-</code></td>
+                            <td><code data-bind="html: GameConstants.formatSecondsToTime(berry.growthTime[1])">-</code></td>
+                            <td><code data-bind="html: GameConstants.formatSecondsToTime(berry.growthTime[2])">-</code></td>
+                            <td><code data-bind="html: GameConstants.formatSecondsToTime(berry.growthTime[3])">-</code></td>
                           </tr>
                         </table>
                       </td>
@@ -83,11 +84,11 @@
                                   <td>Sour</td>
                               </tr>
                               <tr>
-                                <td data-bind="text: App.game.farming.berryData[$data].flavors[0].value">Spicy</td>
-                                <td data-bind="text: App.game.farming.berryData[$data].flavors[1].value">Dry</td>
-                                <td data-bind="text: App.game.farming.berryData[$data].flavors[2].value">Sweet</td>
-                                <td data-bind="text: App.game.farming.berryData[$data].flavors[3].value">Bitter</td>
-                                <td data-bind="text: App.game.farming.berryData[$data].flavors[4].value">Sour</td>
+                                <td data-bind="text: berry.flavors[0].value">Spicy</td>
+                                <td data-bind="text: berry.flavors[1].value">Dry</td>
+                                <td data-bind="text: berry.flavors[2].value">Sweet</td>
+                                <td data-bind="text: berry.flavors[3].value">Bitter</td>
+                                <td data-bind="text: berry.flavors[4].value">Sour</td>
                             </tr>
                           </table>
                       </td>
@@ -117,6 +118,7 @@
                   </tbody>
                 </table>
             </div>
+            <!-- /ko -->
         </div>
     </div>
 </div>

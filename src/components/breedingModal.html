@@ -137,15 +137,15 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
                 </div>
 
                 <div class="tab-pane" id="breeding-eggs">
-                    <p class="bg-warning my-0" data-bind="visible: !Object.keys(GameConstants.EggItemType).filter(e=>isNaN(e)).filter(x=>player._itemList[x]()).length">
+                    <p class="bg-warning my-0" data-bind="visible: !Object.keys(GameConstants.EggItemType).filter(e=>isNaN(e)).filter(x=>ItemList[x].amount()).length">
                         you don't have any eggs to breed.
                     </p>
-                    <!-- ko if: Object.keys(GameConstants.EggItemType).filter(e=>isNaN(e)).filter(x=>player._itemList[x]()).length -->
-                    <ul class="row justify-content-center p-0" data-bind="foreach: Object.keys(GameConstants.EggItemType).filter(e=>isNaN(e)).filter(x=>player._itemList[x]())">
+                    <!-- ko if: Object.keys(GameConstants.EggItemType).filter(e=>isNaN(e)).filter(x=>ItemList[x].amount()).length -->
+                    <ul class="row justify-content-center p-0" data-bind="foreach: Object.keys(GameConstants.EggItemType).filter(e=>isNaN(e)).filter(x=>ItemList[x].amount())">
                         <li class="eggSlot col-sm-4 col-md-3 col-lg-2 pokedexEntry text-nowrap" data-bind="class: App.game.breeding.hasFreeEggSlot() ? '' : 'disabled'">
                             <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: GameConstants.humanifyString($data)">egg</span>
                             <img src="" width="80px" data-bind="attr:{ src: `assets/images/breeding/${$data}.png` }">
-                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + player._itemList[$data]()">amount</span>
+                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + ItemList[$data].amount()">amount</span>
                             <a class="overlay" href="#breed" data-bind="click: function() { ItemList[$data].use(); App.game.breeding.checkCloseModal(); }"></a>
                             <knockout style="position: absolute; right: 2px; top: -14px;"
                                 data-bind="template: { name: 'caughtStatusTemplate', data: { status: ItemList[$data].getCaughtStatus() }, if: (ItemList[$data] instanceof CaughtIndicatingItem) }"/>

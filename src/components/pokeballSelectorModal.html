@@ -27,8 +27,8 @@
               <tr class="clickable"
                 data-bind="template: { name: 'pokeballSelectionTemplate', data: $data},
                   click: function(){App.game.pokeballs.selectedSelection()($data.type)},
-                  visible: $data.unlocked(),
-                  css: { 
+                  visible: $data.unlocked,
+                  css: {
                     'clickable': !($data.type === GameConstants.Pokeball.Masterball && App.game.challenges.list.disableMasterballs.active()),
                     'disabled no-click text-muted': ($data.type === GameConstants.Pokeball.Masterball && App.game.challenges.list.disableMasterballs.active()),
                   }"></tr>
@@ -53,6 +53,6 @@
     <span data-bind="text: $data.description"></span>
   </td>
   <td class="text-center align-middle">
-    <span data-bind="text: $data.quantity && $data.quantity() ? GameConstants.formatNumber($data.quantity()) : '-', tooltip: $data.quantity && {title: $data.quantity().toLocaleString('en-US'), trigger: 'hover', animation: false, placement: 'left'}"></span>
+    <span data-bind="text: $data.amount && $data.amount() ? GameConstants.formatNumber($data.amount()) : '-', tooltip: $data.amount && {title: $data.amount().toLocaleString('en-US'), trigger: 'hover', animation: false, placement: 'left'}"></span>
   </td>
 </script>

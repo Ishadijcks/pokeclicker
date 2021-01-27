@@ -8,7 +8,6 @@
                     <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#berryFarmView">Farm</a></li>
                     <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#berryDexView">Berrydex</a></li>
                     <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#helpView">Help</a></li>
-                    <!-- TODO: HLXII Add Apricorn Tab ? -->
                     <btn class="btn btn-primary">
                         <span data-bind="template: { name: 'currencyTemplate', data: {'amount': App.game.wallet.currencies[GameConstants.Currency.farmPoint](), 'currency': GameConstants.Currency.farmPoint}}"></span>
                     </btn>
@@ -33,11 +32,13 @@
                                         <!-- ko foreach: FarmController.getBerryListWithIndex() -->
                                         <li class="list-group-item list-group-item-action seed-list-item p-2"
                                             data-bind="click: function() {FarmController.selectedBerry($data);FarmController.selectedShovel(false);}, css: { 'active': FarmController.selectedBerry() === $data && !FarmController.selectedShovel() }">
+                                            <!-- ko let: { berry: App.game.farming.berries[$data] } -->
                                             <img src="" height="28px"
-                                                data-bind="attr:{ src: FarmController.getBerryImage($data) },
-                                                css: {'berryLocked': !App.game.farming.unlockedBerries[$data]() }">
-                                            <span data-bind="text: App.game.farming.unlockedBerries[$data]() ? BerryType[$data] : '???'"></span>
-                                            <span class="float-right" data-bind="text: App.game.farming.berryList[$data]().toLocaleString('en-US')"></span>
+                                                data-bind="attr:{ src: berry.image },
+                                                css: {'berryLocked': !berry.unlocked() }">
+                                            <span data-bind="text: berry.unlocked() ? BerryType[$data] : '???'"></span>
+                                            <span class="float-right" data-bind="text: berry.amount().toLocaleString('en-US')"></span>
+                                            <!-- /ko -->
                                         </li>
                                         <!-- /ko -->
                                     </ul>
@@ -85,8 +86,8 @@
                                                 tooltip: {title: ItemList[MulchType[$data]].description, trigger: 'hover', animation: false}">
                                             <img src="" width="24px"
                                                 data-bind="attr:{ src: ItemList[MulchType[$data]].image }">
-                                            <span data-bind="text: MulchType[$data].replace('_', ' ')"></span>
-                                            <span class="float-right" data-bind="text: App.game.farming.mulchList[$data]().toLocaleString('en-US')"></span>
+                                            <span data-bind="text: ItemList[MulchType[$data]].displayName"></span>
+                                            <span class="float-right" data-bind="text: ItemList[MulchType[$data]].amount().toLocaleString('en-US')"></span>
                                         </li>
                                         <!-- /ko -->
                                     </ul>
@@ -120,7 +121,7 @@
                                     <img src="" height="24px"
                                         data-bind="attr:{ src: ItemList['Berry_Shovel'].image }">
                                     <span>Shovel</span>
-                                    <span class="float-right" data-bind="text: App.game.farming.shovelAmt().toLocaleString('en-US')"></span>
+                                    <span class="float-right" data-bind="text: ItemList['Berry_Shovel'].amount().toLocaleString('en-US')"></span>
                                 </li>
                             </ul>
                         </div>
@@ -140,8 +141,8 @@
                                                 <div>
                                                     <span style="display: inline;">
                                                         <img alt="Berry" style="height: 28px;"
-                                                            data-bind="attr:{ src: FarmController.getBerryImage(App.game.farming.plotBerryCost($index()).type) },
-                                                            css: {'berryLocked': !App.game.farming.unlockedBerries[App.game.farming.plotBerryCost($index()).type]() }"/>
+                                                            data-bind="attr:{ src: App.game.farming.berries[App.game.farming.plotBerryCost($index()).type].image },
+                                                            css: {'berryLocked': !App.game.farming.berries[App.game.farming.plotBerryCost($index()).type].unlocked() }"/>
                                                         <span data-bind="text: GameConstants.formatNumber(App.game.farming.plotBerryCost($index()).amount)">0</span>
                                                     </span>
                                                 </div>
@@ -175,13 +176,15 @@
                                     tooltip: { title: FarmController.getHint($data,true,true),
                                     trigger: 'hover',
                                     placement:'top' }">
+                                <!-- ko let: { berry: App.game.farming.berries[$data] } -->
                                  <span class="id" style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: ($data + 1 + '').padStart(2, 0)">number</span>
-                                     <img src="" width=80px style="padding: 20px 0px;" data-bind="css: { 'pokemon-not-seen': !App.game.farming.unlockedBerries[$data]() }, attr:{ src: FarmController.getBerryImage($data)}">
-                                     <!-- ko if: App.game.farming.unlockedBerries[$data]() -->
+                                     <img src="" width=80px style="padding: 20px 0px;" data-bind="css: { 'pokemon-not-seen': !berry.unlocked() }, attr:{ src: berry.image }">
+                                     <!-- ko if: berry.unlocked() -->
                                      <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: BerryType[$data]">name</span>
                                      <a class="overlay" href="#berryDexModal" data-toggle="modal"
                                         data-bind="click: ()=>{App.game.statistics.selectedBerryID($data)}"></a>
                                      <!-- /ko -->
+                                <!-- /ko -->
                             </li>
                         </ul>
                     </div>

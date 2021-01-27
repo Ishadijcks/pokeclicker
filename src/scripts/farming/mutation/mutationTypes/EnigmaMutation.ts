@@ -13,7 +13,7 @@ class EnigmaMutation extends GrowMutation {
                 if (App.game.discord.ID === null) {
                     return false;
                 }
-                return EnigmaMutation.getReqs().every(req => App.game.farming.unlockedBerries[req]());
+                return EnigmaMutation.getReqs().every(req => App.game.farming.berries[req].unlocked());
             },
         });
 
