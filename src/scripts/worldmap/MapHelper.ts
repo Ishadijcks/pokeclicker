@@ -200,7 +200,37 @@ class MapHelper {
     }
 
     public static ableToTravel() {
-        return player.highestRegion() < GameConstants.MAX_AVAILABLE_REGION && new Set(App.game.party.caughtPokemon.filter(p => p.id > 0 && PokemonHelper.calcNativeRegion(p.name) <= player.highestRegion()).map(p => Math.floor(p.id))).size >= GameConstants.TotalPokemonsPerRegion[player.highestRegion()];
+        // Already at highest region
+        if (player.highestRegion() >= GameConstants.MAX_AVAILABLE_REGION) {
+            return false;
+        }
+        // Checking Cleared Champion Status
+        let requirement: Requirement;
+        switch (player.highestRegion()) {
+            case GameConstants.Region.kanto:
+                requirement = new GymBadgeRequirement(BadgeEnums.Elite_KantoChampion);
+                break;
+            case GameConstants.Region.johto:
+                requirement = new GymBadgeRequirement(BadgeEnums.Elite_JohtoChampion);
+                break;
+            case GameConstants.Region.hoenn:
+                requirement = new GymBadgeRequirement(BadgeEnums.Elite_HoennChampion);
+                break;
+            case GameConstants.Region.sinnoh:
+                requirement = new GymBadgeRequirement(BadgeEnums.Elite_SinnohChampion);
+                break;
+            // Add new regions here
+            /*
+            case GameConstants.Region.unova:
+                requirement = new GymBadgeRequirement(BadgeEnums.Elite_UnovaChampion);
+                break;
+            */
+        }
+        if (!requirement) {
+            console.error('Error: Region Travel Requirement not found.');
+            return false;
+        }
+        return requirement.isCompleted();
     }
 
     public static travelToNextRegion() {

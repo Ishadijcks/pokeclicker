@@ -55,7 +55,7 @@ class PokemonFactory {
 
     public static routeHealth(route: number, region: GameConstants.Region): number {
         route = MapHelper.normalizeRoute(route, region);
-        const health: number = Math.max(20, Math.floor(Math.pow((100 * Math.pow(route, 2.2) / 12), 1.15) * (1 + region / 20))) || 20;
+        const health: number = Math.max(20, Math.floor(Math.pow((100 * Math.pow(route, 2.2) / 12), 1.15) * (1 + Math.pow(Math.log(Math.pow(region + 0.25,region / 2)),0.5)))) || 20;
         return health;
     }
 

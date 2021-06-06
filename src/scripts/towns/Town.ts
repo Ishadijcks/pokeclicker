@@ -147,10 +147,6 @@ const KantoBerryMaster = new KantoBerryMasterNPC('Berry Master', [
     'Bah! You younglings have no appreciation of the art of Berry farming!',
     'Come back when you are ready to learn!',
 ]);
-const ProfOak = new ProfOakNPC('Prof. Oak', [
-    'Good luck on your journey!',
-    'Come visit me when you complete your Pokédex!',
-]);
 const BattleItemRival = new NPC('Battle Item Master', [
     'Hey kid, you look new! Let me offer some advice, Battle Items like xAttack can be acquired along Routes, inside Dungeons and in Shops!',
     'Use them to help you out whenever you feel like time is against you!',
@@ -252,7 +248,6 @@ TownList['Pallet Town'] = new Town(
     'Pallet Town',
     GameConstants.Region.kanto,
     {
-        npcs: [ProfOak],
     }
 );
 TownList['Lavender Town'] = new Town(
