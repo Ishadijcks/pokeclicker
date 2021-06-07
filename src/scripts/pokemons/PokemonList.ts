@@ -13905,6 +13905,23 @@ const pokemonList = createPokemonArray(
         },
     },
     {
+        'id': 658.01,
+        'name': 'Ash Greninja',
+        'type': [PokemonType.Water, PokemonType.Dark],
+        'eggCycles': 20,
+        'levelType': LevelType.mediumslow,
+        'exp': 239,
+        'catchRate': 45,
+        'base': {
+            'hitpoints': 72,
+            'attack': 145,
+            'specialAttack': 153,
+            'defense': 67,
+            'specialDefense': 71,
+            'speed': 132,
+        },
+    },
+    {
         'id': 659,
         'name': 'Bunnelby',
         'type': [PokemonType.Normal],

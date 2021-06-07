@@ -241,6 +241,23 @@ gymList['Elite Lance'] = new Gym(
     [new GymBadgeRequirement(BadgeEnums.Elite_Agatha)]
 );
 //TODO make champion Gym
+//Ash Ketchum gym, to be used in Ash Greninja quest, to be balanced for post Kalos-champ
+gymList['Pallet Town'] = new Gym(
+    'Ash Ketchum 1',
+    'Pallet Town',
+    [
+        new GymPokemon('Pikachu', 48300, 58),
+        new GymPokemon('Pidgeot', 52000, 56),
+        new GymPokemon('Bulbasaur', 57000, 56),
+        new GymPokemon('Charizard', 60250, 60),
+        new GymPokemon('Squirtle', 66000, 62),
+        new GymPokemon('Muk', 66000, 62),
+    ],
+    BadgeEnums.Elite_KantoAsh,
+    7500,
+    'Insert quote here.',
+    [new GymBadgeRequirement(BadgeEnums.Elite_KalosChampion)]
+);
 
 //Johto Gyms
 gymList['Violet City'] = new Gym(
@@ -423,6 +440,23 @@ gymList['Champion Lance'] = new Gym(
     7500,
     '…It\'s over. But it\'s an odd feeling. I\'m not angry that I lost. In fact, I feel happy. Happy that I witnessed the rise of a great new Champion!',
     [new GymBadgeRequirement(BadgeEnums.Elite_Karen)]
+);
+//Ash Ketchum gym, to be used in Ash Greninja quest, to be balanced for post Kalos-champ
+gymList['Cherrygrove  City'] = new Gym(
+    'Ash Ketchum 2',
+    'Cherrygrove City',
+    [
+        new GymPokemon('Pikachu', 48300, 58),
+        new GymPokemon('Heracross', 52000, 56),
+        new GymPokemon('Noctowl', 57000, 56),
+        new GymPokemon('Bayleef', 60250, 60),
+        new GymPokemon('Cyndaquil', 66000, 62),
+        new GymPokemon('Totodile', 66000, 62),
+    ],
+    BadgeEnums.Elite_JohtoAsh,
+    7500,
+    'Insert quote here.',
+    [new GymBadgeRequirement(BadgeEnums.Elite_KantoAsh)]
 );
 
 // Hoenn Gyms
@@ -619,6 +653,23 @@ gymList['Champion Wallace'] = new Gym(
         App.game.quests.getQuestLine('Mystery of Deoxys').beginQuest();
     }
 );
+//Ash Ketchum gym, to be used in Ash Greninja quest, to be balanced for post Kalos-champ
+gymList['Lilycove City'] = new Gym(
+    'Ash Ketchum 3',
+    'Lilycove City',
+    [
+        new GymPokemon('Pikachu', 48300, 58),
+        new GymPokemon('Swellow', 52000, 56),
+        new GymPokemon('Grovyle', 57000, 56),
+        new GymPokemon('Corphish', 60250, 60),
+        new GymPokemon('Torkoal', 66000, 62),
+        new GymPokemon('Glalie', 66000, 62),
+    ],
+    BadgeEnums.Elite_HoennAsh,
+    7500,
+    'Insert quote here.',
+    [new GymBadgeRequirement(BadgeEnums.Elite_JohtoAsh)]
+);
 
 //Sinnoh Gyms
 gymList['Oreburgh City'] = new Gym(
@@ -805,9 +856,25 @@ gymList['Champion Cynthia'] = new Gym(
     'That was excellent. Truly, an outstanding battle. You gave the support your Pokémon needed to maximize their power. And you guided them with certainty to secure victory. You have both passion and calculating coolness. Together, you and your Pokémon can overcome any challenge that may come your way. Those are the impressions I got from our battle. I\'m glad I got to take part in the crowning of Sinnoh\'s new Champion! Come with me. We\'ll take the lift.',
     [new GymBadgeRequirement(BadgeEnums.Elite_Lucian)]
 );
+//Ash Ketchum gym, to be used in Ash Greninja quest, to be balanced for post Kalos-champ
+gymList['Survival Area'] = new Gym(
+    'Ash Ketchum 4',
+    'Survival Area',
+    [
+        new GymPokemon('Pikachu', 48300, 58),
+        new GymPokemon('Staraptor', 52000, 56),
+        new GymPokemon('Torterra', 57000, 56),
+        new GymPokemon('Infernape', 60250, 60),
+        new GymPokemon('Buizel', 66000, 62),
+        new GymPokemon('Gible', 66000, 62),
+    ],
+    BadgeEnums.Elite_SinnohAsh,
+    7500,
+    'Insert quote here.',
+    [new GymBadgeRequirement(BadgeEnums.Elite_HoennAsh)]
+);
 
 //Unova Gyms
-//TODO: Balancing of gym Pokemon HP & rewards.
 gymList['Aspertia City'] = new Gym(
     'Cheren',
     'Aspertia City',
@@ -920,7 +987,6 @@ gymList['Humilau City'] = new Gym(
 );
 
 //Unova Elite 4
-//TODO: Balancing of elite Pokemon HP & rewards.
 gymList['Elite Shauntal'] = new Gym(
     'Shauntal',
     'Elite Shauntal',
@@ -1000,6 +1066,23 @@ gymList['Champion Iris'] = new Gym(
     64000,
     'I\'m upset I couldn\'t win! But you know what? More than that, I\'m happy! I mean, come on. By having a serious battle, you and your Pokémon, and me and my Pokémon, we all got to know one another better than before! Yep, we sure did! OK, let\'s go!',
     [new GymBadgeRequirement(BadgeEnums.Elite_Caitlin)]
+);
+//Ash Ketchum gym, to be used in Ash Greninja quest, to be balanced for post Kalos-champ
+gymList['Icirrus City'] = new Gym(
+    'Ash Ketchum 5',
+    'Icirrus City',
+    [
+        new GymPokemon('Pikachu', 48300, 58),
+        new GymPokemon('Unfezant', 52000, 56),
+        new GymPokemon('Oshawott', 57000, 56),
+        new GymPokemon('Pignite', 60250, 60),
+        new GymPokemon('Leavanny', 66000, 62),
+        new GymPokemon('Krookodile', 66000, 62),
+    ],
+    BadgeEnums.Elite_UnovaAsh,
+    7500,
+    'Insert quote here.',
+    [new GymBadgeRequirement(BadgeEnums.Elite_SinnohAsh)]
 );
 
 //Kalos Gyms
@@ -1180,6 +1263,23 @@ gymList['Champion Diantha'] = new Gym(
     128000,
     'Witnessing the noble spirits of you and your Pokémon in battle has really touched my heart...',
     [new GymBadgeRequirement(BadgeEnums.Elite_Drasna)]
+);
+//Ash Ketchum gym, to be used in Ash Greninja quest, to be balanced for post Kalos-champ
+gymList['Kiloude City'] = new Gym(
+    'Ash Ketchum 6',
+    'Kiloude City',
+    [
+        new GymPokemon('Pikachu', 48300, 58),
+        new GymPokemon('Talonflame', 52000, 56),
+        new GymPokemon('Hawlucha', 57000, 56),
+        new GymPokemon('Goodra', 60250, 60),
+        new GymPokemon('Noivern', 66000, 62),
+        new GymPokemon('Ash Greninja', 66000, 62),
+    ],
+    BadgeEnums.Elite_KalosAsh,
+    7500,
+    'Insert quote here.',
+    [new GymBadgeRequirement(BadgeEnums.Elite_UnovaAsh)]
 );
 
 //Alola Gyms
