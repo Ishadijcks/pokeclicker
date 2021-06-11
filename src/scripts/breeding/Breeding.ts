@@ -13,10 +13,12 @@ class Breeding implements Feature {
         eggSlots: 1,
         queueList: [],
         queueSlots: 0,
+        batchFill: 4,
     };
 
     private _eggList: Array<KnockoutObservable<Egg>>;
     private _eggSlots: KnockoutObservable<number>;
+    private _batchFill: KnockoutObservable<number>;
 
     private queueList: KnockoutObservableArray<PokemonNameType>;
     private queueSlots: KnockoutObservable<number>;
@@ -28,6 +30,7 @@ class Breeding implements Feature {
         this._eggSlots = ko.observable(this.defaults.eggSlots);
         this.queueList = ko.observableArray(this.defaults.queueList);
         this.queueSlots = ko.observable(this.defaults.queueSlots);
+        this._batchFill = ko.observable(this.defaults.batchFill);
 
         this._eggList.forEach((egg) => {
             egg.extend({deferred: true});
@@ -205,6 +208,19 @@ class Breeding implements Feature {
         return this.multiplier.getBonus('eggStep');
     }
 
+    public fillHatcheryQueue() {
+        let index = 0;
+        let count = 0;
+        while (this.hasFreeQueueSlot() && index < App.game.party.caughtPokemon.length && count <= this._batchFill()) {
+            const pokemon: PartyPokemon = App.game.party.caughtPokemon[index];
+            if (BreedingController.visible(pokemon)()) {
+                this.addPokemonToHatchery(pokemon);
+                count++;
+            }
+            index++;
+        }
+    }
+
     public addPokemonToHatchery(pokemon: PartyPokemon): boolean {
         // If they have a free eggslot, add the pokemon to the egg now
         if (this.hasFreeEggSlot()) {
@@ -375,6 +391,14 @@ class Breeding implements Feature {
 
     set eggSlots(value: number) {
         this._eggSlots(value);
+    }
+
+    get batchFill(): number {
+        return this._batchFill();
+    }
+
+    set batchFill(value: number) {
+        this._batchFill(value);
     }
 
     public gainEggSlot(): void {

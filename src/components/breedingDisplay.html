@@ -54,6 +54,14 @@
         </div>
       </div>
     </div>
+    <!-- ko if: App.game.breeding.queueSlots -->
+    <div id="hatcheryFillButton">
+      <button class='btn btn-sm btn-primary' style="width: 100%; height: 100%;"
+              data-bind='click: function(){ App.game.breeding.fillHatcheryQueue(); }'>
+          Fill Queue
+      </button>
+    </div>
+    <!-- /ko -->
     <!-- ko if: App.game.breeding.queueList().length -->
     <div id="hatcheryQueue" class="card-footer p-1" data-bind="foreach: App.game.breeding.queueList()">
       <div class="queuePokemon clickable bg-primary" data-bind="click: function(){ App.game.breeding.removeFromQueue($index()) }">
