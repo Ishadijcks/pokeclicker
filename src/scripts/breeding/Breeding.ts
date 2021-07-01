@@ -245,6 +245,32 @@ class Breeding implements Feature {
         return false;
     }
 
+    // This feature isn't worthwhile while the queue is short
+    public hasFillQueueUnlocked(): boolean {
+        return this.queueSlots() >= 16;
+    }
+
+    public fillQueue(): boolean {
+        if (!this.hasFreeEggSlot() && !this.hasFreeQueueSlot()) {
+            return false;
+        }
+
+        const filledEggSlots = this.eggList.filter((egg) => {
+            return !egg().isNone();
+        }).length;
+        const freeEggSlots = this._eggSlots() - filledEggSlots;
+        const freeQueueSlots = this.queueSlots() - this.queueList().length;
+        const slotsLeftToFill = freeEggSlots + freeQueueSlots;
+
+        App.game.party.caughtPokemon.filter((pokemon) => {
+            return BreedingController.visible(pokemon)();
+        }).slice(0, slotsLeftToFill).forEach((pokemon) => {
+            this.addPokemonToHatchery(pokemon);
+        });
+
+        return true;
+    }
+
     public gainPokemonEgg(pokemon: PartyPokemon | PokemonListData): boolean {
         if (!this.hasFreeEggSlot()) {
             Notifier.notify({
