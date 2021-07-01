@@ -8,8 +8,8 @@
     <!--Route 1-->
     <%- include('templates/mapRoute',
         { route: 1, region: 0
-        , width: 6.5, height: 3
-        , x: 19, y: 33
+        , width: 7.5, height: 3
+        , x: 23, y: 29
         , rotate: true
         })
      %>
@@ -18,81 +18,59 @@
     <%- include('templates/mapRoute',
         { route: 2, region: 0
         , width: 3, height: 3
-        , x: 19, y: 26
+        , x: 23, y: 22
         , rotate: true
         })
      %>
     <!--Extra bit of Route 2-->
     <%- include('templates/mapRoute',
          { route: 2, region: 0
-         , width: 3, height: 1
-         , x: 19, y: 22
+         , width: 3, height: 3.5
+         , x: 23, y: 14
          , noText: true
          })
       %>
-    <!--Extra bit of Route 2-->
-    <%- include('templates/mapRoute',
-          { route: 2, region: 0
-          , width: 3, height: 2
-          , x: 19, y: 17
-          , noText: true
-          })
-       %>
-
+ 
     <!--Route 3-->
     <%- include('templates/mapRoute',
         { route: 3, region: 0
-        , width: 12, height: 3
-        , x: 22, y: 14
+        , width: 15, height: 3
+        , x: 30, y: 11
         })
      %>
-    <!--Extra bit of Route 3-->
-    <%- include('templates/mapRoute',
-        { route: 3, region: 0
-        , width: 4, height: 2
-        , x: 34, y: 15
-        , noText: true
-        })
-    %>
 
     <!--Route 4-->
     <%- include('templates/mapRoute',
         { route: 4, region: 0
-        , width: 20, height: 3
-        , x: 39, y: 11
+        , width: 12, height: 3
+        , x: 50, y: 10
         })
      %>
-    <!--Extra bit of Route 4-->
-    <%- include('templates/mapRoute',
-         { route: 4, region: 0
-         , width: 4, height: 1
-         , x: 35, y: 11
-         , noText: true
-         })
-      %>
 
     <!--Route 5-->
     <%- include('templates/mapRoute',
         { route: 5, region: 0
-        , width: 3, height: 1
-        , x: 60, y: 20
-        , noText: true
+        , width: 1.5, height: 3
+        , x: 66, y: 16.5
+		, rotate: true
         })
      %>
     <!--Extra bit of Route 5-->
     <%- include('templates/mapRoute',
         { route: 5, region: 0
-        , width: 2.5, height: 3
-        , x: 60, y: 14
+        , width: 3.5, height: 2
+        , x: 66, y: 13
         , rotate: true
+        , noText: true
+
         })
     %>
 
     <!--Route 6-->
     <%- include('templates/mapRoute',
         { route: 6, region: 0
-        , width: 7, height: 3
-        , x: 60, y: 25
+        , width: 4.9, height: 3
+        , x: 66, y: 26
         , rotate: true
         })
      %>
@@ -100,57 +78,73 @@
     <!--Route 7-->
     <%- include('templates/mapRoute',
         { route: 7, region: 0
-        , width: 9, height: 3
-        , x: 50, y: 22
+        , width: 11, height: 3
+        , x: 49, y: 20
         })
      %>
 
     <!--Route 8-->
     <%- include('templates/mapRoute',
         { route: 8, region: 0
-        , width: 13, height: 3
-        , x: 63, y: 22
+        , width: 14, height: 3
+        , x: 71, y: 20
         })
      %>
 
     <!--Route 9-->
     <%- include('templates/mapRoute',
         { route: 9, region: 0
-        , width: 14, height: 3
-        , x: 63, y: 11
+        , width: 16, height: 3
+        , x: 71, y: 9
+        })
+     %>
+	 
+	   <!--Extra bit of Route 9-->
+    <%- include('templates/mapRoute',
+        { route: 9, region: 0
+        , width: 1, height: 1
+        , x: 87, y: 9
+		, noText: true
         })
      %>
 
     <!--Route 10-->
     <%- include('templates/mapRoute',
         { route: 10, region: 0
-        , width: 4, height: 3
-        , x: 77, y: 17
-        , rotate: true
+        , width: 3, height: 1
+        , x: 88, y: 9
+        , noText: true
         })
      %>
     <!--Extra bit of Route 10-->
     <%- include('templates/mapRoute',
         { route: 10, region: 0
-        , width: 2, height: 3
-        , x: 77, y: 12
-        , noText: true
+        , width: 3, height: 3
+        , x: 88, y: 13
         , rotate: true
         })
     %>
+	    <!--Extra bit of Route 10-->
+    <%- include('templates/mapRoute',
+        { route: 10, region: 0
+        , width: 1, height: 3
+        , x: 88, y: 16
+        , noText: true
+        })
+     %>
 
     <!--Route 11-->
     <%- include('templates/mapRoute',
         { route: 11, region: 0
-        , width: 9, height: 3
-        , x: 63, y: 33
+        , width: 12, height: 3
+        , x: 71, y: 32
         })
      %>
     <!--Extra bit of Route 11-->
     <%- include('templates/mapRoute',
         { route: 11, region: 0
-        , width: 3, height: 1
-        , x: 72, y: 35
+        , width: 3, height: 1.5
+        , x: 83, y: 33.5
         , noText: true
         })
     %>
@@ -158,7 +152,7 @@
     <%- include('templates/mapRoute',
        { route: 11, region: 0
        , width: 2, height: 3
-       , x: 75, y: 33
+       , x: 86, y: 32
        , noText: true
        })
    %>
@@ -167,7 +161,7 @@
     <%- include('templates/mapRoute',
         { route: 12, region: 0
         , width: 8, height: 3
-        , x: 77, y: 25
+        , x: 88, y: 24
         , rotate: true
         })
      %>
@@ -176,7 +170,7 @@
     <%- include('templates/mapRoute',
         { route: 13, region: 0
         , width: 11, height: 3
-        , x: 77, y: 33
+        , x: 88, y: 32
         , rotate: true
         })
      %>
@@ -184,23 +178,23 @@
     <!--Route 14-->
     <%- include('templates/mapRoute',
         { route: 14, region: 0
-        , width: 10, height: 3
-        , x: 67, y: 41
+        , width: 13, height: 3
+        , x: 75, y: 40
         })
      %>
 
     <!--Route 15-->
     <%- include('templates/mapRoute',
         { route: 15, region: 0
-        , width: 12, height: 3
-        , x: 55, y: 45
+        , width: 23, height: 3
+        , x: 52, y: 44
         })
      %>
     <!--Extra bit of Route 15-->
     <%- include('templates/mapRoute',
         { route: 15, region: 0
         , width: 3, height: 1
-        , x: 64, y: 44
+        , x: 72, y: 43
         , noText: true
         })
       %>
@@ -208,16 +202,16 @@
     <!--Route 16-->
     <%- include('templates/mapRoute',
         { route: 16, region: 0
-        , width: 15, height: 3
-        , x: 31, y: 22
+        , width: 6, height: 3
+        , x: 34, y: 20
         })
      %>
 
     <!--Route 17-->
     <%- include('templates/mapRoute',
         { route: 17, region: 0
-        , width: 20, height: 3
-        , x: 31, y: 25
+        , width: 21, height: 3
+        , x: 34, y: 23
         , rotate: true
         })
      %>
@@ -225,48 +219,40 @@
     <!--Route 18-->
     <%- include('templates/mapRoute',
         { route: 18, region: 0
-        , width: 20, height: 3
-        , x: 31, y: 45
+        , width: 10, height: 3
+        , x: 34, y: 44
         })
      %>
 
     <!--Route 19-->
     <%- include('templates/mapRoute',
         { route: 19, region: 0
-        , width: 16, height: 3
-        , x: 39, y: 52
+        , width: 10, height: 3
+        , x: 41, y: 54
         })
     %>
     <!--Extra bit of Route 19-->
     <%- include('templates/mapRoute',
         { route: 19, region: 0
         , width: 3, height: 4
-        , x: 52, y: 48
+        , x: 48, y: 50
         , noText: true
         })
      %>
-    <!--Extra bit of Route 19-->
-    <%- include('templates/mapRoute',
-         { route: 19, region: 0
-         , width: 4, height: 1
-         , x: 35, y: 54
-         , noText: true
-         })
-      %>
 
     <!--Route 20-->
     <%- include('templates/mapRoute',
         { route: 20, region: 0
-        , width: 13, height: 3
-        , x: 22, y: 52
+        , width: 8, height: 3
+        , x: 27, y: 54
         })
      %>
 
     <!--Route 21-->
     <%- include('templates/mapRoute',
         { route: 21, region: 0
-        , width: 7, height: 3
-        , x: 19, y: 44
+        , width: 11, height: 3
+        , x: 23, y: 42
         , rotate: true
         })
      %>
@@ -274,24 +260,24 @@
     <!--Route 22-->
     <%- include('templates/mapRoute',
         { route: 22, region: 0
-        , width: 8, height: 3
-        , x: 10, y: 30
+        , width: 15, height: 3
+        , x: 7, y: 26
         })
      %>
 
     <!--Route 23-->
     <%- include('templates/mapRoute',
         { route: 23, region: 0
-        , width: 14, height: 3
-        , x: 10, y: 16
+        , width: 3, height: 3
+        , x: 7, y: 23
         , rotate: true
         })
     %>
     <!--Extra bit of Route 23-->
     <%- include('templates/mapRoute',
         { route: 23, region: 0
-        , width: 3, height: 3
-        , x: 10, y: 8
+        , width: 6, height: 3
+        , x: 7, y: 12
         , noText: true
         , rotate: true
         })
@@ -301,7 +287,7 @@
     <%- include('templates/mapRoute',
         { route: 24, region: 0
         , width: 4, height: 3
-        , x: 60, y: 6
+        , x: 66, y: 5
         , rotate: true
         })
      %>
@@ -309,8 +295,8 @@
     <!--Route 25-->
     <%- include('templates/mapRoute',
         { route: 25, region: 0
-        , width: 12, height: 3
-        , x: 60, y: 3
+        , width: 17, height: 3
+        , x: 66, y: 2
         })
      %>
 
@@ -324,7 +310,7 @@
     <!--Pallet Town-->
     <%- include('templates/mapTown',
         { name: "Pallet Town"
-        , x: 18, y: 39.5
+        , x: 22, y: 36.5
         , width: 5, height: 4.5
         , home: true
         })
@@ -333,71 +319,76 @@
     <!--Viridian City-->
     <%- include('templates/mapTown',
          { name: "Viridian City"
-         , x: 18, y: 29
+         , x: 23, y: 25
          })
       %>
 
     <!--Pewter City-->
     <%- include('templates/mapTown',
         { name: "Pewter City"
-        , x: 18, y: 13
+        , x: 23, y: 10
         })
      %>
 
     <!--Cerulean City-->
     <%- include('templates/mapTown',
          { name: "Cerulean City"
-         , x: 59, y: 10
+         , x: 62, y: 9
+		 , width: 8, height: 4
          })
       %>
 
     <!--Vermilion City-->
     <%- include('templates/mapTown',
         { name: "Vermilion City"
-        , x: 59, y: 32
+        , x: 62, y: 31
+		, width: 8, height: 4
         })
      %>
 
     <!--Lavender Town-->
     <%- include('templates/mapTown',
          { name: "Lavender Town"
-         , x: 76, y: 21
+         , x: 85, y: 20
          })
       %>
 
     <!--Celadon City-->
     <%- include('templates/mapTown',
         { name: "Celadon City"
-        , x: 46, y: 21
+        , x: 44, y: 18.7
+		, width: 5, height: 4.3
         })
      %>
 
     <!--Saffron City-->
     <%- include('templates/mapTown',
         { name: "Saffron City"
-        , x: 59, y: 21
+        , x: 64, y: 21.7
+		, width: 5, height: 4.3
         })
      %>
 
     <!--Fuchsia City-->
     <%- include('templates/mapTown',
         { name: "Fuchsia City"
-        , x: 51, y: 44
+        , x: 44, y: 44
+		, width: 8, height: 4
         })
      %>
 
     <!--Cinnabar Island-->
     <%- include('templates/mapTown',
         { name: "Cinnabar Island"
-        , x: 18, y: 51
+        , x: 23, y: 53
         })
      %>
 
     <!--Indigo Plateau Kanto-->
     <%- include('templates/mapTown',
         { name: "Indigo Plateau Kanto"
-        , x: 6, y: 0
-        , width: 11, height: 8
+        , x: 3, y: 0
+        , width: 11, height: 12
         })
      %>
 
@@ -411,91 +402,99 @@
     <!--Viridian Forest-->
     <%- include('templates/mapDungeon',
         { name: "Viridian Forest"
-        , x: 18, y: 23
+        , x: 23, y: 17.5		
+		, width: 3, height: 4.5
         })
      %>
 
-    <!--Digletts Cave-->
+    <!--Digletts Cave Pewter-->
     <%- include('templates/mapDungeon',
         { name: "Digletts Cave"
-        , x: 18, y: 19
+        , x: 27, y: 14
+		, width: 3, height: 3
         })
      %>
-
+    <!--Digletts Cave Vermilion-->
+    <%- include('templates/mapDungeon',
+        { name: "Digletts Cave"
+        , x: 72, y: 29
+		, width: 3, height: 3
+        })
+     %>
     <!--Mt. Moon-->
     <%- include('templates/mapDungeon',
         { name: "Mt. Moon"
-        , x: 34, y: 12
-        , width: 5
+        , x: 41, y: 8
         })
      %>
 
     <!--Rock Tunnel-->
     <%- include('templates/mapDungeon',
         { name: "Rock Tunnel"
-        , x: 77, y: 9
+        , x: 87, y: 10
         })
      %>
 
     <!--Power Plant-->
     <%- include('templates/mapDungeon',
         { name: "Power Plant"
-        , x: 77, y: 14
+        , x: 93, y: 14
+		, height: 4
+        })
+     %>
+	    <!--Power Plant Extenstion-->
+    <%- include('templates/mapDungeon',
+        { name: "Power Plant"
+        , x: 91, y: 14
+		, width: 2, height: 2
         })
      %>
 
     <!--Pokémon Tower-->
     <%- include('templates/mapDungeon',
         { name: "Pokemon Tower"
-        , x: 80, y: 17
+        , x: 89, y: 16
         , width: 4, height: 8
-        })
-    %>
-    <!--Pokémon Tower Extension-->
-    <%- include('templates/mapDungeon',
-        { name: "Pokemon Tower"
-        , x: 81, y: 16
-        , width: 2, height: 1
         })
     %>
 
     <!--Seafoam Islands-->
     <%- include('templates/mapDungeon',
         { name: "Seafoam Islands"
-        , x: 35, y: 51
+        , x: 37, y: 54
         })
      %>
 
     <!--Pokémon Mansion-->
     <%- include('templates/mapDungeon',
         { name: "Pokemon Mansion"
-        , x: 13, y: 50
-        , width: 5, height: 5
+        , x: 15, y: 50
+        , width: 7, height: 5
         })
      %>
 
     <!--Victory Road-->
     <%- include('templates/mapDungeon',
         { name: "Victory Road"
-        , x: 9, y: 11
-        , width: 5, height: 5
+        , x: 6, y: 18
+        , width: 5, height: 4
+        })
+     %>
+    <!--Victory Road Extension-->
+    <%- include('templates/mapDungeon',
+        { name: "Victory Road"
+        , x: 7, y: 22
+        , width: 3, height: 1
         })
      %>
 
     <!--Cerulean Cave-->
     <%- include('templates/mapDungeon',
         { name: "Cerulean Cave"
-        , x: 55, y: 8
-        , width: 5, height: 2
+        , x: 61, y: 5
         })
      %>
-    <!--Cerulean Cave Extension-->
-    <%- include('templates/mapDungeon',
-         { name: "Cerulean Cave"
-         , x: 55, y: 10
-         , width: 4, height: 1
-         })
-      %>
+
 
 
 
@@ -506,23 +505,23 @@
 
     <%- include('templates/mapPOI',
         { name: "Pokemon Day Care"
-        , x: 58, y: 16.5
-        , width: 5, height: 3.5
+        , x: 68, y: 13
+        , width: 4, height: 4
         , databind: "click:function(){BreedingController.openBreedingModal()}, attr: { class: App.game.breeding.canAccess() ? 'city unlockedTown' : 'city lockedTown' }"
         })
      %>
 
     <%- include('templates/mapPOI',
         { name: "Safari Zone"
-        , x: 55, y: 40
-        , width: 5, height: 5
+        , x: 47, y: 39
+        , width: 6, height: 5
         , databind: "click:function(){Safari.openModal()}, attr: { class: Safari.canAccess() ? 'city unlockedTown' : 'city lockedTown' }"
         })
      %>
 
     <%- include('templates/mapPOI',
         { name: "Underground Entrance"
-        , x: 72, y: 31
+        , x: 83, y: 30
         , width: 3, height: 4
         , databind: "click:function(){App.game.underground.openUndergroundModal()}, attr: { class: App.game.underground.canAccess() ? 'city unlockedTown' : 'city lockedTown' }"
         })
@@ -530,7 +529,7 @@
 
     <%- include('templates/mapPOI',
         { name: "Farm"
-        , x: 64, y: 41
+        , x: 72, y: 40
         , width: 3, height: 3
         , databind: "click:function(){FarmController.openFarmModal()}, attr: { class: App.game.farming.canAccess() ? 'city unlockedTown' : 'city lockedTown' }"
         })
@@ -538,15 +537,15 @@
 
     <%- include('templates/mapPOI',
         { name: "Dock"
-        , x: 55, y: 34
-        , width: 4, height: 2
+        , x: 61, y: 35
+        , width: 3, height: 2
         , databind: "click:function(){MapHelper.openShipModal()}, css:{ unlockedTown: player.highestRegion() >= 1}"
         })
      %>
 
     <%- include('templates/mapOverlay',
          { name: "SS-Anne"
-         , x: 50, y: 35
+         , x: 58, y: 35
          , width: 8, height: 3
          , databind: "click:function(){MapHelper.openShipModal()}, css:{ unlockedTown: player.highestRegion() >= 1}"
          , visible:  "player.highestRegion() >= 1"

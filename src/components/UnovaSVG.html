@@ -752,7 +752,7 @@
     <!-- ------------------ -->
     <%- include('templates/mapPOI',
         { name: "Dock"
-        , x: 49, y: 53
+        , x: 51, y: 53
         , width: 3, height: 7
         , databind: "click:function(){MapHelper.openShipModal()}, attr: { class: MapHelper.calculateTownCssClass('Castelia City') }"
         })
@@ -761,8 +761,8 @@
     <!--bridge-->
     <%- include('templates/mapPOI',
         { name: "Skyarrow Bridge"
-        , width: 10, height: 3
-        , x: 57, y: 49
+        , width: 3, height: 7
+        , x: 62, y: 40
         , databind: `attr: { class: MapHelper.accessToRoute(4, GameConstants.Region.unova) ? 'unlockedRoute' : 'lockedRoute' },
             click: () => {
                 Notifier.notify({message: 'What a lovely view'});
@@ -772,19 +772,8 @@
     <!--bridge-->
     <%- include('templates/mapPOI',
         { name: "Skyarrow Bridge"
-        , width: 3, height: 9
-        , x: 64, y: 40
-        , databind: `attr: { class: MapHelper.accessToRoute(4, GameConstants.Region.unova) ? 'unlockedRoute' : 'lockedRoute' },
-            click: () => {
-                Notifier.notify({message: 'What a lovely view'});
-            }`
-        })
-    %>
-    <!--bridge-->
-    <%- include('templates/mapPOI',
-        { name: "Skyarrow Bridge"
-        , width: 5, height: 3
-        , x: 67, y: 40
+        , width: 7, height: 3
+        , x: 65, y: 40
         , databind: `attr: { class: MapHelper.accessToRoute(4, GameConstants.Region.unova) ? 'unlockedRoute' : 'lockedRoute' },
             click: () => {
                 Notifier.notify({message: 'What a lovely view'});
