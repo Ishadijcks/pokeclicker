@@ -159,11 +159,12 @@ class Dungeon {
         return this.pokemonList.concat(this.bossPokemonList);
     }
 
+
     /**
-     * Finds all possible encounters in the Dungeon and their details.
-     * Used for generating the Dungeon Encounter view
+     * Gets all non-boss Pokemon encounters in the dungeon
+     * Used for generating the dungeon encounter list view
      */
-    get encounterList(): EncounterInfo[] {
+    get normalEncounterList(): EncounterInfo[] {
         const encounterInfo = [];
 
         // Handling minions
@@ -187,6 +188,17 @@ class Dungeon {
             // Handling Trainers
             } else { /* We don't display minion Trainers */ }
         });
+
+        return encounterInfo;
+    }
+
+
+    /**
+     * Gets all boss encounters in the dungeon
+     * Used for generating the dungeon encounter list view
+     */
+    get bossEncounterList(): EncounterInfo[] {
+        const encounterInfo = [];
 
         // Handling Bosses
         this.bossList.forEach((boss) => {
