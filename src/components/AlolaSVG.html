@@ -1,4 +1,5 @@
 <g data-bind='visible: player.region == GameConstants.Region.alola'>
+    <!-- ko if: player.subregion == SubRegions.getSubRegion(GameConstants.Region.alola, 'Melemele & Akala islands').id -->
     <image width="1600" height="960" xlink:href="assets/images/alola.png" href="assets/images/alola.png"></image>
 
     <!-- ------ -->
@@ -487,5 +488,9 @@
         , databind: "click:function(){MapHelper.openShipModal()}"
         })
     %>
+    <!-- /ko -->
 
+    <!-- ko if: player.subregion == SubRegions.getSubRegion(GameConstants.Region.alola, 'Ula\'ula & Poni islands').id -->
+    <image width="1600" height="960" xlink:href="assets/images/kanto.png" href="assets/images/kanto.png"></image>
+    <!-- /ko -->
 </g>

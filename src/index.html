@@ -346,6 +346,7 @@
                         <img width=30px src="" data-bind="attr: { src: Weather.image() }"/>
                     </button>
                     <div id="mapBody" class="card-body p-0 show">
+                        <select data-bind="options: SubRegions.getSubRegions(player.region), optionsText: 'name', optionsValue: 'id', value: player.subregion"></select>
                         <p id="mapTooltip" class="btn btn-secondary" style="visibility: hidden;"></p>
                         <svg id="map" viewBox="0 0 1600 960" preserveAspectRatio="xMaxYMax meet">
                             <defs>

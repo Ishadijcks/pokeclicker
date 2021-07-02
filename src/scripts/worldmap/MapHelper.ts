@@ -14,6 +14,8 @@ class MapHelper {
         if (this.accessToRoute(route, region)) {
             player.route(route);
             player.region = region;
+            // Always go back to the main island when changing regions
+            player.subregion = 0;
             if (genNewEnemy && !Battle.catching()) {
                 Battle.generateNewEnemy();
             }
