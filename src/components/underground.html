@@ -160,6 +160,7 @@
                                     <th></th>
                                     <th>Item</th>
                                     <th></th>
+				  <th class="text-center">Inv</th>
                                     <th></th>
                                     <th>Item</th>
                                     <th></th>
@@ -173,6 +174,7 @@
                                     </td>
                                     <td class='vertical-middle' data-bind='text: amount1 + " × " + item1.name'></td>
                                     <td class='vertical-middle'>→</td>
+				  <td class='vertical-middle text-center' data-bind='text: player.getUndergroundItemAmount(item2.id)'></td>
                                     <td class='vertical-middle'>
                                         <img class='mineInventoryItem' data-bind='attr: {src: item2.image }'>
                                     </td>
