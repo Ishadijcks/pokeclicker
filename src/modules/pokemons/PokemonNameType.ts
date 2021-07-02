@@ -1162,8 +1162,4 @@ export type PokemonNameType
     | 'Squirtle (clone)'
     | 'Wartortle (clone)'
     | 'Blastoise (clone)'
-    | 'Mega Venusaur'
-    | 'Mega Charizard X'
-    | 'Mega Gyarados'
-    | 'Mega Rayquaza'
     | '???';
