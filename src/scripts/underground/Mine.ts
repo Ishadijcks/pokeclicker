@@ -166,7 +166,7 @@ class Mine {
 
         const tiles = App.game.underground.getSurvey_Efficiency();
         for (let i = 0; i < tiles; i++) {
-            const x = GameConstants.randomIntBetween(0, App.game.underground.getSizeY() - 1);
+            const x = GameConstants.randomIntBetween(0, this.getHeight() - 1);
             const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
             this.breakTile(x, y, 5);
         }
@@ -259,7 +259,7 @@ class Mine {
         let tiles = App.game.underground.getBombEfficiency();
         if (App.game.underground.energy >= Underground.BOMB_ENERGY) {
             while (tiles-- > 0) {
-                const x = GameConstants.randomIntBetween(0, App.game.underground.getSizeY() - 1);
+                const x = GameConstants.randomIntBetween(0, this.getHeight() - 1);
                 const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
                 this.breakTile(x, y, 2);
             }
@@ -305,7 +305,11 @@ class Mine {
     }
 
     private static normalizeY(y: number): number {
-        return Math.min(App.game.underground.getSizeY() - 1, Math.max(0, y));
+        return Math.min(this.getHeight() - 1, Math.max(0, y));
+    }
+
+    public static getHeight(): number {
+        return this.rewardGrid ? this.rewardGrid.length : 0;
     }
 
     public static checkItemsRevealed() {
@@ -366,7 +370,7 @@ class Mine {
 
     public static checkItemRevealed(id: number) {
         for (let i = 0; i < Underground.sizeX; i++) {
-            for (let j = 0; j < App.game.underground.getSizeY(); j++) {
+            for (let j = 0; j < this.getHeight(); j++) {
                 if (Mine.rewardGrid[j][i] != 0) {
                     if (Mine.rewardGrid[j][i].value == id) {
                         if (Mine.rewardGrid[j][i].revealed === 0) {
