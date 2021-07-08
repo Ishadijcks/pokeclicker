@@ -6,7 +6,6 @@ class PokeBlock extends Item {
         super(`PokeBlock_${GameConstants.PokeBlockColor[color]}`, basePrice, currency);
         this.type = color;
     }
-
 }
 
 ItemList['PokeBlock_Black']  = new PokeBlock(GameConstants.PokeBlockColor.Black, Infinity);

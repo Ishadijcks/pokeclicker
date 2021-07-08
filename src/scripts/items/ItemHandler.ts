@@ -29,10 +29,8 @@ class ItemHandler {
 
         player.itemList[name](player.itemList[name]() - this.amountToUse);
 
-        // run the function
-        const result = ItemList[name].use();
-        // If the function returned nothing assume it went fine
-        return result == undefined ? true : result;
+        // Use the item, return the resut
+        return ItemList[name].use();
     }
 
     public static hasItem(name: string): boolean {

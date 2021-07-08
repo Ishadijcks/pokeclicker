@@ -94,7 +94,7 @@ class PokemonFactory {
 
     public static generatePartyPokemon(id: number, shiny = false): PartyPokemon {
         const dataPokemon = PokemonHelper.getPokemonById(id);
-        return new PartyPokemon(dataPokemon.id, dataPokemon.name, dataPokemon.evolutions, dataPokemon.attack, 0, 0, 0, 0, false, shiny);
+        return new PartyPokemon(dataPokemon.id, dataPokemon.name, dataPokemon.evolutions, dataPokemon.attack, 0, 0, 0, 0, PartyLocation.Battle, shiny);
     }
 
     /**

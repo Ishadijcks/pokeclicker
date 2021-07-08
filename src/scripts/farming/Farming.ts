@@ -793,7 +793,7 @@ class Farming implements Feature {
         // Petaya
         this.mutations.push(new PetayaMutation(.00001));
         // Apicot
-
+        // TODO: HLXII - Add Mutation to randomly generate Apicot when Unown spelling APICOT in party.
         // Lansat
         // TODO: HLXII - Add Mutation to evolve Payapa when Milotic, Gardevoir, Blissey, and Togekiss in party.
         // Starf

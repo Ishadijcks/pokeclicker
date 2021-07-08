@@ -8,7 +8,7 @@ class EvolutionStone extends CaughtIndicatingItem {
         this.type = type;
     }
 
-    public gain(n: number) {
+    gain(n: number) {
         player.gainItem(GameConstants.StoneType[this.type], n);
     }
 

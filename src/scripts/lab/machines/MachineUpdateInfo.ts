@@ -1,0 +1,3 @@
+type MachineUpdateInfo = {
+    resetEffects?: boolean,
+}

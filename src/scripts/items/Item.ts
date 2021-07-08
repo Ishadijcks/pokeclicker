@@ -174,3 +174,9 @@ class Item {
 }
 
 const ItemList: { [name: string]: Item } = {};
+
+ItemList['Eject_button'] = new Item('Eject_button', Infinity, undefined, {}, 'Eject Button');
+ItemList['Lucky_punch'] = new Item('Lucky_punch', Infinity, undefined, {}, 'Lucky Punch');
+ItemList['Macho_brace'] = new Item('Macho_brace', Infinity, undefined, {}, 'Macho Brace');
+ItemList['Metronome'] = new Item('Metronome', Infinity, undefined, {}, 'Metronome');
+ItemList['Ring_target'] = new Item('Ring_target', Infinity, undefined, {}, 'Ring Target');

@@ -87,7 +87,7 @@ class Party implements Feature {
 
         const maxLevel = (App.game.badgeCase.badgeCount() + 2) * 10;
         for (const pokemon of this.caughtPokemon) {
-            if (pokemon.level < maxLevel) {
+            if (pokemon.level < maxLevel && pokemon.location === PartyLocation.Battle) {
                 pokemon.gainExp(expTotal);
             }
         }
@@ -99,10 +99,10 @@ class Party implements Feature {
      * @param type2 types of the enemy we're calculating damage against.
      * @returns {number} damage to be done.
      */
-    public calculatePokemonAttack(type1: PokemonType = PokemonType.None, type2: PokemonType = PokemonType.None, ignoreRegionMultiplier = false, region: GameConstants.Region = player.region, includeBreeding = false, useBaseAttack = false, includeWeather = true): number {
+    public calculatePokemonAttack(type1: PokemonType = PokemonType.None, type2: PokemonType = PokemonType.None, ignoreRegionMultiplier = false, region: GameConstants.Region = player.region, includeNonBattle = false, useBaseAttack = false, includeWeather = true): number {
         let attack = 0;
         for (const pokemon of this.caughtPokemon) {
-            attack += this.calculateOnePokemonAttack(pokemon, type1, type2, region, ignoreRegionMultiplier, includeBreeding, useBaseAttack, includeWeather);
+            attack += this.calculateOnePokemonAttack(pokemon, type1, type2, region, ignoreRegionMultiplier, includeNonBattle, useBaseAttack, includeWeather);
         }
 
         const bonus = this.multiplier.getBonus('pokemonAttack');
@@ -110,7 +110,7 @@ class Party implements Feature {
         return Math.round(attack * bonus);
     }
 
-    public calculateOnePokemonAttack(pokemon: PartyPokemon, type1: PokemonType = PokemonType.None, type2: PokemonType = PokemonType.None, region: GameConstants.Region = player.region, ignoreRegionMultiplier = false, includeBreeding = false, useBaseAttack = false, includeWeather = true): number {
+    public calculateOnePokemonAttack(pokemon: PartyPokemon, type1: PokemonType = PokemonType.None, type2: PokemonType = PokemonType.None, region: GameConstants.Region = player.region, ignoreRegionMultiplier = false, includeNonBattle = false, useBaseAttack = false, includeWeather = true): number {
         let multiplier = 1, attack = 0;
         const pAttack = useBaseAttack ? pokemon.baseAttack : pokemon.attack;
         const nativeRegion = PokemonHelper.calcNativeRegion(pokemon.name);
@@ -119,9 +119,8 @@ class Party implements Feature {
             // Pokemon only retain a % of their total damage in other regions based on highest region.
             multiplier = this.getRegionAttackMultiplier();
         }
-
-        // Check if the Pokemon is currently breeding (no attack)
-        if (includeBreeding || !pokemon.breeding) {
+        // Check for pokemon in battle
+        if (includeNonBattle || pokemon.location === PartyLocation.Battle) {
             if (type1 == PokemonType.None) {
                 attack = pAttack * multiplier;
             } else {

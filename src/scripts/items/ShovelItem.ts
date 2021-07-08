@@ -9,7 +9,6 @@ class ShovelItem extends Item {
     gain(amt: number) {
         GameHelper.incrementObservable(App.game.farming.shovelAmt, amt);
     }
-
 }
 
 ItemList['Berry_Shovel']   = new ShovelItem(300, 'Berry Shovel', 'Removes Berry Plants in the Farm.');

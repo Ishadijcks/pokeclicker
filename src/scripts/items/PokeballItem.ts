@@ -13,7 +13,6 @@ class PokeballItem extends Item {
         App.game.pokeballs.gainPokeballs(this.type, amt);
         GameHelper.incrementObservable(App.game.statistics.pokeballsBought[this.type], amt);
     }
-
 }
 
 ItemList['Pokeball']   = new PokeballItem(GameConstants.Pokeball.Pokeball, 100, undefined, undefined, 'Pokéball');

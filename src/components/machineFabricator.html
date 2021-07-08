@@ -1,0 +1,98 @@
+<div class="modal  fade" id="FabricatorModal" tabindex="-1" role="dialog"
+aria-labelledby="FabricatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof FabricatorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Fabricator</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineFabricator">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineFabricatorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machineFabricator" class="tab-pane fade in active show">
+                    <div class="row justify-content-center">
+                        <li class="col-sm-4 col-md-3 col-lg-2 pokedexEntry" style="background: #e8e8f0">
+                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: Fabricator.blueprints[state.blueprint].name">Name</span>
+                                <div style="width: 100%; height: 120px;">
+                                    <img src="" style="padding: 20px 0px; width:100%;height:100%;object-fit:contain;" data-bind="attr:{ src: BagHandler.image(Fabricator.blueprints[state.blueprint].fabrication) }">
+                                </div>
+                                <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + BagHandler.amount(Fabricator.blueprints[state.blueprint].fabrication)()">Amount</span>
+                        </li>
+                    </div>
+                    <div class="row justify-content-around" data-bind="foreach: Fabricator.blueprints[state.blueprint].cost">
+                        <h4 class="col-6">
+                            <img style="height: 24px" data-bind="attr: { src: BagHandler.image($data.item) },
+                            tooltip: { title: BagHandler.displayName($data.item), trigger: 'hover', placement: 'top' }"/>
+                            <span data-bind="text: GameConstants.formatNumber($data.amount) + '/' + GameConstants.formatNumber(BagHandler.amount($data.item)())">0</span>
+                        </h4>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="btn-group btn-block col-6 dropdown">
+                            <button type="button" class='btn btn-primary btn-block p-0'
+                            data-bind="tooltip: {title: Fabricator.blueprints[state.blueprint].costTooltip, trigger: 'hover', placement: 'right', html: true}">
+                            <span data-bind="text: Fabricator.blueprints[state.blueprint].name">Blueprint Name</span>
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active"
+                                data-boundary="viewport" data-bind="text: '&nbsp;', enable: !state.active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" data-bind="foreach: Fabricator.getAvailableBlueprints()">
+                                <button class="dropdown-item" type="button"
+                                    data-bind="text: $data.name,
+                                    click: function() {state.blueprint = $data.type;}"></button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <input id="queueInput" type="number" class="outline-dark form-control form-control-number"
+                                value="0" min="0" required name="queueInput"
+                                data-bind="textInput: state.queueInput, enable: !state.active"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { state.setMaxQueue(); }, enable: !state.active">
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + state.progressPercent + '%' }"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <span data-bind="text: state.progressString">Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="machineFabricatorHelp" class="tab-pane fade">
+                    <p>The Fabricator is used to create new Items and Machines.</p>
+
+                    <p>Fabricator Blueprints can be unlocked with Research.</p>
+
+                    <p>Set the number to the amount of fabrications for a Blueprint that you want, and then activate the machine.
+                    <br>Activating the machine will disable all configuration controls. To change the configuration, you must deactivate the machine.
+                    <br>The machine will run until either the required materials run out, or the queue number is 0.
+                    <br>Note that deactivating the machine will lose all current progress for the current fabrication.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+

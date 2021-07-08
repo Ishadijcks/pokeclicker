@@ -19,6 +19,13 @@
               </button>
             </td>
           </tr>
+          <tr data-bind="visible: App.game.lab.canAccess">
+            <td class="p-0">
+              <button class="btn btn-block btn-primary m-0" onclick="LabController.openLabModal()">
+                  Laboratory
+              </button>
+            </td>
+          </tr>
           <tr data-bind="visible: App.game.statistics.gymsDefeated[GameConstants.getGymIndex('Champion Lance')]">
             <td class="p-0">
               <button class="btn btn-block btn-primary m-0" onclick="ShopHandler.showShop(pokeMartShop);" href="#shopModal" data-toggle="modal">

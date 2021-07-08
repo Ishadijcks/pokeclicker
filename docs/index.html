@@ -44,24 +44,6 @@
     <link href="styles/styles.min.css?v=0.8.2" rel="stylesheet">
 
     <!-- Google Analytics-->
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-171657234-1"></script>
-    <script>
-        if (true) {
-            window.dataLayer = window.dataLayer || [];
-
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-
-            gtag('js', new Date());
-
-            gtag('config', 'UA-171657234-1');
-        } else {
-            function gtag(){};
-        }
-    </script>
-
     <style>
         #game.loading {
             display: none !important;
@@ -542,6 +524,123 @@
         </button>
     </div>
 </script>
+<!-- To be used in conjunction with the partyListTemplate -->
+<!-- Example usage -->
+<!-- <div data-bind="template: { name: 'partyFilterTemplate', data: {'name': 'breeding'}}"></div> -->
+
+<script type="text/html" id="partyFilterTemplate">
+    <div class="text-left">
+        <div class="form-row collapse" data-bind="attr: { id: $data.name + '-filter' }">
+            <div class="form-group col-md-6 col-6">
+                <label>Search</label>
+                <input autocomplete="off" class="form-control" oninput="PartyListController.filter.search(new RegExp(`(${this.value})`, 'i'))" placeholder="search here"/>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Display Value</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.displayValue(this.value)">
+                    <option value="attack" selected>Attack</option>
+                    <option value="attackBonus">Attack Bonus</option>
+                    <option value="baseAttack">Base Attack</option>
+                    <option value="eggSteps">Egg Steps</option>
+                    <option value="timesHatched">Times Hatched</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Category</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.category(this.value)">
+                    <option value="-1">All</option>
+                    <!-- ko foreach: PokemonCategories.categories -->
+                    <option style="color: whitesmoke" data-bind="attr: { value: $index }, text: $data.name, style: { background: $data.color }">Category</option>
+                    <!-- /ko -->
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Region</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.region(+this.value)">
+                    <option value="-2">All</option>
+                    <!-- ko foreach: GameHelper.enumStrings(GameConstants.Region).filter(r => r != 'none' && GameConstants.Region[r] <= player.highestRegion()) -->
+                    <option data-bind="attr: { value: GameConstants.Region[$data] }, text: GameConstants.camelCaseToString($data)">Region</option>
+                    <!-- /ko -->
+                    <option value="-1">None</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Shiny Status</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.shinyStatus(+this.value)">
+                    <option value="-1">All</option>
+                    <option value="0">Not Shiny</option>
+                    <option value="1">Shiny</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Type</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.type1(+this.value)">
+                    <option value="-2">All</option>
+                    <!-- ko foreach: GameHelper.enumStrings(PokemonType).filter(t => t != 'None') -->
+                    <option data-bind="attr: { value: PokemonType[$data] }, text: $data">Type</option>
+                    <!-- /ko -->
+                    <option value="-1">None</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label>Type</label>
+                <select autocomplete="off" class="custom-select" onchange="PartyListController.filter.type2(+this.value)">
+                    <option value="-2">All</option>
+                    <!-- ko foreach: GameHelper.enumStrings(PokemonType).filter(t => t != 'None') -->
+                    <option data-bind="attr: { value: PokemonType[$data] }, text: $data">Type</option>
+                    <!-- /ko -->
+                    <option value="-1">None</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row collapse" data-bind="attr: { id: $data.name + '-sort' }">
+            <div class="form-group col" data-bind="with: Settings.getSetting('partySort')">
+                <label>Sort</label>
+                <div class="input-group">
+                    <select autocomplete="off" class="custom-select" onchange="Settings.setSettingByName(this.name, SortOptions[SortOptions[this.value]])"
+                        data-bind="foreach: $data.options, attr: {name}, selectedOptions: [$data.observableValue()]">
+                        <option data-bind="text: $data.text, value: $data.value"></option>
+                    </select>
+                    <div class="input-group-append bg-primary text-light">
+                        <label for="partySortDirection" class="clickable m-0 pl-2 pr-2" style="font-size: 22px;" data-bind="text: Settings.getSetting('partySortDirection').observableValue() ? '⥄' : '⥂'">⥂</label>
+                        <input id="partySortDirection" style="vertical-align: middle" class="hidden" type='checkbox'
+                            data-bind="checked: Settings.getSetting('partySortDirection').observableValue()"
+                            onchange="Settings.setSettingByName('partySortDirection', this.checked)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- To be used in conjunction with the partyListTemplate -->
+<!-- Example usage -->
+<!-- <div data-bind="template: { name: 'partyListTemplate', data: {'name': 'breeding', 'controller': BreedingController }}"></div> -->
+
+<script type="text/html" id="partyListTemplate">
+    <ul class="row justify-content-center p-0" data-bind="foreach: App.game.party.caughtPokemon">
+        <li class="eggSlot col-sm-4 col-md-3 col-lg-2 pokedexEntry text-nowrap"
+        data-bind="visible: $parent.controller.visible($data),
+        style:{background: PokedexHelper.getBackgroundColors($data.name)},
+        css: { disabled: $parent.controller.disabled($data) }">
+            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data.name">name</span>
+            <div data-bind="visible: App.game.party.alreadyCaughtPokemon($data.id, true)" style="position: absolute;right: 0px;top: 0px;">✨</div>
+            <img src="" width="80px" data-bind="attr:{ src: PokedexHelper.getImage($data.id)}">
+            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: $parent.controller.getDisplayValue($data)">value</span>
+            <a class="overlay" data-bind="click: function() { $parent.controller.handleClick($data); }"></a>
+            <div class="pokemonCategory dropdown">
+                <button data-toggle="dropdown" data-bind="class: `category-${$data.category + 1}`"></button>
+                <div class="dropdown-menu p-0">
+                    <!-- ko foreach: PokemonCategories.categories -->
+                    <a class="dropdown-item category" href="#" data-bind="text: $data.name, click: () => { $parent.category = $index() }">Category</a>
+                    <!-- /ko -->
+                    <a class="dropdown-item bg-dark py-1" href="#categoryModal" data-toggle="modal"><i>Edit</i></a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</script>
+
 
 <div id="game" class="container loading">
     <div class="row justify-content-center">
@@ -718,7 +817,7 @@
                 </tr>
             </thead>
             <tbody data-bind="foreach: PartyController.getSortedList()">
-                <tr data-bind="hidden: $data.breeding">
+                <tr data-bind="hidden: $data.location !== PartyLocation.Battle">
                     <td>
                         <img
                             class="smallImage"
@@ -2453,7 +2552,17 @@
 
     
 
-<image href="/assets/images/ship.png" xlink:href="/assets/images/ship.png"
+<rect class="city"
+    data-town="Laboratory" 
+    x="272"
+    y="880"
+    height="64"
+    width="112"
+    data-bind="click:function(){LabController.openLabModal()}, attr: { class: App.game.lab.canAccess() ? &#39;city unlockedTown&#39; : &#39;city lockedTown&#39; }">
+</rect>
+    
+
+<image href="assets/images/ship.png" xlink:href="assets/images/ship.png"
     x="800"
     y="560"
     height="48"
@@ -2468,6 +2577,7 @@
     data-bind="visible: player.highestRegion() &gt;= 1, click:function(){MapHelper.openShipModal()}, css:{ unlockedTown: player.highestRegion() &gt;= 1}">
 </rect>
 </g>
+
                             <g data-bind='visible: player.region == GameConstants.Region.johto'>
     <image width="1600" height="960" xlink:href="assets/images/johto.png" href="assets/images/johto.png"></image>
 
@@ -9468,12 +9578,13 @@
 </g>
 
                             <g data-bind='visible: player.region == GameConstants.Region.alola'>
-    <image width="1600" height="960" xlink:href="assets/images/background.png" href="assets/images/background.png"></image>
+    <image width="1600" height="960" xlink:href="assets/images/alola.png" href="assets/images/alola.png"></image>
 
     <!-- ------ -->
     <!-- ROUTES -->
     <!-- ------ -->
 
+    <!--Route 1-->
     
 
 <g
@@ -9482,15 +9593,32 @@
     <rect data-route='1'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(1, 6) }"
         height="48"
-        width="192"
-        x="0" y="0">
+        width="240"
+        x="288" y="384">
     </rect>
 
-    <text style="font-size: 32px" x="88" y="34">1</text>
+    <text style="font-size: 32px" x="400" y="418">1</text>
 
 </g>
 
 
+    <!--Route 1 Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(1, 6); } ">
+    <rect data-route='1'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(1, 6) }"
+        height="80"
+        width="48"
+        x="480" y="432">
+    </rect>
+
+</g>
+
+
+    <!--Route 1 Hau'oli Outskirts--> 
     
 
 <g
@@ -9499,15 +9627,82 @@
     <rect data-route='18'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(18, 6) }"
         height="48"
-        width="192"
-        x="0" y="48">
+        width="272"
+        x="272" y="512">
     </rect>
 
-    <text style="font-size: 32px" x="80" y="82">18</text>
+    <text style="font-size: 32px" x="336" y="546">Outskirts</text>
 
 </g>
 
 
+    <!--Route 1 Hau'oli Outskirts Extension--> 
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(18, 6); } ">
+    <rect data-route='18'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(18, 6) }"
+        height="80"
+        width="48"
+        x="496" y="560">
+    </rect>
+
+</g>
+
+
+    <!--Route 1 Hau'oli Outskirts Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(18, 6); } ">
+    <rect data-route='18'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(18, 6) }"
+        height="48"
+        width="64"
+        x="208" y="480">
+    </rect>
+
+</g>
+
+
+    <!--Route 1 Hau'oli Outskirts Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(18, 6); } ">
+    <rect data-route='18'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(18, 6) }"
+        height="32"
+        width="48"
+        x="272" y="480">
+    </rect>
+
+</g>
+
+
+    <!--Route 2-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(2, 6); } ">
+    <rect data-route='2'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(2, 6) }"
+        height="312"
+        width="48"
+        x="64" y="144">
+    </rect>
+
+    <text style="font-size: 32px" x="80" y="310">2</text>
+
+</g>
+
+
+    <!--Route 2 Extension-->
     
 
 <g
@@ -9516,15 +9711,32 @@
     <rect data-route='2'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(2, 6) }"
         height="48"
-        width="192"
-        x="0" y="96">
+        width="176"
+        x="112" y="144">
     </rect>
-
-    <text style="font-size: 32px" x="88" y="130">2</text>
 
 </g>
 
 
+    <!--Route 3-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(3, 6); } ">
+    <rect data-route='3'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(3, 6) }"
+        height="240"
+        width="48"
+        x="384" y="144">
+    </rect>
+
+    <text style="font-size: 32px" x="400" y="274">3</text>
+
+</g>
+
+
+    <!--Route 3 Extension-->
     
 
 <g
@@ -9533,49 +9745,32 @@
     <rect data-route='3'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(3, 6) }"
         height="48"
-        width="192"
-        x="0" y="144">
+        width="96"
+        x="288" y="144">
     </rect>
-
-    <text style="font-size: 32px" x="88" y="178">3</text>
 
 </g>
 
 
+    <!--Melemele Sea-->
     
 
 <g
 
-    data-bind="click:function(){ MapHelper.moveToRoute(4, 6); } ">
-    <rect data-route='4'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(4, 6) }"
-        height="48"
-        width="192"
-        x="0" y="192">
+    data-bind="click:function(){ MapHelper.moveToRoute(19, 6); } ">
+    <rect data-route='19'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(19, 6) }"
+        height="160"
+        width="80"
+        x="592" y="528">
     </rect>
 
-    <text style="font-size: 32px" x="88" y="226">4</text>
+    <text style="font-size: 32px" x="608" y="618">Sea</text>
 
 </g>
 
 
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(5, 6); } ">
-    <rect data-route='5'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(5, 6) }"
-        height="48"
-        width="192"
-        x="0" y="240">
-    </rect>
-
-    <text style="font-size: 32px" x="88" y="274">5</text>
-
-</g>
-
-
+    <!--Melemele Sea Extension-->
     
 
 <g
@@ -9584,15 +9779,46 @@
     <rect data-route='19'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(19, 6) }"
         height="48"
-        width="192"
-        x="0" y="288">
+        width="128"
+        x="464" y="640">
     </rect>
-
-    <text style="font-size: 32px" x="80" y="322">19</text>
 
 </g>
 
 
+    <!--Melemele Sea Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(19, 6); } ">
+    <rect data-route='19'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(19, 6) }"
+        height="16"
+        width="32"
+        x="560" y="624">
+    </rect>
+
+</g>
+
+
+    <!--Melemele Sea Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(19, 6); } ">
+    <rect data-route='19'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(19, 6) }"
+        height="16"
+        width="16"
+        x="576" y="608">
+    </rect>
+
+</g>
+
+
+    <!--Kala'e Bay-->
     
 
 <g
@@ -9600,16 +9826,119 @@
     data-bind="click:function(){ MapHelper.moveToRoute(20, 6); } ">
     <rect data-route='20'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(20, 6) }"
-        height="48"
-        width="192"
-        x="0" y="336">
+        height="144"
+        width="96"
+        x="496" y="208">
     </rect>
 
-    <text style="font-size: 32px" x="80" y="370">20</text>
+    <text style="font-size: 32px" x="520" y="290">Bay</text>
 
 </g>
 
 
+    <!--Kala'e Bay Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(20, 6); } ">
+    <rect data-route='20'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(20, 6) }"
+        height="96"
+        width="64"
+        x="432" y="240">
+    </rect>
+
+</g>
+
+
+    <!--Kala'e Bay Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(20, 6); } ">
+    <rect data-route='20'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(20, 6) }"
+        height="16"
+        width="16"
+        x="480" y="336">
+    </rect>
+
+</g>
+
+
+    <!--Route 4-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(4, 6); } ">
+    <rect data-route='4'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(4, 6) }"
+        height="176"
+        width="48"
+        x="1136" y="480">
+    </rect>
+
+    <text style="font-size: 32px" x="1152" y="578">4</text>
+
+</g>
+
+
+    <!--Route 4 Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(4, 6); } ">
+    <rect data-route='4'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(4, 6) }"
+        height="48"
+        width="64"
+        x="1184" y="480">
+    </rect>
+
+</g>
+
+
+    <!--Route 5-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(5, 6); } ">
+    <rect data-route='5'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(5, 6) }"
+        height="224"
+        width="48"
+        x="1280" y="208">
+    </rect>
+
+    <text style="font-size: 32px" x="1296" y="330">5</text>
+
+</g>
+
+
+    <!--Route 6-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(6, 6); } ">
+    <rect data-route='6'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(6, 6) }"
+        height="240"
+        width="48"
+        x="1280" y="480">
+    </rect>
+
+    <text style="font-size: 32px" x="1296" y="610">6</text>
+
+</g>
+
+
+    <!--Route 6 Extension-->
     
 
 <g
@@ -9618,15 +9947,14 @@
     <rect data-route='6'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(6, 6) }"
         height="48"
-        width="192"
-        x="0" y="384">
+        width="96"
+        x="1184" y="672">
     </rect>
-
-    <text style="font-size: 32px" x="88" y="418">6</text>
 
 </g>
 
 
+    <!--Route 7-->
     
 
 <g
@@ -9634,16 +9962,17 @@
     data-bind="click:function(){ MapHelper.moveToRoute(7, 6); } ">
     <rect data-route='7'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(7, 6) }"
-        height="48"
-        width="192"
-        x="0" y="432">
+        height="464"
+        width="48"
+        x="1472" y="144">
     </rect>
 
-    <text style="font-size: 32px" x="88" y="466">7</text>
+    <text style="font-size: 32px" x="1488" y="386">7</text>
 
 </g>
 
 
+    <!--Route 8-->
     
 
 <g
@@ -9652,15 +9981,48 @@
     <rect data-route='8'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(8, 6) }"
         height="48"
-        width="192"
-        x="0" y="480">
+        width="320"
+        x="1200" y="96">
     </rect>
 
-    <text style="font-size: 32px" x="88" y="514">8</text>
+    <text style="font-size: 32px" x="1352" y="130">8</text>
 
 </g>
 
 
+    <!--Route 8 Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(8, 6); } ">
+    <rect data-route='8'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(8, 6) }"
+        height="112"
+        width="48"
+        x="1200" y="144">
+    </rect>
+
+</g>
+
+
+    <!--Route 8 Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(8, 6); } ">
+    <rect data-route='8'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(8, 6) }"
+        height="48"
+        width="32"
+        x="1248" y="208">
+    </rect>
+
+</g>
+
+
+    <!--Route 9-->
     
 
 <g
@@ -9669,15 +10031,32 @@
     <rect data-route='9'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(9, 6) }"
         height="48"
-        width="192"
-        x="0" y="528">
+        width="144"
+        x="1040" y="832">
     </rect>
 
-    <text style="font-size: 32px" x="88" y="562">9</text>
+    <text style="font-size: 32px" x="1104" y="866">9</text>
 
 </g>
 
 
+    <!--Route 9 Extension-->
+    
+
+<g
+
+    data-bind="click:function(){ MapHelper.moveToRoute(9, 6); } ">
+    <rect data-route='9'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(9, 6) }"
+        height="16"
+        width="48"
+        x="1136" y="816">
+    </rect>
+
+</g>
+
+
+    <!--Akala Outskirts-->
     
 
 <g
@@ -9686,300 +10065,27 @@
     <rect data-route='21'
         data-bind="attr: { class: MapHelper.calculateRouteCssClass(21, 6) }"
         height="48"
-        width="192"
-        x="0" y="576">
+        width="96"
+        x="1248" y="832">
     </rect>
 
-    <text style="font-size: 32px" x="80" y="610">21</text>
+    <text style="font-size: 32px" x="1264" y="866">A.O.</text>
 
 </g>
 
 
+    <!--Akala Outskirts Extension---->
     
 
 <g
 
-    data-bind="click:function(){ MapHelper.moveToRoute(10, 6); } ">
-    <rect data-route='10'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(10, 6) }"
-        height="48"
-        width="192"
-        x="0" y="624">
+    data-bind="click:function(){ MapHelper.moveToRoute(21, 6); } ">
+    <rect data-route='21'
+        data-bind="attr: { class: MapHelper.calculateRouteCssClass(21, 6) }"
+        height="32"
+        width="48"
+        x="1296" y="800">
     </rect>
-
-    <text style="font-size: 32px" x="80" y="658">10</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(22, 6); } ">
-    <rect data-route='22'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(22, 6) }"
-        height="48"
-        width="192"
-        x="0" y="672">
-    </rect>
-
-    <text style="font-size: 32px" x="80" y="706">22</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(11, 6); } ">
-    <rect data-route='11'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(11, 6) }"
-        height="48"
-        width="192"
-        x="0" y="720">
-    </rect>
-
-    <text style="font-size: 32px" x="80" y="754">11</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(12, 6); } ">
-    <rect data-route='12'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(12, 6) }"
-        height="48"
-        width="192"
-        x="0" y="768">
-    </rect>
-
-    <text style="font-size: 32px" x="80" y="802">12</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(13, 6); } ">
-    <rect data-route='13'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(13, 6) }"
-        height="48"
-        width="192"
-        x="192" y="16">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="50">13</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(14, 6); } ">
-    <rect data-route='14'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(14, 6) }"
-        height="48"
-        width="192"
-        x="192" y="64">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="98">14</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(15, 6); } ">
-    <rect data-route='15'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(15, 6) }"
-        height="48"
-        width="192"
-        x="192" y="112">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="146">15</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(16, 6); } ">
-    <rect data-route='16'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(16, 6) }"
-        height="48"
-        width="192"
-        x="192" y="160">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="194">16</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(17, 6); } ">
-    <rect data-route='17'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(17, 6) }"
-        height="48"
-        width="192"
-        x="192" y="208">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="242">17</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(23, 6); } ">
-    <rect data-route='23'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(23, 6) }"
-        height="48"
-        width="192"
-        x="192" y="256">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="290">23</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(24, 6); } ">
-    <rect data-route='24'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(24, 6) }"
-        height="48"
-        width="192"
-        x="192" y="304">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="338">24</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(25, 6); } ">
-    <rect data-route='25'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(25, 6) }"
-        height="48"
-        width="192"
-        x="192" y="352">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="386">25</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(26, 6); } ">
-    <rect data-route='26'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(26, 6) }"
-        height="48"
-        width="192"
-        x="192" y="400">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="434">26</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(27, 6); } ">
-    <rect data-route='27'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(27, 6) }"
-        height="48"
-        width="192"
-        x="192" y="448">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="482">27</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(28, 6); } ">
-    <rect data-route='28'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(28, 6) }"
-        height="48"
-        width="192"
-        x="192" y="496">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="530">28</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(29, 6); } ">
-    <rect data-route='29'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(29, 6) }"
-        height="48"
-        width="192"
-        x="192" y="544">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="578">29</text>
-
-</g>
-
-
-    
-
-<g
-
-    data-bind="click:function(){ MapHelper.moveToRoute(30, 6); } ">
-    <rect data-route='30'
-        data-bind="attr: { class: MapHelper.calculateRouteCssClass(30, 6) }"
-        height="48"
-        width="192"
-        x="192" y="592">
-    </rect>
-
-    <text style="font-size: 32px" x="272" y="626">30</text>
 
 </g>
 
@@ -9988,14 +10094,15 @@
     <!-- TOWNS -->
     <!-- ----- -->
 
+    <!--Iki Town-->
     
 
 <rect class="city"
     data-town="Iki Town" 
-    x="576"
-    y="0"
-    height="64"
-    width="64"
+    x="288"
+    y="312"
+    height="72"
+    width="80"
     data-bind="
         click:function(){MapHelper.moveToTown('Iki Town')},
         attr: { class: MapHelper.calculateTownCssClass('Iki Town') },
@@ -10004,12 +10111,28 @@
         ">
 </rect>
 
+    <!--Hau'oli City-->
     
 
 <rect class="city"
     data-town="Hau&#39;oli City" 
-    x="576"
-    y="64"
+    x="64"
+    y="456"
+    height="72"
+    width="80"
+    data-bind="
+        click:function(){MapHelper.moveToTown('Hau\&#39;oli City')},
+        attr: { class: MapHelper.calculateTownCssClass('Hau\&#39;oli City') },
+        ">
+</rect>
+
+    <!--Hau'oli City Extension-->
+    
+
+<rect class="city"
+    data-town="Hau&#39;oli City" 
+    x="144"
+    y="464"
     height="64"
     width="64"
     data-bind="
@@ -10018,12 +10141,28 @@
         ">
 </rect>
 
+    <!--Heahea City-->
     
 
 <rect class="city"
     data-town="Heahea City" 
-    x="576"
-    y="128"
+    x="1040"
+    y="648"
+    height="72"
+    width="80"
+    data-bind="
+        click:function(){MapHelper.moveToTown('Heahea City')},
+        attr: { class: MapHelper.calculateTownCssClass('Heahea City') },
+        ">
+</rect>
+
+    <!--Heahea City Extension-->
+    
+
+<rect class="city"
+    data-town="Heahea City" 
+    x="1120"
+    y="656"
     height="64"
     width="64"
     data-bind="
@@ -10032,12 +10171,13 @@
         ">
 </rect>
 
+    <!--Paniola Town-->
     
 
 <rect class="city"
     data-town="Paniola Town" 
-    x="576"
-    y="192"
+    x="1200"
+    y="416"
     height="64"
     width="64"
     data-bind="
@@ -10046,12 +10186,28 @@
         ">
 </rect>
 
+    <!--Royal Avenue-->
     
 
 <rect class="city"
     data-town="Royal Avenue" 
-    x="576"
-    y="256"
+    x="1328"
+    y="536"
+    height="72"
+    width="80"
+    data-bind="
+        click:function(){MapHelper.moveToTown('Royal Avenue')},
+        attr: { class: MapHelper.calculateTownCssClass('Royal Avenue') },
+        ">
+</rect>
+
+    <!--Royal Avenue Extension-->
+    
+
+<rect class="city"
+    data-town="Royal Avenue" 
+    x="1408"
+    y="544"
     height="64"
     width="64"
     data-bind="
@@ -10060,12 +10216,13 @@
         ">
 </rect>
 
+    <!--Konikoni City-->
     
 
 <rect class="city"
     data-town="Konikoni City" 
-    x="576"
-    y="320"
+    x="1024"
+    y="768"
     height="64"
     width="64"
     data-bind="
@@ -10074,28 +10231,15 @@
         ">
 </rect>
 
-    
-
-<rect class="city"
-    data-town="Malie City" 
-    x="576"
-    y="384"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Malie City')},
-        attr: { class: MapHelper.calculateTownCssClass('Malie City') },
-        ">
-</rect>
-
+    <!--Aether Paradise-->
     
 
 <rect class="city"
     data-town="Aether Paradise" 
-    x="576"
-    y="448"
-    height="64"
-    width="64"
+    x="720"
+    y="824"
+    height="72"
+    width="80"
     data-bind="
         click:function(){MapHelper.moveToTown('Aether Paradise')},
         attr: { class: MapHelper.calculateTownCssClass('Aether Paradise') },
@@ -10105,64 +10249,10 @@
     
 
 <rect class="city"
-    data-town="Tapu Village" 
-    x="576"
-    y="512"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Tapu Village')},
-        attr: { class: MapHelper.calculateTownCssClass('Tapu Village') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Seafolk Village" 
-    x="576"
-    y="576"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Seafolk Village')},
-        attr: { class: MapHelper.calculateTownCssClass('Seafolk Village') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Exeggutor Island" 
-    x="576"
-    y="640"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Exeggutor Island')},
-        attr: { class: MapHelper.calculateTownCssClass('Exeggutor Island') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Altar of the Sunne and Moone" 
-    x="576"
-    y="704"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Altar of the Sunne and Moone')},
-        attr: { class: MapHelper.calculateTownCssClass('Altar of the Sunne and Moone') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
     data-town="Trainers&#39; School" 
-    x="576"
-    y="768"
-    height="64"
+    x="320"
+    y="464"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Trainers\&#39; School')},
         attr: { class: MapHelper.calculateTownCssClass('Trainers\&#39; School') }">
@@ -10172,9 +10262,9 @@
 
 <rect class="city"
     data-town="Hau&#39;oli Cemetery" 
-    x="640"
-    y="32"
-    height="64"
+    x="112"
+    y="352"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Hau\&#39;oli Cemetery')},
         attr: { class: MapHelper.calculateTownCssClass('Hau\&#39;oli Cemetery') }">
@@ -10184,9 +10274,9 @@
 
 <rect class="city"
     data-town="Verdant Cavern" 
-    x="640"
-    y="96"
-    height="64"
+    x="224"
+    y="192"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Verdant Cavern')},
         attr: { class: MapHelper.calculateTownCssClass('Verdant Cavern') }">
@@ -10196,9 +10286,9 @@
 
 <rect class="city"
     data-town="Melemele Meadow" 
-    x="640"
-    y="160"
-    height="64"
+    x="320"
+    y="192"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Melemele Meadow')},
         attr: { class: MapHelper.calculateTownCssClass('Melemele Meadow') }">
@@ -10208,9 +10298,9 @@
 
 <rect class="city"
     data-town="Seaward Cave" 
-    x="640"
-    y="224"
-    height="64"
+    x="432"
+    y="192"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Seaward Cave')},
         attr: { class: MapHelper.calculateTownCssClass('Seaward Cave') }">
@@ -10220,8 +10310,21 @@
 
 <rect class="city"
     data-town="Ten Carat Hill" 
-    x="640"
-    y="288"
+    x="400"
+    y="560"
+    height="48"
+    width="96"
+    data-bind="click:function(){MapHelper.moveToTown('Ten Carat Hill')},
+        attr: { class: MapHelper.calculateTownCssClass('Ten Carat Hill') }">
+</rect>
+
+    <!--Ten Carat Hill Extension-->
+    
+
+<rect class="city"
+    data-town="Ten Carat Hill" 
+    x="400"
+    y="608"
     height="64"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Ten Carat Hill')},
@@ -10232,9 +10335,9 @@
 
 <rect class="city"
     data-town="Ruins of Conflict" 
-    x="640"
-    y="352"
-    height="64"
+    x="288"
+    y="256"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Ruins of Conflict')},
         attr: { class: MapHelper.calculateTownCssClass('Ruins of Conflict') }">
@@ -10244,9 +10347,9 @@
 
 <rect class="city"
     data-town="Pikachu Valley" 
-    x="640"
-    y="416"
-    height="64"
+    x="1104"
+    y="432"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Pikachu Valley')},
         attr: { class: MapHelper.calculateTownCssClass('Pikachu Valley') }">
@@ -10256,9 +10359,9 @@
 
 <rect class="city"
     data-town="Paniola Ranch" 
-    x="640"
-    y="480"
-    height="64"
+    x="1264"
+    y="432"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Paniola Ranch')},
         attr: { class: MapHelper.calculateTownCssClass('Paniola Ranch') }">
@@ -10268,10 +10371,23 @@
 
 <rect class="city"
     data-town="Brooklet Hill" 
-    x="640"
-    y="544"
-    height="64"
-    width="64"
+    x="1152"
+    y="320"
+    height="96"
+    width="80"
+    data-bind="click:function(){MapHelper.moveToTown('Brooklet Hill')},
+        attr: { class: MapHelper.calculateTownCssClass('Brooklet Hill') }">
+</rect>
+
+    <!--Brooklet Hill Extension-->
+    
+
+<rect class="city"
+    data-town="Brooklet Hill" 
+    x="1232"
+    y="320"
+    height="48"
+    width="48"
     data-bind="click:function(){MapHelper.moveToTown('Brooklet Hill')},
         attr: { class: MapHelper.calculateTownCssClass('Brooklet Hill') }">
 </rect>
@@ -10280,9 +10396,9 @@
 
 <rect class="city"
     data-town="Wela Volcano Park" 
-    x="640"
-    y="608"
-    height="64"
+    x="1408"
+    y="272"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Wela Volcano Park')},
         attr: { class: MapHelper.calculateTownCssClass('Wela Volcano Park') }">
@@ -10292,9 +10408,9 @@
 
 <rect class="city"
     data-town="Lush Jungle" 
-    x="640"
-    y="672"
-    height="64"
+    x="1264"
+    y="160"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Lush Jungle')},
         attr: { class: MapHelper.calculateTownCssClass('Lush Jungle') }">
@@ -10304,9 +10420,22 @@
 
 <rect class="city"
     data-town="Diglett&#39;s Tunnel" 
-    x="640"
-    y="736"
-    height="64"
+    x="1136"
+    y="720"
+    height="96"
+    width="48"
+    data-bind="click:function(){MapHelper.moveToTown('Diglett\&#39;s Tunnel')},
+        attr: { class: MapHelper.calculateTownCssClass('Diglett\&#39;s Tunnel') }">
+</rect>
+
+    <!--Diglett's Tunnel Extension-->
+    
+
+<rect class="city"
+    data-town="Diglett&#39;s Tunnel" 
+    x="1184"
+    y="720"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Diglett\&#39;s Tunnel')},
         attr: { class: MapHelper.calculateTownCssClass('Diglett\&#39;s Tunnel') }">
@@ -10316,9 +10445,9 @@
 
 <rect class="city"
     data-town="Memorial Hill" 
-    x="704"
-    y="0"
-    height="64"
+    x="1184"
+    y="832"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Memorial Hill')},
         attr: { class: MapHelper.calculateTownCssClass('Memorial Hill') }">
@@ -10328,240 +10457,12 @@
 
 <rect class="city"
     data-town="Ruins of Life" 
-    x="704"
-    y="64"
-    height="64"
+    x="1280"
+    y="752"
+    height="48"
     width="64"
     data-bind="click:function(){MapHelper.moveToTown('Ruins of Life')},
         attr: { class: MapHelper.calculateTownCssClass('Ruins of Life') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Malie Garden" 
-    x="704"
-    y="128"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Malie Garden')},
-        attr: { class: MapHelper.calculateTownCssClass('Malie Garden') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Hokulani Observatory" 
-    x="704"
-    y="192"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Hokulani Observatory')},
-        attr: { class: MapHelper.calculateTownCssClass('Hokulani Observatory') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Thrifty Megamart" 
-    x="704"
-    y="256"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Thrifty Megamart')},
-        attr: { class: MapHelper.calculateTownCssClass('Thrifty Megamart') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Ula&#39;ula Meadow" 
-    x="704"
-    y="320"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Ula\&#39;ula Meadow')},
-        attr: { class: MapHelper.calculateTownCssClass('Ula\&#39;ula Meadow') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Po Town" 
-    x="704"
-    y="384"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Po Town')},
-        attr: { class: MapHelper.calculateTownCssClass('Po Town') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Mount Lanikala" 
-    x="704"
-    y="448"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Mount Lanikala')},
-        attr: { class: MapHelper.calculateTownCssClass('Mount Lanikala') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Ruins of Abundance" 
-    x="704"
-    y="512"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Ruins of Abundance')},
-        attr: { class: MapHelper.calculateTownCssClass('Ruins of Abundance') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Vast Poni Canyon" 
-    x="704"
-    y="576"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Vast Poni Canyon')},
-        attr: { class: MapHelper.calculateTownCssClass('Vast Poni Canyon') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Nebby" 
-    x="704"
-    y="640"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Nebby')},
-        attr: { class: MapHelper.calculateTownCssClass('Nebby') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Ruins of Hope" 
-    x="704"
-    y="704"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Ruins of Hope')},
-        attr: { class: MapHelper.calculateTownCssClass('Ruins of Hope') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Poni Meadow" 
-    x="704"
-    y="768"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Poni Meadow')},
-        attr: { class: MapHelper.calculateTownCssClass('Poni Meadow') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Resolution Cave" 
-    x="768"
-    y="32"
-    height="64"
-    width="64"
-    data-bind="click:function(){MapHelper.moveToTown('Resolution Cave')},
-        attr: { class: MapHelper.calculateTownCssClass('Resolution Cave') }">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Pokémon League Alola" 
-    x="768"
-    y="96"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Pokémon League Alola')},
-        attr: { class: MapHelper.calculateTownCssClass('Pokémon League Alola') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Pokémon League Alola" 
-    x="768"
-    y="160"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Pokémon League Alola')},
-        attr: { class: MapHelper.calculateTownCssClass('Pokémon League Alola') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Pokémon League Alola" 
-    x="768"
-    y="224"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Pokémon League Alola')},
-        attr: { class: MapHelper.calculateTownCssClass('Pokémon League Alola') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Pokémon League Alola" 
-    x="768"
-    y="288"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Pokémon League Alola')},
-        attr: { class: MapHelper.calculateTownCssClass('Pokémon League Alola') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Pokémon League Alola" 
-    x="768"
-    y="352"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Pokémon League Alola')},
-        attr: { class: MapHelper.calculateTownCssClass('Pokémon League Alola') },
-        ">
-</rect>
-
-    
-
-<rect class="city"
-    data-town="Pokémon League Alola" 
-    x="768"
-    y="416"
-    height="64"
-    width="64"
-    data-bind="
-        click:function(){MapHelper.moveToTown('Pokémon League Alola')},
-        attr: { class: MapHelper.calculateTownCssClass('Pokémon League Alola') },
-        ">
 </rect>
 
     <!-- ------------------ -->
@@ -10572,10 +10473,10 @@
 
 <rect class="city"
     data-town="Dock" 
-    x="1536"
-    y="0"
-    height="64"
-    width="64"
+    x="144"
+    y="528"
+    height="48"
+    width="32"
     data-bind="click:function(){MapHelper.openShipModal()}">
 </rect>
 
@@ -11881,6 +11782,13 @@
               </button>
             </td>
           </tr>
+          <tr data-bind="visible: App.game.lab.canAccess">
+            <td class="p-0">
+              <button class="btn btn-block btn-primary m-0" onclick="LabController.openLabModal()">
+                  Laboratory
+              </button>
+            </td>
+          </tr>
           <tr data-bind="visible: App.game.statistics.gymsDefeated[GameConstants.getGymIndex('Champion Lance')]">
             <td class="p-0">
               <button class="btn btn-block btn-primary m-0" onclick="ShopHandler.showShop(pokeMartShop);" href="#shopModal" data-toggle="modal">
@@ -12037,6 +11945,7 @@
                 </div>
             </button>
         </div>
+    </div>
 </script>
 
 
@@ -13005,7 +12914,6 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
            <ul class="nav nav-tabs nav-fill">
                 <li class="nav-item"><a class="nav-link active" href="#breeding-pokemon" data-toggle="tab">Pokémon</a></li>
                 <li class="nav-item"><a class="nav-link" href="#breeding-eggs" data-toggle="tab">Eggs</a></li>
-                <li class="nav-item"><a class="nav-link" href="#breeding-fossils" data-toggle="tab">Fossils</a></li>
             </ul>
 
             <p class="bg-danger my-0" data-bind="visible: !App.game.breeding.hasFreeEggSlot()">
@@ -13017,80 +12925,8 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
 
             <div class="tab-content p-3">
                 <div class="tab-pane active" id="breeding-pokemon">
-                    <div class="text-left">
-                        <div class="form-row collapse" id="breeding-filter">
-                            <div class="form-group col-md-6 col-6">
-                                <label>Search</label>
-                                <input autocomplete="off" class="form-control" oninput="BreedingController.filter.search(new RegExp(`(${this.value})`, 'i'))" placeholder="search here"/>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Display Value</label>
-                                <select name="breedingDisplayFilter" autocomplete="off" class="custom-select" onchange="BreedingController.displayValue(this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingDisplayFilter').options -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingDisplayFilter').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Category</label>
-                                <select name="breedingCategoryFilter" autocomplete="off" class="custom-select" onchange="BreedingController.filter.category(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <option value="-1">All</option>
-                                    <!-- ko foreach: PokemonCategories.categories -->
-                                    <option style="color: whitesmoke" data-bind="attr: { value: $index, selected: Settings.getSetting('breedingCategoryFilter').value == $index() }, text: $data.name, style: { background: $data.color }">Category</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Region</label>
-                                <select name="breedingRegionFilter" autocomplete="off" class="custom-select" onchange="BreedingController.filter.region(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingRegionFilter').options.filter(r => r.value <= player.highestRegion()) -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingRegionFilter').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Shiny Status</label>
-                                <select name="breedingShinyFilter" autocomplete="off" class="custom-select" onchange="BreedingController.filter.shinyStatus(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <option value="-1" data-bind="attr: { selected: Settings.getSetting('breedingShinyFilter').value === '-1' }">All</option>
-                                    <option value="0" data-bind="attr: { selected: Settings.getSetting('breedingShinyFilter').value === '0' }">Not Shiny</option>
-                                    <option value="1" data-bind="attr: { selected: Settings.getSetting('breedingShinyFilter').value === '1' }">Shiny</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Type</label>
-                                <select name="breedingTypeFilter1" autocomplete="off" class="custom-select" onchange="BreedingController.filter.type1(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingTypeFilter1').options -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingTypeFilter1').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 col-6">
-                                <label>Type</label>
-                                <select name="breedingTypeFilter2" autocomplete="off" class="custom-select" onchange="BreedingController.filter.type2(+this.value), Settings.setSettingByName(this.name, this.value)">
-                                    <!-- ko foreach: Settings.getSetting('breedingTypeFilter2').options -->
-                                    <option data-bind="attr: { value: $data.value, selected: Settings.getSetting('breedingTypeFilter2').value === $data.value }, text: $data.text">Type</option>
-                                    <!-- /ko -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row collapse" id="breeding-sort">
-                            <div class="form-group col" data-bind="with: Settings.getSetting('partySort')">
-                                <label>Sort</label>
-                                <div class="input-group">
-                                    <select autocomplete="off" class="custom-select" onchange="Settings.setSettingByName(this.name, SortOptions[SortOptions[this.value]])"
-                                        data-bind="foreach: $data.options, attr: {name}, selectedOptions: [$data.observableValue()]">
-                                        <option data-bind="text: $data.text, value: $data.value"></option>
-                                    </select>
-                                    <div class="input-group-append bg-primary text-light">
-                                        <label for="hatcheryPartySortDirection" class="clickable m-0 pl-2 pr-2" style="font-size: 22px;" data-bind="text: Settings.getSetting('partySortDirection').observableValue() ? '⥄' : '⥂'">⥂</label>
-                                        <input id="hatcheryPartySortDirection" style="vertical-align: middle" class="hidden" type='checkbox'
-                                            data-bind="checked: Settings.getSetting('partySortDirection').observableValue()"
-                                            onchange="Settings.setSettingByName('partySortDirection', this.checked)"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <div data-bind="template: { name: 'partyFilterTemplate', data: {'name': 'breeding'} }"></div>
                     <div>
                         <!-- Check if the player has any level 100 Pokémon or if they have any eggs -->
                         <p class="bg-danger my-0" data-bind="visible: !App.game.party.hasMaxLevelPokemon()">
@@ -13132,23 +12968,6 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
                             <a class="overlay" href="#breed" data-bind="click: function() { ItemList[$data].use(); App.game.breeding.checkCloseModal(); }"></a>
                             <knockout style="position: absolute; right: 2px; top: -14px;"
                                 data-bind="template: { name: 'caughtStatusTemplate', data: { status: ItemList[$data].getCaughtStatus() }, if: (ItemList[$data] instanceof CaughtIndicatingItem) }"/>
-                        </li>
-                    </ul>
-                    <!-- /ko -->
-                </div>
-
-                <div class="tab-pane" id="breeding-fossils">
-                    <p class="bg-warning my-0" data-bind="visible: !Object.keys(GameConstants.FossilToPokemon).filter(f => player.mineInventory().find(i => i.name == f && i.amount())).length">
-                        you don't have any fossils to breed.
-                    </p>
-
-                    <!-- ko if: Object.keys(GameConstants.FossilToPokemon).filter(f => player.mineInventory().find(i => i.name == f && i.amount())).length -->
-                    <ul class="row justify-content-center p-0" data-bind="foreach: Object.keys(GameConstants.FossilToPokemon).map(f => player.mineInventory().find(i => i.name == f)).filter(f => f ? f.amount() : false)">
-                        <li class="eggSlot col-sm-4 col-md-3 col-lg-2 pokedexEntry text-nowrap" data-bind="class: App.game.breeding.hasFreeEggSlot() ? '' : 'disabled'">
-                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: GameConstants.humanifyString($data.name)">fossil</span>
-                            <img src="" width="80px" data-bind="attr:{ src: `assets/images/breeding/${$data.name}.png` }">
-                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + $data.amount()">amount</span>
-                            <a class="overlay" href="#breed" data-bind="click: function() { Underground.sellMineItem($data.id); App.game.breeding.checkCloseModal(); }"></a>
                         </li>
                     </ul>
                     <!-- /ko -->
@@ -13398,13 +13217,13 @@ aria-labelledby="breedingModalLabel" aria-hidden="true">
             <!-- /ko -->
             <td class='vertical-middle'>
                 <div class="btn-group btn-block" data-bind="let: { sellAmount: ko.observable(1) }">
+                    <!-- ko if: valueType !== 'Mine Egg' -->
                     <button class='btn btn-success btn-block'
                             data-bind="attr: { 'data-itemid': id },
                             css: { disabled: amount() <= 0 || (valueType === 'Mine Egg' && !App.game.breeding.hasFreeEggSlot()) },
                                     text: valueType === 'Mine Egg' ? 'Breed' : 'Sell',
                                     click: function(){Underground.sellMineItem($element.dataset.itemid, sellAmount() || 1)}">
                     </button>
-                    <!-- ko if: valueType !== 'Mine Egg' -->
                     <button type="button" data-bind="text: sellAmount() + '&nbsp;'" class="btn btn-success dropdown-toggle dropdown-toggle-split active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     </button>
                     <div class="dropdown-menu" data-bind="foreach: [1, 10, 100, 1000, Infinity]">
@@ -14718,8 +14537,8 @@ aria-labelledby="damageCalculatorModalLabel" aria-hidden="true">
                 <div class="form-row m-0">
                     <div class="form-group col-md-3 col-6 align-self-center">
                         <div class="form-check">
-                            <input id="damage-calc-include-breeding" class="form-check-input" type="checkbox" autocomplete="off" data-bind="checked: DamageCalculator.includeBreeding"></input>
-                            <label for="damage-calc-include-breeding" class="form-check-label">Include Breeding</label>
+                            <input id="damage-calc-include-nonbattle" class="form-check-input" type="checkbox" autocomplete="off" data-bind="checked: DamageCalculator.includeNonBattle"></input>
+                            <label for="damage-calc-include-nonbattle" class="form-check-label">Include Non-Battle Pokémon</label>
                         </div>
                         <div class="form-check">
                             <input id="damage-calc-use-base" class="form-check-input" type="checkbox" autocomplete="off" data-bind="checked: DamageCalculator.baseAttackOnly"></input>
@@ -14849,6 +14668,1104 @@ aria-labelledby="damageCalculatorModalLabel" aria-hidden="true">
       </div>
   </div>
 </div>
+
+
+<!-- PokeLab Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade noselect" id="labModal" role="dialog"
+style="cursor:default" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content" data-bind="let: { labVisible: ko.observable(false) }">
+            <div class="modal-header p-0">
+                <ul class="nav nav-tabs nav-fill w-100">
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link active' href="#research" data-bind="click: function(){labVisible(false);}">Research</a></li>
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link' href="#lab" data-bind="click: function(){labVisible(true);}">Lab</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#labHelp" data-bind="click: function(){labVisible(false);}">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body tab-content p-0">
+
+                <div id="research" class="tab-pane fade in active show">
+                    <div class="row no-gutters justify-content-around">
+                        <button class="col-12 btn btn-primary m-1" onclick="LabController.openResearchListModal()">
+                            Research List
+                        </button>
+                    </div>
+                    <!-- ko foreach: App.game.lab.currentResearch() -->
+                    <div class="row no-gutters">
+                        <div class="col-8 text-left p-2">
+                            <span data-bind="text: $data.research.name">Name</span>
+                            <br>
+                            <small><span data-bind="text: $data.research.description">Description</span></small>
+                            <br>
+                            <span data-bind="text: 'Research Rate: ' + $data.workerRate.toFixed(1)">Research Rate</span>
+                        </div>
+                        <div class="col-4 p-1">
+                            <button class="btn btn-block btn-primary"
+                            data-bind="click: function() { LabController.openPartyListModal($index()); },
+                            enable: LabController.canAddWorkers($index())">
+                                Add Workers
+                            </button>
+                            <!-- ko if: $data.research.progress !== $data.research.points -->
+                            <button class="btn btn-block btn-danger" data-bind="click: function() { App.game.lab.cancelResearch($data.research, true); }">
+                                Cancel Research
+                            </button>
+                            <!-- /ko -->
+                            <!-- ko if: $data.research.progress === $data.research.points -->
+                            <button class="btn btn-block btn-success" data-bind="click: function() { App.game.lab.completeResearch($data.research); }">
+                                Complete Research
+                            </button>
+                            <!-- /ko -->
+                        </div>
+                        <!-- ko if: $data.workers.length -->
+                        <div class="col-12">
+                            <div id="hatcheryQueue" class="card-footer p-1" data-bind="foreach: $data.workers">
+                                <div class="queuePokemon clickable bg-primary" style="width: 8%" data-bind="click: function(){ $parent.removeWorker($index()) }">
+                                <img src="" data-bind="attr: { src: PokemonHelper.getImage(pokemonMap[$data], App.game.party.alreadyCaughtPokemon(pokemonMap[$data].id, true)) }">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <div class="col-12 progress">
+                            <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + $data.research.progressPercent + '%' }"
+                            aria-valuemin="0" aria-valuemax="100">
+                                <span data-bind="text: $data.research.progressString">Progress</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                    <div data-bind="visible:  App.game.lab.currentResearch().length === 0">
+                        <p class="bg-success my-0">
+                            Open the Research List to start researching.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="lab" class="tab-pane fade">
+                    <div style="position: relative;">
+                        <img style="width: 100%" data-bind="attr: { src: LabController.getLabImage() }">
+                        <!-- ko foreach: App.game.lab.placedMachines -->
+                        <div id="machineHover" style="position: absolute;"
+                            data-bind="style: {
+                                width: $data.machineWidth(),
+                                height: $data.machineHeight(),
+                                top: $data.machineTop(),
+                                left: $data.machineLeft(),
+                            },
+                            tooltip: { title: $data.tooltip(), trigger: 'hover', placement: 'left', html: true },
+                            click: function() { LabController.handleMachineClick($data); }">
+                            <img width="100%" height="100%" style="image-rendering: pixelated;" src="" data-bind="attr: { src: $data.machine.image }">
+                        </div>
+                        <!-- /ko -->
+                        <div id="labGrid" style="position: absolute;" data-bind="visible: LabController.selectedMachine() !== undefined">
+                            <table style="width:100%;height:100%;">
+                                <tbody data-bind="foreach: { data: new Array(LabController.labRows()), as: 'y'}">
+                                    <tr data-bind="foreach: { data: new Array(LabController.labColumns()), as: 'x'}">
+                                        <td data-bind="click: function() {LabController.placeMachine(xIndex(),yIndex());},
+                                            event: { mouseover: function() {LabController.updateHover(xIndex(),yIndex());}, mouseout: function() {LabController.clearHover();}}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- ko if: LabController.selectedMachine() !== undefined -->
+                        <div id="machineHover" style="position: absolute; pointer-events: none;"
+                            data-bind="visible: LabController.selectedMachineVisible(),
+                            style: {
+                                width: LabController.machineWidth(),
+                                height: LabController.machineHeight(),
+                                top: LabController.hoverTopMargin(),
+                                left: LabController.hoverLeftMargin(),
+                            }">
+                            <img width="100%" height="100%" style="image-rendering: pixelated;" src="" data-bind="attr: { src: LabController.selectedMachine().image }">
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+
+                <div id="labHelp" class="tab-pane fade">
+                    <h4><u>Laboratory</u></h4>
+                    <p>In the Laboratory you can use Machines and Research various topics.</p>
+
+                    <h><u>Research</u></h>
+                    <p>You can research various topics in Lab by assigning Pokémon from your party to research. Researching Pokémon won't attack in battle, and also can't be bred.</p>
+                    <p>The rate that the Pokémon contributes to researching scales by their attack.</p>
+                    <p>Various Research Topics can be unlocked as you progress through the game.</p>
+                    <p>Note that canceling Research will reset all progress.</p>
+
+                    <u>Lab</u>
+                    <p>You can place Machines in the Lab that you can obtain from Research or Fabrication.</p>
+                    <p>Click on the machines to open a modal for configuring the machine or turning it on or off. You can also remove the machine from the Lab from this modal.</p>
+
+                </div>
+            </div>
+
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn"
+                    data-bind="style: { opacity: LabController.additionalInfoTooltip().length !== 0 ? '' : '0%' },
+                    tooltip: {
+                        title: LabController.additionalInfoTooltip(),
+                        trigger: 'hover',
+                        placement:'top',
+                        html: true,
+                    }">ⓘ</button>
+                    <!-- ko if: labVisible -->
+                    <!-- ko if: LabController.selectedMachine() === undefined -->
+                    <button class="col-6 btn btn-primary m-1" onclick="LabController.openMachineListModal()">
+                        Add Machine
+                    </button>
+                    <!-- /ko -->
+                    <!-- ko if: LabController.selectedMachine() !== undefined -->
+                    <button class="col-6 btn btn-danger m-1"
+                        data-bind="click: function() { LabController.selectedMachine(undefined); },
+                        text: 'Cancel Add Machine ' + '(' + LabController.selectedMachine().amount + ' left)'">
+                        Cancel Add Machine
+                    </button>
+                    <!-- /ko -->
+                    <!-- /ko -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Research List Modal -->
+<div class="modal  fade" id="researchListModal" tabindex="-1" role="dialog"
+aria-labelledby="ResearchListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Research List</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body table-responsive p-0">
+                <div class="tab-content p-3">
+                    <div class="tab-pane active">
+                        <div class="text-left">
+                            <div class="form-row">
+                                <div class="form-group col-md-6 col-6">
+                                    <label>Status</label>
+                                    <select class="custom-select" onchange="ResearchHandler.filter.status(this.value)">
+                                        <option value="all" selected>All</option>
+                                        <option value="locked">Locked</option>
+                                        <option value="incomplete">Incomplete</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 col-6">
+                                    <label>Type</label>
+                                    <select class="custom-select" onchange="ResearchHandler.filter.type(this.value)">
+                                        <option value="all" selected>All</option>
+                                        <!-- ko foreach: GameHelper.enumStrings(ResearchType) -->
+                                        <option data-bind="value: $data, text: $data.replace('_', ' ')">Type</option>
+                                        <!-- /ko -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover table-striped table-sm m-0">
+                    <tbody data-bind="template: { name: 'researchListTemplate', foreach: ResearchHandler.getResearchListWithIndex()}">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateIndex(0)"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(true),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(true) }
+                  "
+                >
+                  <img src="assets/images/arrow-double.svg" style="transform: scaleX(-1);" height="20">
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateLeft()"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(true),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(true) }
+                  "
+                >
+                  <img src="assets/images/arrow.svg" style="transform: scaleX(-1);" height="20">
+                </button>
+                <div data-bind="text: ResearchHandler.navigateIndex()+1 + '/' + ResearchHandler.numberOfTabs()"></div>
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateRight()"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(false),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(false) }
+                  "
+                >
+                  <img src="assets/images/arrow.svg" height="20">
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="ResearchHandler.navigateIndex(ResearchHandler.numberOfTabs() - 1)"
+                  data-bind="
+                      disable: ResearchHandler.isNavigateDirectionDisabled(false),
+                      css: { disabled: ResearchHandler.isNavigateDirectionDisabled(false) }
+                  "
+                >
+                  <img src="assets/images/arrow-double.svg" height="20">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/html" id="researchListTemplate">
+        <tr
+            class="achievement-row"
+            data-bind="class: ResearchHandler.getTableClass($data)">
+            <td style="text-align:left;vertical-align:middle;">
+                <b><span data-bind="text: name">Name</span></b>
+                <br>
+                <small><span data-bind="text: description">Description</span></small>
+                <!-- ko if: workerFilter-->
+                <br>
+                <small><span data-bind="text: workerFilter.description">Worker Filter</span></small>
+                <!-- /ko -->
+            </td>
+
+            <td class="vertical-middle">
+                <button class="btn btn-block" data-bind="
+                    text: ResearchHandler.getButtonText($data),
+                    class: ResearchHandler.getButtonClass($data),
+                    css: { disabled: !ResearchHandler.getButtonStatus($data) },
+                    click: function() { ResearchHandler.handleClick($data); },
+                    tooltip: {
+                        title: ResearchHandler.getButtonTooltip($data),
+                        trigger: 'hover',
+                        placement:'left',
+                        html: true,
+                    }">
+                    Button
+                </button>
+            </td>
+        </tr>
+    </script>
+</div>
+
+
+<!-- Machine List Modal -->
+<div class="modal  fade" id="machineListModal" tabindex="-1" role="dialog"
+aria-labelledby="MachineListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Machines</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-0">
+
+                <p class="bg-danger my-0" data-bind="visible: !MachineHandler.machineListFiltered().length">
+                    You don't have any more machines to place.
+                </p>
+
+                <ul class="row justify-content-center p-0" data-bind="foreach: MachineHandler.machineListFiltered()"
+                style="max-width: 100%; padding:0; margin:0;">
+                    <li class="col-sm-4 col-md-3 col-lg-2 pokedexEntry" style="background: #e8e8f0"
+                    data-bind="tooltip: { title: $data.description, trigger: 'hover', placement: 'left' },
+                        click: function() { MachineHandler.handleClick($data); }">
+                        <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data.name">Name</span>
+                            <div style="width: 100%; height: 120px;">
+                                <img src="" style="image-rendering: pixelated; padding: 20px 0px; width:100%;height:100%;object-fit:contain;" data-bind="attr:{ src: $data.image }">
+                            </div>
+                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: $data.amount">Amount</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Research Worker Modal -->
+<div class="modal fade" id="researchWorkerModal" tabindex="-1" role="dialog"
+aria-labelledby="researchWorkerModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+   <div class="modal-content">
+       <div class="modal-header justify-content-start align-items-center">
+            <h5 class="modal-title" id="researchWorkerModalLabel">Party</h5>
+            <button class="btn btn-secondary" type="button" data-toggle="collapse" style="margin-left: 25px;"
+                    data-target="#research-filter" aria-expanded="false" aria-controls="research-filter">
+                Filters
+            </button>
+            <button class="btn btn-secondary" type="button" data-toggle="collapse" style="margin-left: 25px;"
+                    data-target="#research-sort" aria-expanded="false" aria-controls="research-sort">
+                Sort
+            </button>
+       </div>
+       <div class="modal-body p-0">
+            <div class="tab-content p-3">
+                <div class="tab-pane active" id="research-pokemon">
+                    <div data-bind="template: { name: 'partyFilterTemplate', data: {'name': 'research'} }"></div>
+                    <div data-bind="template: { name: 'partyListTemplate', data: { 'name': 'research', controller: LabController } }"></div>
+                </div>
+            </div>
+       </div>
+       <div class="modal-footer">
+           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+       </div>
+   </div>
+</div>
+</div>
+
+
+<!-- Fabricator Modal -->
+<div class="modal  fade" id="FabricatorModal" tabindex="-1" role="dialog"
+aria-labelledby="FabricatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof FabricatorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Fabricator</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineFabricator">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineFabricatorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machineFabricator" class="tab-pane fade in active show">
+                    <div class="row justify-content-center">
+                        <li class="col-sm-4 col-md-3 col-lg-2 pokedexEntry" style="background: #e8e8f0">
+                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: Fabricator.blueprints[state.blueprint].name">Name</span>
+                                <div style="width: 100%; height: 120px;">
+                                    <img src="" style="padding: 20px 0px; width:100%;height:100%;object-fit:contain;" data-bind="attr:{ src: BagHandler.image(Fabricator.blueprints[state.blueprint].fabrication) }">
+                                </div>
+                                <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + BagHandler.amount(Fabricator.blueprints[state.blueprint].fabrication)()">Amount</span>
+                        </li>
+                    </div>
+                    <div class="row justify-content-around" data-bind="foreach: Fabricator.blueprints[state.blueprint].cost">
+                        <h4 class="col-6">
+                            <img style="height: 24px" data-bind="attr: { src: BagHandler.image($data.item) },
+                            tooltip: { title: BagHandler.displayName($data.item), trigger: 'hover', placement: 'top' }"/>
+                            <span data-bind="text: GameConstants.formatNumber($data.amount) + '/' + GameConstants.formatNumber(BagHandler.amount($data.item)())">0</span>
+                        </h4>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="btn-group btn-block col-6 dropdown">
+                            <button type="button" class='btn btn-primary btn-block p-0'
+                            data-bind="tooltip: {title: Fabricator.blueprints[state.blueprint].costTooltip, trigger: 'hover', placement: 'right', html: true}">
+                            <span data-bind="text: Fabricator.blueprints[state.blueprint].name">Blueprint Name</span>
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active"
+                                data-boundary="viewport" data-bind="text: '&nbsp;', enable: !state.active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" data-bind="foreach: Fabricator.getAvailableBlueprints()">
+                                <button class="dropdown-item" type="button"
+                                    data-bind="text: $data.name,
+                                    click: function() {state.blueprint = $data.type;}"></button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <input id="queueInput" type="number" class="outline-dark form-control form-control-number"
+                                value="0" min="0" required name="queueInput"
+                                data-bind="textInput: state.queueInput, enable: !state.active"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { state.setMaxQueue(); }, enable: !state.active">
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + state.progressPercent + '%' }"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <span data-bind="text: state.progressString">Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="machineFabricatorHelp" class="tab-pane fade">
+                    <p>The Fabricator is used to create new Items and Machines.</p>
+
+                    <p>Fabricator Blueprints can be unlocked with Research.</p>
+
+                    <p>Set the number to the amount of fabrications for a Blueprint that you want, and then activate the machine.
+                    <br>Activating the machine will disable all configuration controls. To change the configuration, you must deactivate the machine.
+                    <br>The machine will run until either the required materials run out, or the queue number is 0.
+                    <br>Note that deactivating the machine will lose all current progress for the current fabrication.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
+
+
+<!-- Plate Reconstructor Modal -->
+<div class="modal  fade" id="PlateReconstructorModal" tabindex="-1" role="dialog"
+aria-labelledby="PlateReconstructorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof PlateReconstructorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Plate Reconstructor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machinePlateReconstructor">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machinePlateReconstructorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machinePlateReconstructor" class="tab-pane fade in active show">
+                    <div class="row justify-content-center">
+                        <h4 class="col-6 col-sm-4 col-lg-2">
+                            <span style="display: inline;">
+                                <img alt="Shards" style="height: 24px" data-bind="attr: { src: BagHandler.image({type: ItemType.shard, id: state.plateType}) }"/>
+                                <span data-bind="text: GameConstants.formatNumber(BagHandler.amount({type: ItemType.shard, id: state.plateType})())">0</span>
+                            </span>
+                        </h4>
+                        <h4 class="col-6 col-sm-4 col-lg-2">
+                            <span style="display: inline;">
+                                <img alt="Plates" style="height: 24px" data-bind="attr: { src: BagHandler.image({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)}) }"/>
+                                <span data-bind="text: GameConstants.formatNumber(BagHandler.amount({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)})())">0</span>
+                            </span>
+                        </h4>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="btn-group btn-block col-6 dropdown">
+                            <button type="button" class='btn btn-primary btn-block p-0'>
+                                <div style="display:inline"><img style="height: 24px" data-bind='attr: { src: BagHandler.image({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)}) }'/></div>
+                                <span data-bind="text: BagHandler.displayName({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)})">Plate Name</span>
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active"
+                                data-boundary="viewport" data-bind="text: '&nbsp;', enable: !state.active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" data-bind="foreach: UndergroundItem.getPlateTypes()">
+                                <button class="dropdown-item" type="button"
+                                    data-bind="text: BagHandler.displayName({type: ItemType.underground, id: UndergroundItem.getPlateIDByType($data)}),
+                                    click: function() {state.plateType = $data;}"></button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <input id="queueInput" type="number" class="outline-dark form-control form-control-number"
+                                value="0" min="0" required name="queueInput"
+                                data-bind="textInput: state.queueInput, enable: !state.active"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { state.setMaxQueue(); }, enable: !state.active">
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + state.progressPercent + '%' }"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <span data-bind="text: state.progressString">Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="machinePlateReconstructorHelp" class="tab-pane fade">
+                    <p>The Plate Reconstructor is used to reconstruct Plates from Shards.</p>
+
+                    <p>Set the number to the amount of plates to reconstruct, and then activate the machine.
+                    <br>Activating the machine will disable all configuration controls. To change the configuration, you must deactivate the machine.
+                    <br>The machine will run until either the required materials run out, or the queue number is 0.
+                    <br>Note that deactivating the machine will lose all current progress for the current reconstruction.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
+
+
+<!-- Plate Reconstructor Modal -->
+<div class="modal  fade" id="PlateDeconstructorModal" tabindex="-1" role="dialog"
+aria-labelledby="PlateDeconstructorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof PlateDeconstructorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Plate Deconstructor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machinePlateDeconstructor">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machinePlateDeconstructorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machinePlateDeconstructor" class="tab-pane fade in active show">
+                    <div class="row justify-content-center">
+                        <h4 class="col-6 col-sm-4 col-lg-2">
+                            <span style="display: inline;">
+                                <img alt="Plates" style="height: 24px" data-bind="attr: { src: BagHandler.image({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)}) }"/>
+                                <span data-bind="text: GameConstants.formatNumber(BagHandler.amount({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)})())">0</span>
+                            </span>
+                        </h4>
+                        <h4 class="col-6 col-sm-4 col-lg-2">
+                            <span style="display: inline;">
+                                <img alt="Shards" style="height: 24px" data-bind="attr: { src: BagHandler.image({type: ItemType.shard, id: state.plateType}) }"/>
+                                <span data-bind="text: GameConstants.formatNumber(BagHandler.amount({type: ItemType.shard, id: state.plateType})())">0</span>
+                            </span>
+                        </h4>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="btn-group btn-block col-6 dropdown">
+                            <button type="button" class='btn btn-primary btn-block p-0'>
+                                <div style="display:inline"><img style="height: 24px" data-bind='attr: { src: BagHandler.image({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)}) }'/></div>
+                                <span data-bind="text: BagHandler.displayName({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)})">Plate Name</span>
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active"
+                                data-boundary="viewport" data-bind="text: '&nbsp;', enable: !state.active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" data-bind="foreach: UndergroundItem.getPlateTypes()">
+                                <button class="dropdown-item" type="button"
+                                    data-bind="text: BagHandler.displayName({type: ItemType.underground, id: UndergroundItem.getPlateIDByType($data)}),
+                                    click: function() {state.plateType = $data;}"></button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <input id="queueInput" type="number" class="outline-dark form-control form-control-number"
+                                value="0" min="0" required name="queueInput"
+                                data-bind="textInput: state.queueInput, enable: !state.active"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { state.setMaxQueue(); }, enable: !state.active">
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + state.progressPercent + '%' }"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <span data-bind="text: state.progressString">Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="machinePlateDeconstructorHelp" class="tab-pane fade">
+                    <p>The Plate Deconstructor is used to deconstruct Plates into Shards.</p>
+
+                    <p>Set the number to the amount of plates to deconstruct, and then activate the machine.
+                    <br>Activating the machine will disable all configuration controls. To change the configuration, you must deactivate the machine.
+                    <br>The machine will run until either the required materials run out, or the queue number is 0.
+                    <br>Note that deactivating the machine will lose all current progress for the current deconstruction.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
+
+
+<!-- Fossil Reviver Modal -->
+<div class="modal  fade" id="FossilReviverModal" tabindex="-1" role="dialog"
+aria-labelledby="FossilReviverModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof FossilReviverState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Fossil Reviver</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineFossilReviver">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineFossilReviverHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machineFossilReviver" class="tab-pane fade in active show">
+                    <div class="row no-gutters justify-content-center">
+                        <!-- ko foreach: state._fossils -->
+                        <div class="col-3 eggSlot">
+                            <div class="content">
+                                <div style="margin-top: 20px;">
+                                    <!-- ko if: $data.fossil -->
+                                    <img data-bind="attr: { src: FossilReviver.getImage($data.data.name) }"/>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                            data-bind="attr: { style: 'width:' + $data.progressPercent + '%' }"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                            <span data-bind="text: $data.progressString"></span>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: state.queue.length > 0 -->
+                        <div class="col-12">
+                            <div id="hatcheryQueue" class="card-footer p-1" data-bind="foreach: state.queue">
+                                <div class="queuePokemon clickable bg-primary" style="width: 8%" data-bind="click: function(){ state.removeFromQueue($index()) }">
+                                <img src="" data-bind="attr: { src: FossilReviver.getImage($data) }">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                    <p class="bg-warning my-0" data-bind="visible: !FossilReviver.getAvailableFossils().length">
+                        You don't have any fossils to revive.
+                    </p>
+
+                    <!-- ko if: FossilReviver.getAvailableFossils().length -->
+                    <ul class="row justify-content-center p-0" data-bind="foreach: FossilReviver.getAvailableFossils()">
+                        <li class="eggSlot col-3 col-md-3 pokedexEntry text-nowrap"
+                            data-bind="css: { 'disabled': FossilReviver.isDisabled(state, $data) }">
+                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: $data">fossil</span>
+                            <img src="" width="80px" data-bind="attr:{ src: FossilReviver.getImage($data) }">
+                            <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px"
+                            data-bind="text: 'Amount: ' + BagHandler.amount({type: ItemType.underground, id: $data })()">Amount</span>
+                            <a class="overlay" href="#revive" data-bind="click: function() { state.addToMachine($data); }"></a>
+                        </li>
+                    </ul>
+                    <!-- /ko -->
+                </div>
+
+                <div id="machineFossilReviverHelp" class="tab-pane fade">
+                    <p>The Fossil Reviver is used to revive Fossil Pokémon.</p>
+
+                    <p>Specific Fossil types must be researched before they can be revived.</p>
+
+                    <p>Click on the available Fossils to add them to the machine, and activate the machine so start the revival process.
+                        <br>Once the Queue Research is completed, additional Fossils can be added to a queue to be automatically revived.
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
+
+
+<!-- Incubator Modal -->
+<div class="modal fade" id="IncubatorModal" tabindex="-1" role="dialog"
+aria-labelledby="IncubatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof IncubatorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5 data-bind="text: LabController.openedMachine().machine.name"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineIncubator">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineIncubatorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body tab-content">
+
+                <div id="machineIncubator" class="tab-pane fade in active show">
+                    <!-- ko if: App.game.lab.isResearched(Lab.Research.incubator_fuel) -->
+                    <div class="row no-gutters justify-content-center">
+                        <h4>
+                            <span data-bind="text: 'Fuel: ' + state.fuel.toFixed(1) + '/' + Incubator.fuelCapacity()">Fuel</span>
+                        </h4>
+                    </div>
+                    <div class="row justify-content-center" data-bind="foreach: Incubator.getAvailableFuels()">
+                        <div class="col-6 col-sm-4 col-lg-3">
+                        <button class="shopItem clickable btn btn-block btn-secondary"
+                                data-bind="click: function() {Incubator.selectedFuel($data.id);},
+                                css: { active: Incubator.selectedFuel() == $data.id },
+                                attr: { disabled: BagHandler.amount($data.item)() <= 0 }">
+                                <img src="" height="36px" data-bind="attr:{ src: BagHandler.image($data.item) }">
+                                <p data-bind="text: BagHandler.displayName($data.item)">Fuel Name</p>
+                                <div>
+                                    <small>
+                                        <span class="" data-bind="text: 'Amount: ' + BagHandler.amount($data.item)()">
+                                            Amount:
+                                        </span>
+                                    </small>
+                                </div>
+                                <div>
+                                    <small>
+                                        <span class="" data-bind="text: 'Fuel: ' + Incubator.getFuelTotalAmount($data).toFixed(1)">
+                                            Fuel:
+                                        </span>
+                                    </small>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="justify-content-center">
+                        <div class="input-group m-0" style="margin-bottom: 6px; margin-top: 6px">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-warning btn-outline-dark smallButton smallFont" onclick="Incubator.resetAmount()">
+                                    Reset
+                                </button>
+                            </div>
+                            <input id="amountOfFuel" type="number" class="outline-dark form-control form-control-number"
+                                    value="1" min="1" required name="amountOfFuel"
+                                    oninput="Incubator.amount(parseInt($(this).val().toString(), 10) || 0);"
+                                    onchange="Incubator.amount(parseInt($(this).val().toString(), 10) || 0);" title=""/>
+                            <div class="input-group-append">
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'original' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(10)">
+                                        +10
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(100)">
+                                        +100
+                                    </button>
+                                <!-- /ko -->
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'multiplication' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.multiplyAmount(10)">
+                                        &times;10
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.multiplyAmount(0.1)">
+                                        &div;10
+                                    </button>
+                                <!-- /ko -->
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'bigplus' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(100)">
+                                        +100
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Incubator.increaseAmount(1000)">
+                                        +1000
+                                    </button>
+                                <!-- /ko -->
+                                <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { Incubator.maxAmount(state); }">
+                                    Max
+                                </button>
+                                <button class="btn-outline-dark btn btn-success smallButton smallFont" data-bind="click: function() {state.checkValue();}">
+                                    Fuel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+
+                <div id="machineIncubatorHelp" class="tab-pane fade">
+                    <p>The Incubator will increase the number of Hatchery queue slots when active.</p>
+
+                    <p>Once the Fuel Research is completed, you can fuel the Incubator with various items to decrease hatching time.
+                        <br>Some items require additional Research before they can be used as fuel.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
+
+
+<!-- Generator Modal -->
+<div class="modal fade" id="GeneratorModal" tabindex="-1" role="dialog"
+aria-labelledby="GeneratorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof GeneratorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5 data-bind="text: LabController.openedMachine().machine.name"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machineGenerator">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machineGeneratorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body tab-content">
+
+                <div id="machineGenerator" class="tab-pane fade in active show">
+                    <!-- ko if: App.game.lab.isResearched(Lab.Research.generator_fuel) -->
+                    <div class="row no-gutters justify-content-center">
+                        <h4>
+                            <span data-bind="text: 'Fuel: ' + state.fuel.toFixed(1) + '/' + Generator.fuelCapacity()">Fuel</span>
+                        </h4>
+                    </div>
+                    <div class="row justify-content-center" data-bind="foreach: Generator.getAvailableFuels()">
+                        <div class="col-6 col-sm-4 col-lg-3">
+                        <button class="shopItem clickable btn btn-block btn-secondary"
+                                data-bind="click: function() {Generator.selectedFuel($data.id);},
+                                css: { active: Generator.selectedFuel() == $data.id },
+                                attr: { disabled: BagHandler.amount($data.item)() <= 0 }">
+                                <img src="" height="36px" data-bind="attr:{ src: BagHandler.image($data.item) }">
+                                <p data-bind="text: BagHandler.displayName($data.item)">Fuel Name</p>
+                                <div>
+                                    <small>
+                                        <span class="" data-bind="text: 'Amount: ' + BagHandler.amount($data.item)()">
+                                            Amount:
+                                        </span>
+                                    </small>
+                                </div>
+                                <div>
+                                    <small>
+                                        <span class="" data-bind="text: 'Fuel: ' + Generator.getFuelTotalAmount($data).toFixed(1)">
+                                            Fuel:
+                                        </span>
+                                    </small>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="justify-content-center">
+                        <div class="input-group m-0" style="margin-bottom: 6px; margin-top: 6px">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-warning btn-outline-dark smallButton smallFont" onclick="Generator.resetAmount()">
+                                    Reset
+                                </button>
+                            </div>
+                            <input id="amountOfFuel" type="number" class="outline-dark form-control form-control-number"
+                                    value="1" min="1" required name="amountOfFuel"
+                                    oninput="Generator.amount(parseInt($(this).val().toString(), 10) || 0);"
+                                    onchange="Generator.amount(parseInt($(this).val().toString(), 10) || 0);" title=""/>
+                            <div class="input-group-append">
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'original' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Generator.increaseAmount(10)">
+                                        +10
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Generator.increaseAmount(100)">
+                                        +100
+                                    </button>
+                                <!-- /ko -->
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'multiplication' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Generator.multiplyAmount(10)">
+                                        &times;10
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Generator.multiplyAmount(0.1)">
+                                        &div;10
+                                    </button>
+                                <!-- /ko -->
+                                <!-- ko if: Settings.getSetting('shopButtons').observableValue() == 'bigplus' -->
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Generator.increaseAmount(100)">
+                                        +100
+                                    </button>
+                                    <button class="btn btn-secondary smallButton smallFont" type="button" onclick="Generator.increaseAmount(1000)">
+                                        +1000
+                                    </button>
+                                <!-- /ko -->
+                                <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { Generator.maxAmount(state); }">
+                                    Max
+                                </button>
+                                <button class="btn-outline-dark btn btn-success smallButton smallFont" data-bind="click: function() {state.checkValue();}">
+                                    Fuel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+
+                <div id="machineGeneratorHelp" class="tab-pane fade">
+                    <p>The Generator will increase the speed of Machines in the Lab when activated.</p>
+
+                    <p>Once the Fuel Research is completed, you can fuel the Generator with various items to boost the effect for some time.
+                        <br>Some items require additional Research before they can be used as fuel.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
+
+
+<!-- Pokeball Factory Modal -->
+<div class="modal  fade" id="PokéballFactoryModal" tabindex="-1" role="dialog"
+aria-labelledby="PokéballFactoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof PokeballFactoryState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Pokéball Factory</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machinePokeballFactory">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machinePokeballFactoryHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machinePokeballFactory" class="tab-pane fade in active show">
+                    <div class="row justify-content-center">
+                        <li class="col-sm-4 col-md-3 col-lg-2 pokedexEntry" style="background: #e8e8f0">
+                            <span style="top: 0; border-top-left-radius: 6px; border-top-right-radius: 6px;" data-bind="text: PokeballFactory.blueprints[state.blueprint].name">Name</span>
+                                <div style="width: 100%; height: 120px;">
+                                    <img src="" style="padding: 20px 0px; width:100%;height:100%;object-fit:contain;" data-bind="attr:{ src: BagHandler.image(PokeballFactory.blueprints[state.blueprint].item) }">
+                                </div>
+                                <span style="bottom: 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px" data-bind="text: 'Amount: ' + App.game.pokeballs.getBallQuantity(GameConstants.Pokeball[PokeballFactory.blueprints[LabController.openedMachine().state.blueprint].item.id])">Amount</span>
+                        </li>
+                    </div>
+                    <div class="row justify-content-around" data-bind="foreach: PokeballFactory.blueprints[state.blueprint].cost">
+                        <h4 class="col-6">
+                            <img style="height: 24px" data-bind="attr: { src: BagHandler.image($data.item) },
+                            tooltip: { title: BagHandler.displayName($data.item), trigger: 'hover', placement: 'top' }"/>
+                            <span data-bind="text: GameConstants.formatNumber($data.amount) + '/' + GameConstants.formatNumber(BagHandler.amount($data.item)())">0</span>
+                        </h4>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="btn-group btn-block col-6 dropdown">
+                            <button type="button" class='btn btn-primary btn-block p-0'
+                            data-bind="tooltip: {title: PokeballFactory.blueprints[state.blueprint].costTooltip, trigger: 'hover', placement: 'right', html: true}">
+                            <span data-bind="text: PokeballFactory.blueprints[state.blueprint].name">Blueprint Name</span>
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active"
+                                data-boundary="viewport" data-bind="text: '&nbsp;', enable: !state.active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" data-bind="foreach: PokeballFactory.getAvailableBlueprints()">
+                                <button class="dropdown-item" type="button"
+                                    data-bind="text: $data.name,
+                                    click: function() {state.blueprint = $data.type;}"></button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <input id="queueInput" type="number" class="outline-dark form-control form-control-number"
+                                value="0" min="0" required name="queueInput"
+                                data-bind="textInput: state.queueInput, enable: !state.active"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { state.setMaxQueue(); }, enable: !state.active">
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + state.progressPercent + '%' }"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <span data-bind="text: state.progressString">Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="machinePokeballFactoryHelp" class="tab-pane fade">
+                    <p>The Pokéball Factory is used to produce Pokéballs.</p>
+
+                    <p>Pokéball Blueprints can be unlocked with Research.</p>
+
+                    <p>Set the number to the amount of Pokéballs for a Pokéball type that you want, and then activate the machine.
+                    <br>Activating the machine will disable all configuration controls. To change the configuration, you must deactivate the machine.
+                    <br>The machine will run until either the required materials run out, or the queue number is 0.
+                    <br>Note that deactivating the machine will lose all current progress for the current fabrication.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
 
 
 </body>

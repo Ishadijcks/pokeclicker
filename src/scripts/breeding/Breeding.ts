@@ -12,14 +12,13 @@ class Breeding implements Feature {
         eggList: [ko.observable(new Egg()), ko.observable(new Egg()), ko.observable(new Egg()), ko.observable(new Egg())],
         eggSlots: 1,
         queueList: [],
-        queueSlots: 0,
     };
 
     private _eggList: Array<KnockoutObservable<Egg>>;
     private _eggSlots: KnockoutObservable<number>;
 
     private queueList: KnockoutObservableArray<PokemonNameType>;
-    private queueSlots: KnockoutObservable<number>;
+    public queueSlots: KnockoutComputed<number>;
 
     public hatchList: { [name: number]: PokemonNameType[][] } = {};
 
@@ -27,7 +26,14 @@ class Breeding implements Feature {
         this._eggList = this.defaults.eggList;
         this._eggSlots = ko.observable(this.defaults.eggSlots);
         this.queueList = ko.observableArray(this.defaults.queueList);
-        this.queueSlots = ko.observable(this.defaults.queueSlots);
+        this.queueSlots = ko.pureComputed(() => {
+            let slots = 0;
+            if (player.highestRegion()) {
+                slots += 4 * Math.pow(2, player.highestRegion() - 1);
+            }
+            slots += App.game.lab.machineEffects['Egg Queue Slots']();
+            return slots;
+        });
 
         this._eggList.forEach((egg) => {
             egg.extend({deferred: true});
@@ -131,7 +137,6 @@ class Breeding implements Feature {
                 }
             }
         }
-        this.queueSlots(json['queueSlots'] ?? this.defaults.queueSlots);
         this.queueList(json['queueList'] ? json['queueList'] : this.defaults.queueList);
     }
 
@@ -141,7 +146,6 @@ class Breeding implements Feature {
             eggList: this.eggList.map(egg => egg() === null ? new Egg() : egg().toJSON()),
             eggSlots: this.eggSlots,
             queueList: this.queueList(),
-            queueSlots: this.queueSlots(),
         };
     }
 
@@ -228,7 +232,7 @@ class Breeding implements Feature {
     public addToQueue(pokemon: PartyPokemon): boolean {
         const queueSize = this.queueList().length;
         if (queueSize < this.queueSlots()) {
-            pokemon.breeding = true;
+            pokemon.location = PartyLocation.Hatchery;
             this.queueList.push(pokemon.name);
             return true;
         }
@@ -239,7 +243,7 @@ class Breeding implements Feature {
         const queueSize = this.queueList().length;
         if (queueSize > index) {
             const pokemonName = this.queueList.splice(index, 1)[0];
-            App.game.party._caughtPokemon().find(p => p.name == pokemonName).breeding = false;
+            App.game.party._caughtPokemon().find(p => p.name == pokemonName).location = PartyLocation.Battle;
             return true;
         }
         return false;
@@ -256,7 +260,7 @@ class Breeding implements Feature {
         const egg = this.createEgg(pokemon.name);
 
         if (pokemon instanceof PartyPokemon) {
-            pokemon.breeding = true;
+            pokemon.location = PartyLocation.Hatchery;
         }
 
         return this.gainEgg(egg);
@@ -383,10 +387,6 @@ class Breeding implements Feature {
             return;
         }
         this.eggSlots += 1;
-    }
-
-    public gainQueueSlot(amt = 1): void {
-        GameHelper.incrementObservable(this.queueSlots, amt);
     }
 
     public queueSlotsGainedFromRegion(region: GameConstants.Region): number {

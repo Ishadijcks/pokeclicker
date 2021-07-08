@@ -41,6 +41,7 @@ class App {
                 new SpecialEvents(),
                 new Discord(),
                 new AchievementTracker(),
+                new Lab(multiplier),
                 new Challenges(),
                 multiplier
             );

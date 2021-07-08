@@ -1,0 +1,94 @@
+<div class="modal  fade" id="PlateDeconstructorModal" tabindex="-1" role="dialog"
+aria-labelledby="PlateDeconstructorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <!-- ko if: LabController.openedMachine().state instanceof PlateDeconstructorState -->
+        <div class="modal-content" style="overflow: initial" data-bind="with: LabController.openedMachine().state, as: 'state'">
+            <div class="modal-header">
+                <h5>Plate Deconstructor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <ul class="nav nav-tabs nav-fill">
+                    <li class="nav-item"><a data-toggle='tab' class='nav-link active' href="#machinePlateDeconstructor">Machine</a></li>
+                    <li class='nav-item'><a data-toggle='tab' class='nav-link' href="#machinePlateDeconstructorHelp">Help</a></li>
+                </ul>
+            </div>
+
+            <div class="modal-body position-static tab-content">
+
+                <div id="machinePlateDeconstructor" class="tab-pane fade in active show">
+                    <div class="row justify-content-center">
+                        <h4 class="col-6 col-sm-4 col-lg-2">
+                            <span style="display: inline;">
+                                <img alt="Plates" style="height: 24px" data-bind="attr: { src: BagHandler.image({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)}) }"/>
+                                <span data-bind="text: GameConstants.formatNumber(BagHandler.amount({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)})())">0</span>
+                            </span>
+                        </h4>
+                        <h4 class="col-6 col-sm-4 col-lg-2">
+                            <span style="display: inline;">
+                                <img alt="Shards" style="height: 24px" data-bind="attr: { src: BagHandler.image({type: ItemType.shard, id: state.plateType}) }"/>
+                                <span data-bind="text: GameConstants.formatNumber(BagHandler.amount({type: ItemType.shard, id: state.plateType})())">0</span>
+                            </span>
+                        </h4>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="btn-group btn-block col-6 dropdown">
+                            <button type="button" class='btn btn-primary btn-block p-0'>
+                                <div style="display:inline"><img style="height: 24px" data-bind='attr: { src: BagHandler.image({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)}) }'/></div>
+                                <span data-bind="text: BagHandler.displayName({type: ItemType.underground, id: UndergroundItem.getPlateIDByType(state.plateType)})">Plate Name</span>
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split active"
+                                data-boundary="viewport" data-bind="text: '&nbsp;', enable: !state.active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" data-bind="foreach: UndergroundItem.getPlateTypes()">
+                                <button class="dropdown-item" type="button"
+                                    data-bind="text: BagHandler.displayName({type: ItemType.underground, id: UndergroundItem.getPlateIDByType($data)}),
+                                    click: function() {state.plateType = $data;}"></button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <input id="queueInput" type="number" class="outline-dark form-control form-control-number"
+                                value="0" min="0" required name="queueInput"
+                                data-bind="textInput: state.queueInput, enable: !state.active"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary smallButton smallFont" type="button" data-bind="click: function() { state.setMaxQueue(); }, enable: !state.active">
+                                        Max
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" data-bind="attr: { style: 'width:' + state.progressPercent + '%' }"
+                        aria-valuemin="0" aria-valuemax="100">
+                            <span data-bind="text: state.progressString">Progress</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="machinePlateDeconstructorHelp" class="tab-pane fade">
+                    <p>The Plate Deconstructor is used to deconstruct Plates into Shards.</p>
+
+                    <p>Set the number to the amount of plates to deconstruct, and then activate the machine.
+                    <br>Activating the machine will disable all configuration controls. To change the configuration, you must deactivate the machine.
+                    <br>The machine will run until either the required materials run out, or the queue number is 0.
+                    <br>Note that deactivating the machine will lose all current progress for the current deconstruction.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn mr-auto"
+                    data-bind="css: { 'btn-danger': state.active, 'btn-success': !state.active },
+                    text: state.active ? 'Deactivate Machine' : 'Activate Machine',
+                    click: function() { state.toggleState(); }">Toggle State</button>
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: function() { LabController.openedMachine().remove(); }">Remove Machine</button>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+

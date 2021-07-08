@@ -198,11 +198,7 @@ class Underground implements Feature {
     }
 
     public static getMineItemById(id: number): UndergroundItem {
-        for (const item of UndergroundItem.list) {
-            if (item.id == id) {
-                return item;
-            }
-        }
+        return UndergroundItem.list.find(i => i.id == id);
     }
 
     gainEnergy() {

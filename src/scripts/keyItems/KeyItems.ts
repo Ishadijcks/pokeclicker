@@ -27,8 +27,11 @@ class KeyItems implements Feature {
                     ],
                 });
             }, 'Town Map'),
+            new KeyItem(KeyItems.KeyItem.Laboratory_key, 'This key grants access to the Laboratory on Cinnabar Island',
+                () => {
+                    return App.game.statistics.dungeonsCleared[GameConstants.getDungeonIndex('Pokemon Mansion')]() > 0;
+                }, undefined, undefined, 'Laboratory Key'),
             // TODO obtain somewhere at the start
-            new KeyItem(KeyItems.KeyItem.Factory_key, 'This pass serves as an ID card for gaining access to the Pokéball factory that lies along Route 13', undefined, undefined, undefined, 'Factory Key'),
             new KeyItem(KeyItems.KeyItem.Dungeon_ticket, 'This ticket grants access to all dungeons in the Kanto region and beyond,<br/><strong>Tip:</strong> You gain Dungeon Tokens by capturing Pokémon', null, false, () => {
                 Information.show({
                     steps: [
@@ -150,7 +153,7 @@ namespace KeyItems {
         'Coin_case',
         'Pokeball_bag',
         'Town_map',
-        'Factory_key',
+        'Laboratory_key',
         'Dungeon_ticket',
         'Super_rod',
         'Holo_caster',

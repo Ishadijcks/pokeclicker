@@ -1,0 +1,29 @@
+<div class="modal fade" id="researchWorkerModal" tabindex="-1" role="dialog"
+aria-labelledby="researchWorkerModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+   <div class="modal-content">
+       <div class="modal-header justify-content-start align-items-center">
+            <h5 class="modal-title" id="researchWorkerModalLabel">Party</h5>
+            <button class="btn btn-secondary" type="button" data-toggle="collapse" style="margin-left: 25px;"
+                    data-target="#research-filter" aria-expanded="false" aria-controls="research-filter">
+                Filters
+            </button>
+            <button class="btn btn-secondary" type="button" data-toggle="collapse" style="margin-left: 25px;"
+                    data-target="#research-sort" aria-expanded="false" aria-controls="research-sort">
+                Sort
+            </button>
+       </div>
+       <div class="modal-body p-0">
+            <div class="tab-content p-3">
+                <div class="tab-pane active" id="research-pokemon">
+                    <div data-bind="template: { name: 'partyFilterTemplate', data: {'name': 'research'} }"></div>
+                    <div data-bind="template: { name: 'partyListTemplate', data: { 'name': 'research', controller: LabController } }"></div>
+                </div>
+            </div>
+       </div>
+       <div class="modal-footer">
+           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+       </div>
+   </div>
+</div>
+</div>

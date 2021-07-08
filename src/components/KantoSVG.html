@@ -544,6 +544,13 @@
         })
      %>
 
+    <%- include('templates/mapPOI',
+        { name: "Laboratory"
+        , x: 17, y: 55
+        , width: 7, height: 4
+        , databind: "click:function(){LabController.openLabModal()}, attr: { class: App.game.lab.canAccess() ? 'city unlockedTown' : 'city lockedTown' }"
+     })
+    %>
     <%- include('templates/mapOverlay',
          { name: "SS-Anne"
          , x: 50, y: 35
