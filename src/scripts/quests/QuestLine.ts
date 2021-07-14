@@ -76,6 +76,7 @@ class QuestLine {
         } else {
             quest.begin();
         }
+        quest.onLoad();
         this.curQuestInitial(quest.initial());
         this.state(QuestLineState.started);
     }

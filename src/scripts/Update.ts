@@ -449,6 +449,14 @@ class Update implements Saveable {
             Update.updateAchievementName(playerData, 'Doomsday Bunker stocked with Pokeballs!', 'Doomsday Bunker stocked with Pokéballs!');
             Update.updateAchievementName(playerData, 'Prepared for anything!', 'Professor Oak is the best!');
         },
+        '0.8.3': ({ playerData, saveData }) => {
+            // If player has defeated the 8th Kalos gym, start the vivillon quest line
+            saveData.badgeCase = saveData.badgeCase || [];
+            // Not using game constants incase the value isn't 73 in the future
+            if (saveData.badgeCase[73]) {
+                saveData.quests.questLines.push({state: 1, name: 'The great hunt', quest: 0});
+            }
+        },
     };
 
     constructor() {

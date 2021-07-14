@@ -15,7 +15,9 @@ abstract class Quest {
     notified: boolean;
     autoComplete: boolean;
     autoCompleter: KnockoutSubscription;
-    inQuestLine: boolean
+    inQuestLine: boolean;
+    _onLoad?: () => void;
+    onLoadCalled: boolean;
 
     constructor(amount: number, pointsReward: number) {
         this.amount = amount;
@@ -23,6 +25,7 @@ abstract class Quest {
         this.initial = ko.observable(null);
         this.claimed = ko.observable(false);
         this.notified = false;
+        this.onLoadCalled = false;
     }
 
     get description(): string {
@@ -140,6 +143,13 @@ abstract class Quest {
             }
             return completed;
         });
+    }
+
+    onLoad() {
+        if (typeof this._onLoad === 'function' && !this.onLoadCalled) {
+            this._onLoad();
+            this.onLoadCalled = true;
+        }
     }
 
     complete() {

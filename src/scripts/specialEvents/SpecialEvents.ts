@@ -46,7 +46,17 @@ class SpecialEvents implements Feature {
 /*
  *  YEARLY EVENTS
  */
-
+// Lunar New Year
+SpecialEvents.newEvent('Vivillon', 'Encounter Fancy Pattern Vivillon for a limited time roaming Kalos.',
+    // Start
+    new Date(new Date().getFullYear(), 0, 24, 1), () => {
+        RoamingPokemonList.add(GameConstants.Region.kanto, new RoamingPokemon('Vivillon (Fancy)'));
+    },
+    // End
+    new Date(new Date().getFullYear(), 1, 7, 23), () => {
+        RoamingPokemonList.remove(GameConstants.Region.kanto, 'Vivillon (Fancy)');
+    }
+);
 // First Event
 SpecialEvents.newEvent('Flying Pikachu', 'Encounter Flying Pikachu for a limited time roaming Kanto.',
     // Start
@@ -129,3 +139,4 @@ SpecialEvents.newEvent('Merry Christmas!', 'Encounter Santa Snorlax for a limite
         });
     }
 );
+
